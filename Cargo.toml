@@ -1,0 +1,39 @@
+[package]
+name = "prima-tracing"
+version = "0.1.0"
+authors = ["Enrico Risa <enrico.risa@prima.it>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+
+
+[dependencies]
+opentelemetry = {version = "0.13", features = ["rt-tokio"], optional= true}
+opentelemetry-zipkin = {version = "0.11.0", features = ["reqwest-client"], default-features = false, optional= true}
+tracing = {version = "0.1", features = ["max_level_debug", "release_max_level_info"]}
+tracing-opentelemetry = { version = "0.12", optional = true }
+tracing-subscriber = "0.2"
+tracing-log = { version = "0.1", optional= true }
+
+# serialization/deserialization
+serde = {version = "^1.0", features = ["derive"]}
+# json serialization
+serde_json = "^1.0"
+
+# dates
+chrono = {version = "^0.4", features = ["serde"]}
+
+uuid = {version = "^0.8", features = ["serde", "v4"]}
+
+[features]
+default = ["prima-logger"]
+prima-logger = ["tracing-log"]
+prima-telemetry = ["tracing-opentelemetry","opentelemetry", "opentelemetry-zipkin"]
+prima-logger-json = ["prima-logger"]
+
+
+[dev-dependencies]
+actix-web = "4.0.0-beta.5"
+tracing-actix-web = "0.4.0-beta.4"
+prima_bridge = "0.7.1"
