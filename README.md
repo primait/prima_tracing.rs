@@ -12,7 +12,7 @@
 Install from GitHub
 
 ``` toml
-prima-tracing = { git="https://github.com/primait/prima_tracing.rs" branch="master" }
+prima-tracing = { git="https://github.com/primait/prima_tracing.rs", branch="master" }
 ```
 
 
