@@ -23,9 +23,7 @@ mod config;
 mod subscriber;
 
 #[cfg(feature = "prima-logger-json")]
-mod formatter;
-#[cfg(feature = "prima-logger-json")]
-mod storage;
+pub mod json;
 #[cfg(feature = "prima-telemetry")]
 pub mod telemetry;
 

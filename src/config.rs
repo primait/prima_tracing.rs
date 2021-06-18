@@ -1,5 +1,5 @@
 #[cfg(feature = "prima-logger-json")]
-use crate::formatter::DefaultEventFormatter;
+use crate::json::formatter::DefaultEventFormatter;
 
 #[cfg(not(feature = "prima-logger-json"))]
 use crate::subscriber::NopEventFormatter;
