@@ -32,8 +32,8 @@ pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
     let subscriber = subscriber.with(tracing_subscriber::fmt::layer());
     #[cfg(feature = "prima-logger-json")]
     let subscriber = {
-        use crate::formatter::PrimaFormattingLayer;
-        use crate::storage::PrimaJsonStorage;
+        use crate::json::formatter::PrimaFormattingLayer;
+        use crate::json::storage::PrimaJsonStorage;
         let config = _config;
         subscriber
             .with(PrimaJsonStorage::default())

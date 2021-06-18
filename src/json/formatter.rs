@@ -1,4 +1,5 @@
 use serde::Serialize;
+use std::io::Stdout;
 use std::io::Write;
 use tracing::Level;
 use tracing::{Event, Metadata, Subscriber};
@@ -11,7 +12,7 @@ use tracing_subscriber::{
 
 use serde::ser::{SerializeMap, Serializer};
 
-use crate::storage::PrimaJsonVisitor;
+use crate::json::storage::PrimaJsonVisitor;
 use crate::subscriber::{ContextInfo, EventFormatter};
 pub struct PrimaFormattingLayer<W: MakeWriter + 'static, F: EventFormatter> {
     make_writer: W,
@@ -20,14 +21,31 @@ pub struct PrimaFormattingLayer<W: MakeWriter + 'static, F: EventFormatter> {
     formatter: F,
 }
 
+/// Build a [`PrimaFormattingLayer`] layer with [`DefaultEventFormatter`] as format
+/// and [`std::io::Stdout`] as output
+pub fn layer(
+    app_name: String,
+    environment: String,
+) -> PrimaFormattingLayer<impl Fn() -> Stdout, DefaultEventFormatter> {
+    PrimaFormattingLayer::new(
+        app_name,
+        environment,
+        std::io::stdout,
+        DefaultEventFormatter,
+    )
+}
 impl<W: MakeWriter + 'static, F: EventFormatter> PrimaFormattingLayer<W, F> {
-    pub fn new(app_name: String, environment: String, make_writer: W, formatter: F) -> Self {
+    pub(crate) fn new(app_name: String, environment: String, make_writer: W, formatter: F) -> Self {
         Self {
             make_writer,
             app_name,
             environment,
             formatter,
         }
+    }
+
+    pub fn with_formatter<A: EventFormatter>(self, formatter: A) -> PrimaFormattingLayer<W, A> {
+        PrimaFormattingLayer::new(self.app_name, self.environment, self.make_writer, formatter)
     }
 
     fn emit(&self, mut buffer: Vec<u8>) -> Result<(), std::io::Error> {

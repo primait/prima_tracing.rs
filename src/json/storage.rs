@@ -14,6 +14,10 @@ pub struct PrimaJsonVisitor<'a> {
 #[derive(Default)]
 pub struct PrimaJsonStorage;
 
+/// Build a [`PrimaJsonStorage`] layer
+pub fn layer() -> PrimaJsonStorage {
+    PrimaJsonStorage
+}
 impl<S> Layer<S> for PrimaJsonStorage
 where
     S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
