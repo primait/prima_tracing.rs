@@ -162,9 +162,16 @@ export RUST_LOG=info
 cargo run --features=prima-logger-json --example custom_formatter
 ```
 
-### Custom subscriber JSON output
+### Custom subscriber with default JSON output
 
 ```sh
 export RUST_LOG=info
 cargo run --features=prima-logger-json --example custom_subscriber
+```
+
+### Custom subscriber with custom JSON output
+
+```sh
+export RUST_LOG=info
+cargo run --features=prima-logger-json --example custom_json_subscriber
 ```

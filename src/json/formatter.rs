@@ -35,13 +35,17 @@ pub fn layer(
     )
 }
 impl<W: MakeWriter + 'static, F: EventFormatter> PrimaFormattingLayer<W, F> {
-    pub fn new(app_name: String, environment: String, make_writer: W, formatter: F) -> Self {
+    pub(crate) fn new(app_name: String, environment: String, make_writer: W, formatter: F) -> Self {
         Self {
             make_writer,
             app_name,
             environment,
             formatter,
         }
+    }
+
+    pub fn with_formatter<A: EventFormatter>(self, formatter: A) -> PrimaFormattingLayer<W, A> {
+        PrimaFormattingLayer::new(self.app_name, self.environment, self.make_writer, formatter)
     }
 
     fn emit(&self, mut buffer: Vec<u8>) -> Result<(), std::io::Error> {
