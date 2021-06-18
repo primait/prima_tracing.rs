@@ -133,14 +133,14 @@ Run [Jaeger](https://www.jaegertracing.io) locally
 docker run -d -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 -p6831:6831/udp -p6832:6832/udp -p16686:16686 -p 9411:9411  jaegertracing/all-in-one:latest
 ```
 
-Run ping service:
+Run pong service:
 
 ```sh
 export RUST_LOG=info
-cargo run --features=prima-telemetry --example ping
+cargo run --features=prima-telemetry --example pong
 ```
 
-Run pong service:
+Run ping service:
 
 ```sh
 export RUST_LOG=info
