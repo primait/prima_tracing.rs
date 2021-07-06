@@ -87,11 +87,11 @@ where
 
 fn format_level(level: &Level) -> &str {
     match *level {
-        Level::INFO => "INFO",
-        Level::DEBUG => "DEBUG",
-        Level::WARN => "WARN",
-        Level::ERROR => "ERROR",
-        Level::TRACE => "TRACE",
+        Level::INFO => "info",
+        Level::DEBUG => "debug",
+        Level::WARN => "warn",
+        Level::ERROR => "error",
+        Level::TRACE => "trace",
     }
 }
 
