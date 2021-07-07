@@ -31,7 +31,7 @@ use tracing::{info, info_span};
 fn main() -> std::io::Result<()> {
     let subscriber = configure_subscriber(builder("simple").with_env("dev".to_string()).build());
 
-    init_subscriber(subscriber);
+    let _guard = init_subscriber(subscriber);
 
     let span = info_span!("MySpan");
     let _guard = span.enter();
@@ -52,7 +52,7 @@ use tracing::{info, info_span};
 fn main() -> std::io::Result<()> {
     let subscriber = configure_subscriber(builder("json").with_env("dev".to_string()).build());
 
-    init_subscriber(subscriber);
+    let _guard = init_subscriber(subscriber);
 
     let span = info_span!("MySpan");
     let _guard = span.enter();
@@ -80,7 +80,7 @@ fn main() -> std::io::Result<()> {
             .build(),
     );
 
-    init_subscriber(subscriber);
+    let _guard = init_subscriber(subscriber);
 
     let span = info_span!("MySpan");
     let _guard = span.enter();

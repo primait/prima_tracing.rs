@@ -47,8 +47,8 @@ pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
 
     subscriber
 }
-/// Initialize the subscriber
-pub fn init_subscriber(subscriber: impl Subscriber + Sync + Send) {
+/// Initialize the subscriber and return the [`Uninstall`] guard
+pub fn init_subscriber(subscriber: impl Subscriber + Sync + Send) -> Uninstall {
     LogTracer::init().expect("Failed to set logger");
     tracing::subscriber::set_global_default(subscriber).expect("Setting default subscriber failed");
 
@@ -57,6 +57,7 @@ pub fn init_subscriber(subscriber: impl Subscriber + Sync + Send) {
         use opentelemetry::{global, sdk::propagation::TraceContextPropagator};
         global::set_text_map_propagator(TraceContextPropagator::new());
     };
+    Uninstall
 }
 /// `EventFormatter` allows you to customise the format of [`tracing::Event`] if the `prima-json-logger` feature is active
 pub trait EventFormatter {
@@ -68,6 +69,15 @@ pub trait EventFormatter {
     ) -> Result<Vec<u8>, std::io::Error>
     where
         S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>;
+}
+/// Uninstall guard for doing works in shutdown
+pub struct Uninstall;
+
+impl Drop for Uninstall {
+    fn drop(&mut self) {
+        #[cfg(feature = "prima-telemetry")]
+        opentelemetry::global::shutdown_tracer_provider();
+    }
 }
 /// Information about the current app context like name or environment
 pub struct ContextInfo<'a> {
