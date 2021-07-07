@@ -85,16 +85,6 @@ where
     }
 }
 
-fn format_level(level: &Level) -> &str {
-    match *level {
-        Level::INFO => "INFO",
-        Level::DEBUG => "DEBUG",
-        Level::WARN => "WARN",
-        Level::ERROR => "ERROR",
-        Level::TRACE => "TRACE",
-    }
-}
-
 pub struct DefaultEventFormatter;
 impl EventFormatter for DefaultEventFormatter {
     fn format_event<S>(
@@ -112,7 +102,10 @@ impl EventFormatter for DefaultEventFormatter {
         let mut map_serializer = serializer.serialize_map(None)?;
 
         map_serializer.serialize_entry("timestamp", &chrono::Utc::now())?;
-        map_serializer.serialize_entry("level", format_level(metadata.level()))?;
+        map_serializer.serialize_entry(
+            "level",
+            metadata.level().to_string().to_lowercase().as_str(),
+        )?;
         map_serializer.serialize_entry("type", info.app_name())?;
 
         let mut visitor = PrimaJsonVisitor::default();
