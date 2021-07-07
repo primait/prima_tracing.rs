@@ -1,7 +1,7 @@
 <h1 align="center">prima_tracing.rs</h1>
 <div align="center">
  <strong>
-  Utilities for configuring a [tracing](https://github.com/tokio-rs/tracing) subscriber with support for logging and opentelemetry.
+  Utilities for configuring a <a href="https://github.com/tokio-rs/tracing">tracing</a> subscriber with support for logging and opentelemetry.
  </strong>
 </div>
 
