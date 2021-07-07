@@ -15,7 +15,7 @@ async fn main() -> std::io::Result<()> {
             .build(),
     );
 
-    init_subscriber(subscriber);
+    let _guard = init_subscriber(subscriber);
     HttpServer::new(move || {
         App::new()
             .wrap(Logger::default())

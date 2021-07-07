@@ -23,7 +23,7 @@ async fn main() -> std::io::Result<()> {
             .build(),
     );
 
-    init_subscriber(subscriber);
+    let _guard = init_subscriber(subscriber);
 
     let bridge = Arc::new(Bridge::new("http://localhost:8082".parse().unwrap()));
     HttpServer::new(move || {

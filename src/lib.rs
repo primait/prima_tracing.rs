@@ -14,7 +14,7 @@
 //!        .build()
 //!    );
 //!
-//!    init_subscriber(subscriber);
+//!    let _guard = init_subscriber(subscriber);
 //! }
 //! ```
 
