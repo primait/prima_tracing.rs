@@ -25,7 +25,11 @@ pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
     #[cfg(feature = "prima-telemetry")]
     let subscriber = {
         let tracer = crate::telemetry::configure(&_config);
-        subscriber.with(tracing_opentelemetry::layer().with_tracer(tracer))
+        subscriber
+            .with(tracing_opentelemetry::layer().with_tracer(tracer))
+            .with(crate::telemetry::VersionLayer {
+                version: _config.version,
+            })
     };
 
     #[cfg(not(feature = "prima-logger-json"))]

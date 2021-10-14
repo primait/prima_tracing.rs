@@ -1,3 +1,4 @@
+use opentelemetry::trace::SpanBuilder;
 use opentelemetry::{
     sdk::{
         trace::{self, Tracer},
@@ -5,6 +6,8 @@ use opentelemetry::{
     },
     KeyValue,
 };
+use tracing::{span, Subscriber};
+use tracing_subscriber::{layer::Context, Layer};
 
 use crate::SubscriberConfig;
 
@@ -25,4 +28,31 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
         )
         .install_batch(opentelemetry::runtime::Tokio)
         .expect("Failed to create the zipkin pipeline")
+}
+
+pub struct VersionLayer {
+    pub version: Option<String>,
+}
+
+impl<S> Layer<S> for VersionLayer
+where
+    S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
+{
+    fn new_span(&self, _attrs: &span::Attributes<'_>, id: &span::Id, ctx: Context<'_, S>) {
+        let span = ctx.span(id).expect("Span not found, this is a bug");
+        let mut extensions = span.extensions_mut();
+        match (extensions.get_mut::<SpanBuilder>(), &self.version) {
+            (Some(builder), Some(version)) => {
+                let root_version = KeyValue::new("version", version.clone());
+                let service_version = KeyValue::new("service.version", version.clone());
+                if let Some(ref mut attributes) = builder.attributes {
+                    attributes.push(root_version);
+                    attributes.push(service_version);
+                } else {
+                    builder.attributes = Some(vec![root_version, service_version]);
+                }
+            }
+            _ => {}
+        }
+    }
 }
