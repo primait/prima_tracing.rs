@@ -29,5 +29,5 @@ pub mod telemetry;
 
 pub use crate::config::{builder, SubscriberConfig, SubscriberConfigBuilder};
 pub use crate::subscriber::{
-    configure_subscriber, init_subscriber, ContextInfo, EventFormatter, Tracing,
+    configure_subscriber, init_subscriber, ContextInfo, EventFormatter, Tracing, Uninstall,
 };
