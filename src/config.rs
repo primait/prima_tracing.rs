@@ -67,7 +67,7 @@ impl<T> SubscriberConfigBuilder<T> {
         self.0.env = env;
         self
     }
-    /// Set the environment. By `dev` default
+    /// Set the service version.
     pub fn with_version(mut self, version: String) -> Self {
         self.0.version = Some(version);
         self
