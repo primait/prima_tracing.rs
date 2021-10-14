@@ -16,6 +16,7 @@ async fn main() -> std::io::Result<()> {
     let subscriber = configure_subscriber(
         builder("ping")
             .with_env("dev".to_string())
+            .with_version("1.0".to_string())
             .with_telemetry(
                 "http://localhost:9411/api/v2/spans".to_string(),
                 "ping".to_string(),
@@ -28,7 +29,7 @@ async fn main() -> std::io::Result<()> {
     let bridge = Arc::new(Bridge::new("http://localhost:8082".parse().unwrap()));
     HttpServer::new(move || {
         App::new()
-            .data(bridge.clone())
+            .app_data(web::Data::new(bridge.clone()))
             .wrap(Logger::default())
             .wrap(TracingLogger::default())
             .route("/check", web::get().to(check))

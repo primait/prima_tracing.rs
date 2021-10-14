@@ -34,6 +34,6 @@ prima-logger-json = ["prima-logger"]
 
 
 [dev-dependencies]
-actix-web = "4.0.0-beta.5"
-tracing-actix-web = "0.4.0-beta.4"
-prima_bridge = "0.7.1"
+actix-web = "4.0.0-beta.9"
+tracing-actix-web = {version="0.4.0-beta.14", features=["opentelemetry_0_13"]}
+prima_bridge = "0.7"

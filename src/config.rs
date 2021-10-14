@@ -12,15 +12,21 @@ pub struct SubscriberConfig<T> {
     pub env: String,
     pub telemetry: Option<TelemetryConfig>,
     pub service: String,
+    pub version: Option<String>,
     pub json_formatter: T,
 }
 
 impl<T> SubscriberConfig<T> {
-    pub(crate) fn new(service: String, json_formatter: T) -> SubscriberConfig<T> {
+    pub(crate) fn new(
+        service: String,
+        version: Option<String>,
+        json_formatter: T,
+    ) -> SubscriberConfig<T> {
         SubscriberConfig {
             env: String::from("dev"),
             telemetry: None,
             service,
+            version,
             json_formatter,
         }
     }
@@ -30,6 +36,7 @@ impl<T> SubscriberConfig<T> {
 pub fn builder(service: &str) -> SubscriberConfigBuilder<NopEventFormatter> {
     SubscriberConfigBuilder(SubscriberConfig::new(
         service.to_owned(),
+        None,
         NopEventFormatter {},
     ))
 }
@@ -60,6 +67,11 @@ impl<T> SubscriberConfigBuilder<T> {
         self.0.env = env;
         self
     }
+    /// Set the environment. By `dev` default
+    pub fn with_version(mut self, version: String) -> Self {
+        self.0.version = Some(version);
+        self
+    }
 
     /// Set telemetry config like `collector_url` and `service_name`
     pub fn with_telemetry(mut self, collector_url: String, service_name: String) -> Self {
@@ -77,6 +89,7 @@ impl<T> SubscriberConfigBuilder<T> {
             json_formatter: formatter,
             env: self.0.env,
             service: self.0.service,
+            version: self.0.version,
             telemetry: self.0.telemetry,
         })
     }
