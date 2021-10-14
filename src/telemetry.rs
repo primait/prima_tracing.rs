@@ -55,6 +55,4 @@ where
             _ => {}
         }
     }
-
-    fn on_record(&self, _id: &span::Id, _values: &span::Record<'_>, _ctx: Context<'_, S>) {}
 }
