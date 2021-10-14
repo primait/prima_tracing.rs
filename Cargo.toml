@@ -9,7 +9,7 @@ edition = "2018"
 
 
 [dependencies]
-opentelemetry = {version = "0.13", features = ["rt-tokio"], optional= true}
+opentelemetry = {version = "0.16", features = ["rt-tokio"], optional= true}
 opentelemetry-zipkin = {version = "0.11.0", features = ["reqwest-client"], default-features = false, optional= true}
 tracing = {version = "0.1", features = ["max_level_debug", "release_max_level_info"]}
 tracing-opentelemetry = { version = "0.12", optional = true }
