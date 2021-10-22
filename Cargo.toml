@@ -13,7 +13,7 @@ opentelemetry = {version = "0.16", features = ["rt-tokio"], optional= true}
 opentelemetry-zipkin = {version = "0.14.0", features = ["reqwest-client"], default-features = false, optional= true}
 tracing = {version = "0.1", features = ["max_level_debug", "release_max_level_info"]}
 tracing-opentelemetry = { version = "0.15", optional = true }
-tracing-subscriber = "0.2"
+tracing-subscriber = "0.3"
 tracing-log = { version = "0.1", optional= true }
 
 # serialization/deserialization
