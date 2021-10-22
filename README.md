@@ -73,6 +73,7 @@ fn main() -> std::io::Result<()> {
     let subscriber = configure_subscriber(
         builder("myapp")
             .with_env("dev".to_string())
+            .with_version("1.0".to_string())
             .with_telemetry(
                 "http://localhost:9411/api/v2/spans".to_string(),
                 "myapp".to_string(),
