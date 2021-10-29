@@ -44,7 +44,7 @@ pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
             .with(PrimaFormattingLayer::new(
                 config.service.clone(),
                 config.env.clone(),
-                std::io::stdout,
+                &std::io::stdout,
                 config.json_formatter,
             ))
     };

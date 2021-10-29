@@ -38,7 +38,7 @@ impl<S> Layer<S> for VersionLayer
 where
     S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
 {
-    fn new_span(&self, _attrs: &span::Attributes<'_>, id: &span::Id, ctx: Context<'_, S>) {
+    fn on_new_span(&self, _attrs: &span::Attributes<'_>, id: &span::Id, ctx: Context<'_, S>) {
         let span = ctx.span(id).expect("Span not found, this is a bug");
         let mut extensions = span.extensions_mut();
         match (extensions.get_mut::<SpanBuilder>(), &self.version) {
