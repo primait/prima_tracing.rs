@@ -13,8 +13,8 @@ use serde::ser::{SerializeMap, Serializer};
 
 use crate::json::storage::PrimaJsonVisitor;
 use crate::subscriber::{ContextInfo, EventFormatter};
-pub struct PrimaFormattingLayer<W: MakeWriter + 'static, F: EventFormatter> {
-    make_writer: W,
+pub struct PrimaFormattingLayer<'writer, W: MakeWriter<'writer>, F: EventFormatter> {
+    make_writer: &'writer W,
     app_name: String,
     environment: String,
     formatter: F,
@@ -22,19 +22,20 @@ pub struct PrimaFormattingLayer<W: MakeWriter + 'static, F: EventFormatter> {
 
 /// Build a [`PrimaFormattingLayer`] layer with [`DefaultEventFormatter`] as format
 /// and [`std::io::Stdout`] as output
-pub fn layer(
+pub fn layer<'writer>(
     app_name: String,
     environment: String,
-) -> PrimaFormattingLayer<impl Fn() -> Stdout, DefaultEventFormatter> {
+) -> PrimaFormattingLayer<'writer,impl Fn() -> Stdout, DefaultEventFormatter> {
     PrimaFormattingLayer::new(
         app_name,
         environment,
-        std::io::stdout,
+        &std::io::stdout,
         DefaultEventFormatter,
     )
 }
-impl<W: MakeWriter + 'static, F: EventFormatter> PrimaFormattingLayer<W, F> {
-    pub(crate) fn new(app_name: String, environment: String, make_writer: W, formatter: F) -> Self {
+
+impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'writer, W, F> {
+    pub(crate) fn new(app_name: String, environment: String, make_writer: &'writer W, formatter: F) -> Self {
         Self {
             make_writer,
             app_name,
@@ -43,7 +44,7 @@ impl<W: MakeWriter + 'static, F: EventFormatter> PrimaFormattingLayer<W, F> {
         }
     }
 
-    pub fn with_formatter<A: EventFormatter>(self, formatter: A) -> PrimaFormattingLayer<W, A> {
+    pub fn with_formatter<A: EventFormatter>(self, formatter: A) -> PrimaFormattingLayer<'writer, W, A> {
         PrimaFormattingLayer::new(self.app_name, self.environment, self.make_writer, formatter)
     }
 
@@ -71,11 +72,11 @@ impl<W: MakeWriter + 'static, F: EventFormatter> PrimaFormattingLayer<W, F> {
     }
 }
 
-impl<S, W, F> Layer<S> for PrimaFormattingLayer<W, F>
+impl< S, W, F: 'static> Layer<S> for PrimaFormattingLayer<'static, W, F>
 where
     S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
-    W: MakeWriter + 'static,
-    F: EventFormatter + 'static,
+    W: MakeWriter<'static>,
+    F: EventFormatter,
 {
     fn on_event(&self, event: &Event<'_>, ctx: Context<'_, S>) {
         if let Ok(serialized) = self.format_event(event, ctx) {
@@ -237,8 +238,10 @@ where
     {
         let mut serializer = serializer.serialize_seq(None)?;
 
-        for span in self.0.scope() {
-            serde::ser::SerializeSeq::serialize_element(&mut serializer, &SpanSerializer(&span))?;
+        if let Some(span_root) = self.0.current_span().id().and_then(|id| self.0.span_scope(id).map(|iter|iter.from_root())) {
+            for span in span_root {
+                serde::ser::SerializeSeq::serialize_element(&mut serializer, &SpanSerializer(&span))?;
+            }
         }
 
         serde::ser::SerializeSeq::end(serializer)
