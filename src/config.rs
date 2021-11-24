@@ -46,6 +46,7 @@ pub fn builder(service: &str) -> SubscriberConfigBuilder<NopEventFormatter> {
 pub fn builder(service: &str) -> SubscriberConfigBuilder<DefaultEventFormatter> {
     SubscriberConfigBuilder(SubscriberConfig::new(
         service.to_owned(),
+        None,
         DefaultEventFormatter {},
     ))
 }

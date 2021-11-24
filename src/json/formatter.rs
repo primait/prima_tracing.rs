@@ -1,7 +1,6 @@
 use serde::Serialize;
 use std::io::Stdout;
 use std::io::Write;
-use tracing::Level;
 use tracing::{Event, Metadata, Subscriber};
 use tracing_subscriber::{
     fmt::MakeWriter,
