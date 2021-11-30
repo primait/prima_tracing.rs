@@ -3,6 +3,7 @@ use prima_tracing::json;
 use tracing_actix_web::TracingLogger;
 use tracing_log::LogTracer;
 use tracing_subscriber::{layer::SubscriberExt, EnvFilter};
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let subscriber = tracing_subscriber::Registry::default()

@@ -4,6 +4,22 @@ version = "0.1.0"
 authors = ["Enrico Risa <enrico.risa@prima.it>"]
 edition = "2018"
 
+[features]
+default = ["prima-logger"]
+prima-logger = ["tracing-log"]
+prima-telemetry = ["tracing-opentelemetry","opentelemetry", "opentelemetry-zipkin"]
+prima-logger-json = ["prima-logger"]
+
+[[example]]
+name = "custom-json-subscriber"
+path = "examples/custom_json_subscriber.rs"
+required-features = ["prima-logger-json"]
+
+[[example]]
+name = "custom-subscriber"
+path = "examples/custom_subscriber.rs"
+required-features = ["prima-logger-json"]
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 opentelemetry = {version = "0.16", features = ["rt-tokio"], optional= true}
@@ -22,13 +38,6 @@ serde_json = "^1.0"
 chrono = {version = "^0.4", features = ["serde"]}
 
 uuid = {version = "^0.8", features = ["serde", "v4"]}
-
-[features]
-default = ["prima-logger"]
-prima-logger = ["tracing-log"]
-prima-telemetry = ["tracing-opentelemetry","opentelemetry", "opentelemetry-zipkin"]
-prima-logger-json = ["prima-logger"]
-
 
 [dev-dependencies]
 actix-web = "4.0.0-beta.10"

@@ -12,7 +12,6 @@ args = ["fmt", "--all", "--", "--check"]
 description = "Run tests."
 command = "cargo"
 args = ["test", "${@}"]
-dependencies = ["db-reset-test"]
 
 [tasks.clippy-ci]
 command = "cargo"
