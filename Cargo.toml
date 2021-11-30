@@ -6,11 +6,11 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-opentelemetry = {version = "0.13", features = ["rt-tokio"], optional= true}
-opentelemetry-zipkin = {version = "0.11.0", features = ["reqwest-client"], default-features = false, optional= true}
+opentelemetry = {version = "0.16", features = ["rt-tokio"], optional= true}
+opentelemetry-zipkin = {version = "0.14", features = ["reqwest-client"], default-features = false, optional= true}
 tracing = {version = "0.1", features = ["max_level_debug", "release_max_level_info"]}
-tracing-opentelemetry = { version = "0.12", optional = true }
-tracing-subscriber = "0.2"
+tracing-opentelemetry = { version = "0.16", optional = true }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 tracing-log = { version = "0.1", optional= true }
 
 # serialization/deserialization
@@ -31,6 +31,6 @@ prima-logger-json = ["prima-logger"]
 
 
 [dev-dependencies]
-actix-web = "4.0.0-beta.9"
+actix-web = "4.0.0-beta.10"
 tracing-actix-web = {version="0.4.0-beta.14", features=["opentelemetry_0_13"]}
-prima_bridge = "0.7"
+prima_bridge = "0.8"

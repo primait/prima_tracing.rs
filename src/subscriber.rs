@@ -28,7 +28,7 @@ pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
         subscriber
             .with(tracing_opentelemetry::layer().with_tracer(tracer))
             .with(crate::telemetry::VersionLayer {
-                version: _config.version,
+                version: _config.version.clone(),
             })
     };
 
@@ -43,7 +43,7 @@ pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
             .with(PrimaFormattingLayer::new(
                 _config.service.clone(),
                 _config.env.clone(),
-                std::io::stdout,
+                &std::io::stdout,
                 _config.json_formatter,
             ))
     };
