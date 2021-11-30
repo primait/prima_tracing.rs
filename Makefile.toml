@@ -11,7 +11,7 @@ args = ["fmt", "--all", "--", "--check"]
 [tasks.test]
 description = "Run tests."
 command = "cargo"
-args = ["test", "${@}"]
+args = ["test", "${@}", "--all-features"]
 
 [tasks.clippy-ci]
 command = "cargo"
