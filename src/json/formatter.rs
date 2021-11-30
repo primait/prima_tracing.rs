@@ -25,7 +25,7 @@ pub struct PrimaFormattingLayer<'writer, W: MakeWriter<'writer>, F: EventFormatt
 pub fn layer<'writer>(
     app_name: String,
     environment: String,
-) -> PrimaFormattingLayer<'writer,impl Fn() -> Stdout, DefaultEventFormatter> {
+) -> PrimaFormattingLayer<'writer, impl Fn() -> Stdout, DefaultEventFormatter> {
     PrimaFormattingLayer::new(
         app_name,
         environment,
@@ -35,7 +35,12 @@ pub fn layer<'writer>(
 }
 
 impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'writer, W, F> {
-    pub(crate) fn new(app_name: String, environment: String, make_writer: &'writer W, formatter: F) -> Self {
+    pub(crate) fn new(
+        app_name: String,
+        environment: String,
+        make_writer: &'writer W,
+        formatter: F,
+    ) -> Self {
         Self {
             make_writer,
             app_name,
@@ -44,7 +49,10 @@ impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'w
         }
     }
 
-    pub fn with_formatter<A: EventFormatter>(self, formatter: A) -> PrimaFormattingLayer<'writer, W, A> {
+    pub fn with_formatter<A: EventFormatter>(
+        self,
+        formatter: A,
+    ) -> PrimaFormattingLayer<'writer, W, A> {
         PrimaFormattingLayer::new(self.app_name, self.environment, self.make_writer, formatter)
     }
 
@@ -72,7 +80,7 @@ impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'w
     }
 }
 
-impl< S, W, F: 'static> Layer<S> for PrimaFormattingLayer<'static, W, F>
+impl<S, W, F: 'static> Layer<S> for PrimaFormattingLayer<'static, W, F>
 where
     S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
     W: MakeWriter<'static>,
@@ -238,9 +246,17 @@ where
     {
         let mut serializer = serializer.serialize_seq(None)?;
 
-        if let Some(span_root) = self.0.current_span().id().and_then(|id| self.0.span_scope(id).map(|iter|iter.from_root())) {
+        if let Some(span_root) = self
+            .0
+            .current_span()
+            .id()
+            .and_then(|id| self.0.span_scope(id).map(|iter| iter.from_root()))
+        {
             for span in span_root {
-                serde::ser::SerializeSeq::serialize_element(&mut serializer, &SpanSerializer(&span))?;
+                serde::ser::SerializeSeq::serialize_element(
+                    &mut serializer,
+                    &SpanSerializer(&span),
+                )?;
             }
         }
 
