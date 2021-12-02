@@ -13,6 +13,7 @@ default = ["prima-logger"]
 prima-logger = ["tracing-log"]
 prima-telemetry = ["tracing-opentelemetry", "opentelemetry", "opentelemetry-zipkin"]
 prima-logger-json = ["prima-logger"]
+datadog-logger = ["prima-logger-json", "opentelemetry"]
 
 [[example]]
 name = "custom-json-subscriber"

@@ -1,4 +1,3 @@
-use opentelemetry::trace::{SpanBuilder, TraceContextExt, TraceId};
 use serde::Serialize;
 use std::io::Stdout;
 use std::io::Write;
@@ -68,8 +67,8 @@ impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'w
         event: &Event<'_>,
         ctx: Context<'_, S>,
     ) -> Result<Vec<u8>, std::io::Error>
-    where
-        S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
+        where
+            S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
     {
         self.formatter.format_event(
             event,
@@ -83,10 +82,10 @@ impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'w
 }
 
 impl<S, W, F: 'static> Layer<S> for PrimaFormattingLayer<'static, W, F>
-where
-    S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
-    W: MakeWriter<'static>,
-    F: EventFormatter,
+    where
+        S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
+        W: MakeWriter<'static>,
+        F: EventFormatter,
 {
     fn on_event(&self, event: &Event<'_>, ctx: Context<'_, S>) {
         if let Ok(serialized) = self.format_event(event, ctx) {
@@ -104,8 +103,8 @@ impl EventFormatter for DefaultEventFormatter {
         ctx: Context<'_, S>,
         info: ContextInfo<'_>,
     ) -> Result<Vec<u8>, std::io::Error>
-    where
-        S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
+        where
+            S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
     {
         let metadata = event.metadata();
         let mut buffer = Vec::new();
@@ -134,29 +133,33 @@ impl EventFormatter for DefaultEventFormatter {
             },
         )?;
 
-        // Add support for correlating logs and traces on datadog
-        // https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/
-        if let Some(current_span) = event
-            .parent()
-            .and_then(|id| ctx.span(id))
-            .or_else(|| ctx.lookup_current())
-        {
-            let (trace_id, span_id) = {
-                let ext = current_span.extensions();
-                let builder = ext.get::<SpanBuilder>()?;
-                let span_context = &builder.parent_context.span().span_context();
-                (span_context.trace_id(), span_context.span_id())
-            };
+        #[cfg(feature = "datadog-logger")]
+            {
+                use opentelemetry::trace::{SpanBuilder, TraceContextExt, TraceId};
+                // Add support for correlating logs and traces on datadog
+                // https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/
+                if let Some(current_span) = event
+                    .parent()
+                    .and_then(|id| ctx.span(id))
+                    .or_else(|| ctx.lookup_current())
+                {
+                    let (trace_id, span_id) = {
+                        let ext = current_span.extensions();
+                        let builder = ext.get::<SpanBuilder>()?;
+                        let span_context = &builder.parent_context.span().span_context();
+                        (span_context.trace_id(), span_context.span_id())
+                    };
 
-            let mut dd = std::collections::HashMap::new();
-            // Datadog ids need to be 64 bits long
-            let trace_id = trace_id.to_u128() as u64;
-            let span_id = span_id.to_u64();
-            dd.insert("trace_id", trace_id);
-            dd.insert("span_id", span_id);
+                    let mut dd = std::collections::HashMap::new();
+                    // Datadog ids need to be 64 bits long
+                    let trace_id = trace_id.to_u128() as u64;
+                    let span_id = span_id.to_u64();
+                    dd.insert("trace_id", trace_id);
+                    dd.insert("span_id", span_id);
 
-            map_serializer.serialize_entry("dd", dd)?;
-        }
+                    map_serializer.serialize_entry("dd", dd)?;
+                }
+            }
 
         map_serializer.end()?;
 
@@ -165,8 +168,8 @@ impl EventFormatter for DefaultEventFormatter {
 }
 
 pub struct MetadataSerializer<'a, S>
-where
-    S: Subscriber + tracing_subscriber::registry::LookupSpan<'a>,
+    where
+        S: Subscriber + tracing_subscriber::registry::LookupSpan<'a>,
 {
     ctx: &'a Context<'a, S>,
     metadata: &'a Metadata<'a>,
@@ -175,12 +178,12 @@ where
 }
 
 impl<'a, Sub> Serialize for MetadataSerializer<'a, Sub>
-where
-    Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
+    where
+        Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         let mut map_serializer = serializer.serialize_map(None)?;
 
@@ -232,16 +235,16 @@ where
 }
 
 struct SpanSerializer<'a, 'b, Span>(&'b SpanRef<'a, Span>)
-where
-    Span: for<'lookup> LookupSpan<'lookup>;
+    where
+        Span: for<'lookup> LookupSpan<'lookup>;
 
 impl<'a, 'b, Span> Serialize for SpanSerializer<'a, 'b, Span>
-where
-    Span: for<'lookup> LookupSpan<'lookup>,
+    where
+        Span: for<'lookup> LookupSpan<'lookup>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         let mut serializer = serializer.serialize_map(None)?;
 
@@ -261,16 +264,16 @@ where
 }
 
 struct SpanListSerializer<'a, 'b, S>(&'b Context<'a, S>)
-where
-    S: Subscriber + for<'lookup> LookupSpan<'lookup>;
+    where
+        S: Subscriber + for<'lookup> LookupSpan<'lookup>;
 
 impl<'a, 'b, Sub> Serialize for SpanListSerializer<'a, 'b, Sub>
-where
-    Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
+    where
+        Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         let mut serializer = serializer.serialize_seq(None)?;
 
