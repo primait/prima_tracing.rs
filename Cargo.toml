@@ -1,6 +1,6 @@
 [package]
 name = "prima-tracing"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Enrico Risa <enrico.risa@prima.it>"]
 edition = "2018"
 
