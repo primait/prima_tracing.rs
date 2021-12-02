@@ -16,7 +16,7 @@ steps:
     PLUGIN_DEPTH: 5
 
 - name: cache-restore
-  image: public.ecr.aws/prima/drone-tools:1.21.2
+  image: public.ecr.aws/prima/drone-tools:1.21.3
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - cache-restore
@@ -31,7 +31,7 @@ steps:
   - git-clone
 
 - name: check-secrets
-  image: public.ecr.aws/prima/drone-tools:1.21.2
+  image: public.ecr.aws/prima/drone-tools:1.21.3
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - check-secrets-grants
@@ -42,14 +42,14 @@ steps:
   - git-clone
 
 - name: check-public-docker-images
-  image: public.ecr.aws/prima/drone-tools:1.21.2
+  image: public.ecr.aws/prima/drone-tools:1.21.3
   commands:
   - check-public-docker-images
   depends_on:
   - git-clone
 
 - name: build-image
-  image: public.ecr.aws/prima/drone-tools:1.21.2
+  image: public.ecr.aws/prima/drone-tools:1.21.3
   commands:
   - sed -i 's/USER app/USER root/g' ./Dockerfile
   - docker build -t prima/prima_tracing.rs-ci:${DRONE_COMMIT} ./
@@ -126,7 +126,7 @@ steps:
   - cargo-test
 
 - name: cache-save
-  image: public.ecr.aws/prima/drone-tools:1.21.2
+  image: public.ecr.aws/prima/drone-tools:1.21.3
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - cache-save target
@@ -173,7 +173,7 @@ steps:
     PLUGIN_DEPTH: 5
 
 - name: cache-restore
-  image: public.ecr.aws/prima/drone-tools:1.21.2
+  image: public.ecr.aws/prima/drone-tools:1.21.3
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - cache-restore
@@ -188,7 +188,7 @@ steps:
   - git-clone
 
 - name: build-image
-  image: public.ecr.aws/prima/drone-tools:1.21.2
+  image: public.ecr.aws/prima/drone-tools:1.21.3
   commands:
   - sed -i 's/USER app/USER root/g' ./Dockerfile
   - docker build -t prima/prima_tracing.rs-ci:${DRONE_COMMIT} ./
@@ -264,6 +264,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: db9b05cf05653bd67b430b3e1dfdabc12271622b33920b54a27c0081b13b1946
+hmac: aae1afdb1d2100b696969d10cd473ea681b1ed6c509b5c21364a660c33490f7e
 
 ...
