@@ -1,5 +1,5 @@
 [tasks.build-ci]
-description = "Build Lira inside CI."
+description = "Build prima_tracing.rs inside CI."
 command = "cargo"
 args = ["build", "-j", "2", "--all-features"]
 
