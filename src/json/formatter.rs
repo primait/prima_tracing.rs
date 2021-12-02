@@ -1,3 +1,4 @@
+use opentelemetry::trace::{SpanBuilder, TraceContextExt, TraceId};
 use serde::Serialize;
 use std::io::Stdout;
 use std::io::Write;
@@ -13,6 +14,7 @@ use serde::ser::{SerializeMap, Serializer};
 
 use crate::json::storage::PrimaJsonVisitor;
 use crate::subscriber::{ContextInfo, EventFormatter};
+
 pub struct PrimaFormattingLayer<'writer, W: MakeWriter<'writer>, F: EventFormatter> {
     make_writer: &'writer W,
     app_name: String,
@@ -94,6 +96,7 @@ where
 }
 
 pub struct DefaultEventFormatter;
+
 impl EventFormatter for DefaultEventFormatter {
     fn format_event<S>(
         &self,
@@ -131,11 +134,36 @@ impl EventFormatter for DefaultEventFormatter {
             },
         )?;
 
+        // Add support for correlating logs and traces on datadog
+        // https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/
+        if let Some(current_span) = event
+            .parent()
+            .and_then(|id| ctx.span(id))
+            .or_else(|| ctx.lookup_current())
+        {
+            let (trace_id, span_id) = {
+                let ext = current_span.extensions();
+                let builder = ext.get::<SpanBuilder>()?;
+                let span_context = &builder.parent_context.span().span_context();
+                (span_context.trace_id(), span_context.span_id())
+            };
+
+            let mut dd = std::collections::HashMap::new();
+            // Datadog ids need to be 64 bits long
+            let trace_id = trace_id.to_u128() as u64;
+            let span_id = span_id.to_u64();
+            dd.insert("trace_id", trace_id);
+            dd.insert("span_id", span_id);
+
+            map_serializer.serialize_entry("dd", dd)?;
+        }
+
         map_serializer.end()?;
 
         Ok(buffer)
     }
 }
+
 pub struct MetadataSerializer<'a, S>
 where
     S: Subscriber + tracing_subscriber::registry::LookupSpan<'a>,
