@@ -2,20 +2,17 @@
 //! support for JSON output formatter and integration with opentelemetry
 //! # Usage
 //!
-//!
 //! ```rust
 //!
 //! use prima_tracing::{builder, configure_subscriber, init_subscriber};
 //!
-//! fn main() {
-//!    let subscriber = configure_subscriber(
-//!        builder("ping")
-//!        .with_env("dev".to_string())
-//!        .build()
-//!    );
+//! let subscriber = configure_subscriber(
+//!   builder("ping")
+//!     .with_env("dev".to_string())
+//!     .build()
+//! );
 //!
-//!    let _guard = init_subscriber(subscriber);
-//! }
+//! let _guard = init_subscriber(subscriber);
 //! ```
 
 mod config;

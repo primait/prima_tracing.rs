@@ -38,14 +38,13 @@ pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
     let subscriber = {
         use crate::json::formatter::PrimaFormattingLayer;
         use crate::json::storage::PrimaJsonStorage;
-        let config = _config;
         subscriber
             .with(PrimaJsonStorage::default())
             .with(PrimaFormattingLayer::new(
-                config.service.clone(),
-                config.env.clone(),
+                _config.service.clone(),
+                _config.env.clone(),
                 &std::io::stdout,
-                config.json_formatter,
+                _config.json_formatter,
             ))
     };
 
