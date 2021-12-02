@@ -7,7 +7,7 @@ edition = "2018"
 [features]
 default = ["prima-logger"]
 prima-logger = ["tracing-log"]
-prima-telemetry = ["tracing-opentelemetry","opentelemetry", "opentelemetry-zipkin"]
+prima-telemetry = ["tracing-opentelemetry", "opentelemetry", "opentelemetry-zipkin"]
 prima-logger-json = ["prima-logger"]
 
 [[example]]
@@ -22,24 +22,24 @@ required-features = ["prima-logger-json"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-opentelemetry = {version = "0.16", features = ["rt-tokio"], optional= true}
-opentelemetry-zipkin = {version = "0.14", features = ["reqwest-client"], default-features = false, optional= true}
-tracing = {version = "0.1", features = ["max_level_debug", "release_max_level_info"]}
+opentelemetry = { version = "0.16", features = ["rt-tokio"], optional = true }
+opentelemetry-zipkin = { version = "0.14", features = ["reqwest-client"], default-features = false, optional = true }
+tracing = { version = "0.1", features = ["max_level_debug", "release_max_level_info"] }
 tracing-opentelemetry = { version = "0.16", optional = true }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-tracing-log = { version = "0.1", optional= true }
+tracing-log = { version = "0.1", optional = true }
 
 # serialization/deserialization
-serde = {version = "^1.0", features = ["derive"]}
+serde = { version = "^1.0", features = ["derive"] }
 # json serialization
 serde_json = "^1.0"
 
 # dates
-chrono = {version = "^0.4", features = ["serde"]}
+chrono = { version = "^0.4", features = ["serde"] }
 
-uuid = {version = "^0.8", features = ["serde", "v4"]}
+uuid = { version = "^0.8", features = ["serde", "v4"] }
 
 [dev-dependencies]
-actix-web = "4.0.0-beta.10"
-tracing-actix-web = {version="0.4.0-beta.16", features=["opentelemetry_0_13"]}
+actix-web = "4.0.0-beta.13"
+tracing-actix-web = { version = "0.5.0-beta.1", features = ["opentelemetry_0_16"] }
 prima_bridge = "0.8"

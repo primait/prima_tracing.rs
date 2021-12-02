@@ -6,3 +6,4 @@ USER app
 WORKDIR /code
 
 ENTRYPOINT ["/bin/bash"]
+
