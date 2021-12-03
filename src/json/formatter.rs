@@ -141,11 +141,7 @@ impl EventFormatter for DefaultEventFormatter {
             use opentelemetry::trace::{SpanBuilder, TraceContextExt};
             use std::collections::HashMap;
 
-            if let Some(current_span) = event
-                .parent()
-                .and_then(|id| ctx.span(id))
-                .or_else(|| ctx.lookup_current())
-            {
+            if let Some(current_span) = ctx.current_span().id().and_then(|id| ctx.span(id)) {
                 let ext = current_span.extensions();
 
                 if let Some(builder) = ext.get::<SpanBuilder>() {
