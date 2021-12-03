@@ -1,8 +1,12 @@
 [package]
 name = "prima-tracing"
 version = "0.1.1"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
 authors = ["Enrico Risa <enrico.risa@prima.it>"]
 edition = "2018"
+description = "Prima.it opentelemetry standard library"
+repository = "https://github.com/primait/prima_tracing.rs"
 
 [features]
 default = ["prima-logger"]
