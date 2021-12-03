@@ -18,6 +18,7 @@ prima-tracing = { git="https://github.com/primait/prima_tracing.rs", branch="mas
 ## Cargo features
 
 - `prima-logger-json` use JSON as output format
+- `prima-logger-datadog` extends `prima-logger-json` output with [trace and span information](https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/) allowing Datadog to connect logs and traces
 - `prima-telemetry` integrate opentelemetry with `opentelemetry-zipkin`
 
 ## Example
