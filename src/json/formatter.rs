@@ -138,27 +138,31 @@ impl EventFormatter for DefaultEventFormatter {
         // https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/
         #[cfg(feature = "prima-logger-datadog")]
         {
-            use opentelemetry::trace::SpanBuilder;
+            use opentelemetry::trace::{SpanBuilder, TraceContextExt};
             use std::collections::HashMap;
 
             if let Some(current_span) = ctx.current_span().id().and_then(|id| ctx.span(id)) {
                 let ext = current_span.extensions();
 
                 if let Some(builder) = ext.get::<SpanBuilder>() {
-                    match (builder.trace_id, builder.span_id) {
-                        (Some(trace_id), Some(span_id)) => {
-                            // Datadog trace IDs need to be 64 bits long
-                            let trace_id = trace_id.to_u128() as u64;
-                            let span_id = span_id.to_u64();
+                    let parent_span = builder.parent_context.span();
+                    let parent_span_ctx = parent_span.span_context();
 
-                            let mut dd = HashMap::new();
-                            dd.insert("trace_id", trace_id);
-                            dd.insert("span_id", span_id);
+                    let trace_id = builder
+                        .trace_id
+                        .unwrap_or_else(|| parent_span_ctx.trace_id());
 
-                            map_serializer.serialize_entry("dd", &dd)?;
-                        }
-                        _ => {}
-                    };
+                    let span_id = builder.span_id.unwrap_or_else(|| parent_span_ctx.span_id());
+
+                    // Datadog trace IDs need to be 64 bits long
+                    let trace_id = trace_id.to_u128() as u64;
+                    let span_id = span_id.to_u64();
+
+                    let mut dd = HashMap::new();
+                    dd.insert("trace_id", trace_id);
+                    dd.insert("span_id", span_id);
+
+                    map_serializer.serialize_entry("dd", &dd)?;
                 }
             }
         }
