@@ -13,6 +13,7 @@ use serde::ser::{SerializeMap, Serializer};
 
 use crate::json::storage::PrimaJsonVisitor;
 use crate::subscriber::{ContextInfo, EventFormatter};
+
 pub struct PrimaFormattingLayer<'writer, W: MakeWriter<'writer>, F: EventFormatter> {
     make_writer: &'writer W,
     app_name: String,
@@ -94,6 +95,7 @@ where
 }
 
 pub struct DefaultEventFormatter;
+
 impl EventFormatter for DefaultEventFormatter {
     fn format_event<S>(
         &self,
@@ -131,11 +133,46 @@ impl EventFormatter for DefaultEventFormatter {
             },
         )?;
 
+        // Adds support for correlating logs and traces on datadog
+        // In order for Datadog to be able to correlate the logs with the traces we need to insert `dd.trace_id` and `dd.span_id` at root level
+        // https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/
+        #[cfg(feature = "prima-logger-datadog")]
+        {
+            use opentelemetry::trace::{SpanBuilder, TraceContextExt};
+            use std::collections::HashMap;
+
+            if let Some(current_span) = ctx.current_span().id().and_then(|id| ctx.span(id)) {
+                let ext = current_span.extensions();
+
+                if let Some(builder) = ext.get::<SpanBuilder>() {
+                    let parent_span = builder.parent_context.span();
+                    let parent_span_ctx = parent_span.span_context();
+
+                    let trace_id = builder
+                        .trace_id
+                        .unwrap_or_else(|| parent_span_ctx.trace_id());
+
+                    let span_id = builder.span_id.unwrap_or_else(|| parent_span_ctx.span_id());
+
+                    // Datadog trace IDs need to be 64 bits long
+                    let trace_id = trace_id.to_u128() as u64;
+                    let span_id = span_id.to_u64();
+
+                    let mut dd = HashMap::new();
+                    dd.insert("trace_id", trace_id);
+                    dd.insert("span_id", span_id);
+
+                    map_serializer.serialize_entry("dd", &dd)?;
+                }
+            }
+        }
+
         map_serializer.end()?;
 
         Ok(buffer)
     }
 }
+
 pub struct MetadataSerializer<'a, S>
 where
     S: Subscriber + tracing_subscriber::registry::LookupSpan<'a>,

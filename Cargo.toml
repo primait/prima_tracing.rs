@@ -1,6 +1,6 @@
 [package]
 name = "prima-tracing"
-version = "0.1.1"
+version = "0.2.0"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 authors = ["Enrico Risa <enrico.risa@prima.it>"]
@@ -13,6 +13,7 @@ default = ["prima-logger"]
 prima-logger = ["tracing-log"]
 prima-telemetry = ["tracing-opentelemetry", "opentelemetry", "opentelemetry-zipkin"]
 prima-logger-json = ["prima-logger"]
+prima-logger-datadog = ["prima-logger-json", "opentelemetry"]
 
 [[example]]
 name = "custom-json-subscriber"
