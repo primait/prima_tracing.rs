@@ -26,7 +26,7 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
                 config.env.clone(),
             )])),
         )
-        .install_batch(opentelemetry::runtime::Tokio)
+        .install_batch(opentelemetry::runtime::TokioCurrentThread)
         .expect("Failed to create the zipkin pipeline")
 }
 
