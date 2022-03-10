@@ -6,9 +6,9 @@ use serde::Serialize;
 use tracing::{Event, Metadata, Subscriber};
 use tracing_subscriber::{
     fmt::MakeWriter,
-    Layer,
     layer::Context,
     registry::{LookupSpan, SpanRef},
+    Layer,
 };
 
 use crate::json::storage::PrimaJsonVisitor;
@@ -67,8 +67,8 @@ impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'w
         event: &Event<'_>,
         ctx: Context<'_, S>,
     ) -> Result<Vec<u8>, std::io::Error>
-        where
-            S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
+    where
+        S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
     {
         self.formatter.format_event(
             event,
@@ -82,10 +82,10 @@ impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'w
 }
 
 impl<S, W, F: 'static> Layer<S> for PrimaFormattingLayer<'static, W, F>
-    where
-        S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
-        W: MakeWriter<'static>,
-        F: EventFormatter,
+where
+    S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
+    W: MakeWriter<'static>,
+    F: EventFormatter,
 {
     fn on_event(&self, event: &Event<'_>, ctx: Context<'_, S>) {
         if let Ok(serialized) = self.format_event(event, ctx) {
@@ -103,8 +103,8 @@ impl EventFormatter for DefaultEventFormatter {
         ctx: Context<'_, S>,
         info: ContextInfo<'_>,
     ) -> Result<Vec<u8>, std::io::Error>
-        where
-            S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
+    where
+        S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
     {
         let metadata = event.metadata();
         let mut buffer = Vec::new();
@@ -163,8 +163,8 @@ impl EventFormatter for DefaultEventFormatter {
 }
 
 pub struct MetadataSerializer<'a, S>
-    where
-        S: Subscriber + tracing_subscriber::registry::LookupSpan<'a>,
+where
+    S: Subscriber + tracing_subscriber::registry::LookupSpan<'a>,
 {
     ctx: &'a Context<'a, S>,
     metadata: &'a Metadata<'a>,
@@ -173,12 +173,12 @@ pub struct MetadataSerializer<'a, S>
 }
 
 impl<'a, Sub> Serialize for MetadataSerializer<'a, Sub>
-    where
-        Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
+where
+    Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         let mut map_serializer = serializer.serialize_map(None)?;
 
@@ -230,16 +230,16 @@ impl<'a, Sub> Serialize for MetadataSerializer<'a, Sub>
 }
 
 struct SpanSerializer<'a, 'b, Span>(&'b SpanRef<'a, Span>)
-    where
-        Span: for<'lookup> LookupSpan<'lookup>;
+where
+    Span: for<'lookup> LookupSpan<'lookup>;
 
 impl<'a, 'b, Span> Serialize for SpanSerializer<'a, 'b, Span>
-    where
-        Span: for<'lookup> LookupSpan<'lookup>,
+where
+    Span: for<'lookup> LookupSpan<'lookup>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         let mut serializer = serializer.serialize_map(None)?;
 
@@ -259,16 +259,16 @@ impl<'a, 'b, Span> Serialize for SpanSerializer<'a, 'b, Span>
 }
 
 struct SpanListSerializer<'a, 'b, S>(&'b Context<'a, S>)
-    where
-        S: Subscriber + for<'lookup> LookupSpan<'lookup>;
+where
+    S: Subscriber + for<'lookup> LookupSpan<'lookup>;
 
 impl<'a, 'b, Sub> Serialize for SpanListSerializer<'a, 'b, Sub>
-    where
-        Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
+where
+    Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
+    where
+        S: Serializer,
     {
         let mut serializer = serializer.serialize_seq(None)?;
 
