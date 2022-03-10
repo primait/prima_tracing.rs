@@ -1,15 +1,15 @@
-use serde::Serialize;
 use std::io::Stdout;
 use std::io::Write;
+
+use serde::ser::{SerializeMap, Serializer};
+use serde::Serialize;
 use tracing::{Event, Metadata, Subscriber};
 use tracing_subscriber::{
     fmt::MakeWriter,
+    Layer,
     layer::Context,
     registry::{LookupSpan, SpanRef},
-    Layer,
 };
-
-use serde::ser::{SerializeMap, Serializer};
 
 use crate::json::storage::PrimaJsonVisitor;
 use crate::subscriber::{ContextInfo, EventFormatter};
@@ -67,8 +67,8 @@ impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'w
         event: &Event<'_>,
         ctx: Context<'_, S>,
     ) -> Result<Vec<u8>, std::io::Error>
-    where
-        S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
+        where
+            S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
     {
         self.formatter.format_event(
             event,
@@ -82,10 +82,10 @@ impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'w
 }
 
 impl<S, W, F: 'static> Layer<S> for PrimaFormattingLayer<'static, W, F>
-where
-    S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
-    W: MakeWriter<'static>,
-    F: EventFormatter,
+    where
+        S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
+        W: MakeWriter<'static>,
+        F: EventFormatter,
 {
     fn on_event(&self, event: &Event<'_>, ctx: Context<'_, S>) {
         if let Ok(serialized) = self.format_event(event, ctx) {
@@ -103,8 +103,8 @@ impl EventFormatter for DefaultEventFormatter {
         ctx: Context<'_, S>,
         info: ContextInfo<'_>,
     ) -> Result<Vec<u8>, std::io::Error>
-    where
-        S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
+        where
+            S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
     {
         let metadata = event.metadata();
         let mut buffer = Vec::new();
@@ -138,33 +138,22 @@ impl EventFormatter for DefaultEventFormatter {
         // https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/
         #[cfg(feature = "prima-logger-datadog")]
         {
-            use opentelemetry::trace::{SpanBuilder, TraceContextExt};
+            use opentelemetry::trace::TraceContextExt;
             use std::collections::HashMap;
 
-            if let Some(current_span) = ctx.current_span().id().and_then(|id| ctx.span(id)) {
-                let ext = current_span.extensions();
+            let current_ctx = opentelemetry::Context::current();
+            let current_span = current_ctx.span();
+            let span_ctx = current_span.span_context();
 
-                if let Some(builder) = ext.get::<SpanBuilder>() {
-                    let parent_span = builder.parent_context.span();
-                    let parent_span_ctx = parent_span.span_context();
+            // Datadog trace IDs need to be 64 bits long
+            let trace_id = u128::from_be_bytes(span_ctx.trace_id().to_bytes()) as u64;
+            let span_id = u64::from_be_bytes(span_ctx.span_id().to_bytes());
 
-                    let trace_id = builder
-                        .trace_id
-                        .unwrap_or_else(|| parent_span_ctx.trace_id());
+            let mut dd = HashMap::new();
+            dd.insert("trace_id", trace_id);
+            dd.insert("span_id", span_id);
 
-                    let span_id = builder.span_id.unwrap_or_else(|| parent_span_ctx.span_id());
-
-                    // Datadog trace IDs need to be 64 bits long
-                    let trace_id = trace_id.to_u128() as u64;
-                    let span_id = span_id.to_u64();
-
-                    let mut dd = HashMap::new();
-                    dd.insert("trace_id", trace_id);
-                    dd.insert("span_id", span_id);
-
-                    map_serializer.serialize_entry("dd", &dd)?;
-                }
-            }
+            map_serializer.serialize_entry("dd", &dd)?;
         }
 
         map_serializer.end()?;
@@ -174,8 +163,8 @@ impl EventFormatter for DefaultEventFormatter {
 }
 
 pub struct MetadataSerializer<'a, S>
-where
-    S: Subscriber + tracing_subscriber::registry::LookupSpan<'a>,
+    where
+        S: Subscriber + tracing_subscriber::registry::LookupSpan<'a>,
 {
     ctx: &'a Context<'a, S>,
     metadata: &'a Metadata<'a>,
@@ -184,12 +173,12 @@ where
 }
 
 impl<'a, Sub> Serialize for MetadataSerializer<'a, Sub>
-where
-    Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
+    where
+        Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         let mut map_serializer = serializer.serialize_map(None)?;
 
@@ -241,16 +230,16 @@ where
 }
 
 struct SpanSerializer<'a, 'b, Span>(&'b SpanRef<'a, Span>)
-where
-    Span: for<'lookup> LookupSpan<'lookup>;
+    where
+        Span: for<'lookup> LookupSpan<'lookup>;
 
 impl<'a, 'b, Span> Serialize for SpanSerializer<'a, 'b, Span>
-where
-    Span: for<'lookup> LookupSpan<'lookup>,
+    where
+        Span: for<'lookup> LookupSpan<'lookup>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         let mut serializer = serializer.serialize_map(None)?;
 
@@ -270,16 +259,16 @@ where
 }
 
 struct SpanListSerializer<'a, 'b, S>(&'b Context<'a, S>)
-where
-    S: Subscriber + for<'lookup> LookupSpan<'lookup>;
+    where
+        S: Subscriber + for<'lookup> LookupSpan<'lookup>;
 
 impl<'a, 'b, Sub> Serialize for SpanListSerializer<'a, 'b, Sub>
-where
-    Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
+    where
+        Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         let mut serializer = serializer.serialize_seq(None)?;
 

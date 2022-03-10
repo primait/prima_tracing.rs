@@ -1,10 +1,10 @@
 [package]
 name = "prima-tracing"
-version = "0.2.0"
+version = "0.3.0"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 authors = ["Enrico Risa <enrico.risa@prima.it>"]
-edition = "2018"
+edition = "2021"
 description = "Prima.it opentelemetry standard library"
 repository = "https://github.com/primait/prima_tracing.rs"
 

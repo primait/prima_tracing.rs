@@ -41,18 +41,15 @@ where
     fn on_new_span(&self, _attrs: &span::Attributes<'_>, id: &span::Id, ctx: Context<'_, S>) {
         let span = ctx.span(id).expect("Span not found, this is a bug");
         let mut extensions = span.extensions_mut();
-        match (extensions.get_mut::<SpanBuilder>(), &self.version) {
-            (Some(builder), Some(version)) => {
-                let root_version = KeyValue::new("version", version.clone());
-                let service_version = KeyValue::new("service.version", version.clone());
-                if let Some(ref mut attributes) = builder.attributes {
-                    attributes.push(root_version);
-                    attributes.push(service_version);
-                } else {
-                    builder.attributes = Some(vec![root_version, service_version]);
-                }
+        if let (Some(builder), Some(version)) = (extensions.get_mut::<SpanBuilder>(), &self.version) {
+            let root_version = KeyValue::new("version", version.clone());
+            let service_version = KeyValue::new("service.version", version.clone());
+            if let Some(ref mut attributes) = builder.attributes {
+                attributes.push(root_version);
+                attributes.push(service_version);
+            } else {
+                builder.attributes = Some(vec![root_version, service_version]);
             }
-            _ => {}
         }
     }
 }
