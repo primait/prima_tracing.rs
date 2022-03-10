@@ -168,12 +168,12 @@ cargo run --features=prima-logger-json --example custom_formatter
 
 ```sh
 export RUST_LOG=info
-cargo run --features=prima-logger-json --example custom_subscriber
+cargo run --features=prima-logger-json --example custom-subscriber
 ```
 
 ### Custom subscriber with custom JSON output
 
 ```sh
 export RUST_LOG=info
-cargo run --features=prima-logger-json --example custom_json_subscriber
+cargo run --features=prima-logger-json --example custom-json-subscriber
 ```

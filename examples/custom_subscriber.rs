@@ -26,7 +26,7 @@ async fn main() -> std::io::Result<()> {
 }
 
 #[tracing::instrument]
-fn check() -> HttpResponse {
+async fn check() -> HttpResponse {
     tracing::info!("Checking heath status");
     HttpResponse::Ok()
         .content_type("application/json")
