@@ -17,6 +17,17 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
         .as_ref()
         .expect("Tracing config should be provided when the feature `prima-tracing` is enabled");
 
+    let runtime = {
+        #[cfg(feature = "rt-tokio-current-thread")]
+        {
+            opentelemetry::runtime::TokioCurrentThread
+        }
+        #[cfg(not(feature = "rt-tokio-current-thread"))]
+        {
+            opentelemetry::runtime::Tokio
+        }
+    };
+
     opentelemetry_zipkin::new_pipeline()
         .with_collector_endpoint(telemetry.collector_url.as_str())
         .with_service_name(telemetry.service_name.as_str())
@@ -26,7 +37,7 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
                 config.env.clone(),
             )])),
         )
-        .install_batch(opentelemetry::runtime::Tokio)
+        .install_batch(runtime)
         .expect("Failed to create the zipkin pipeline")
 }
 
