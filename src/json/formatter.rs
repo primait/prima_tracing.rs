@@ -116,6 +116,7 @@ impl EventFormatter for DefaultEventFormatter {
             "level",
             metadata.level().to_string().to_lowercase().as_str(),
         )?;
+        map_serializer.serialize_entry("environment", info.environment())?;
         map_serializer.serialize_entry("type", info.app_name())?;
 
         let mut visitor = PrimaJsonVisitor::default();
