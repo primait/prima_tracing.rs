@@ -6,6 +6,7 @@ use tracing::{
 };
 use tracing_subscriber::{layer::Context, Layer};
 
+#[derive(Default)]
 pub struct PrimaJsonVisitor<'a> {
     fields: HashMap<&'a str, serde_json::Value>,
 }
@@ -60,36 +61,30 @@ impl<'a> PrimaJsonVisitor<'a> {
         self.fields.get(field).and_then(T::from_value)
     }
 }
-impl<'a> Default for PrimaJsonVisitor<'a> {
-    fn default() -> Self {
-        PrimaJsonVisitor {
-            fields: HashMap::new(),
-        }
-    }
-}
+
 impl<'a> Visit for PrimaJsonVisitor<'a> {
     fn record_i64(&mut self, field: &Field, value: i64) {
         self.fields
-            .insert(&field.name(), serde_json::Value::from(value));
+            .insert(field.name(), serde_json::Value::from(value));
     }
 
     fn record_u64(&mut self, field: &Field, value: u64) {
         self.fields
-            .insert(&field.name(), serde_json::Value::from(value));
+            .insert(field.name(), serde_json::Value::from(value));
     }
 
     fn record_bool(&mut self, field: &Field, value: bool) {
         self.fields
-            .insert(&field.name(), serde_json::Value::from(value));
+            .insert(field.name(), serde_json::Value::from(value));
     }
 
     fn record_str(&mut self, field: &Field, value: &str) {
         self.fields
-            .insert(&field.name(), serde_json::Value::from(value));
+            .insert(field.name(), serde_json::Value::from(value));
     }
     fn record_debug(&mut self, field: &tracing::field::Field, value: &dyn std::fmt::Debug) {
         self.fields.insert(
-            &field.name(),
+            field.name(),
             serde_json::Value::from(format!("{:?}", value)),
         );
     }

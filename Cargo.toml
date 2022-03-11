@@ -1,10 +1,10 @@
 [package]
 name = "prima-tracing"
-version = "0.2.0"
+version = "0.3.0"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 authors = ["Enrico Risa <enrico.risa@prima.it>"]
-edition = "2018"
+edition = "2021"
 description = "Prima.it opentelemetry standard library"
 repository = "https://github.com/primait/prima_tracing.rs"
 
@@ -13,7 +13,7 @@ default = ["prima-logger"]
 prima-logger = ["tracing-log"]
 prima-telemetry = ["tracing-opentelemetry", "opentelemetry", "opentelemetry-zipkin"]
 prima-logger-json = ["prima-logger"]
-prima-logger-datadog = ["prima-logger-json", "opentelemetry"]
+prima-logger-datadog = ["prima-logger-json", "opentelemetry", "tracing-opentelemetry"]
 
 [[example]]
 name = "custom-json-subscriber"
@@ -27,10 +27,10 @@ required-features = ["prima-logger-json"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-opentelemetry = { version = "0.16", features = ["rt-tokio"], optional = true }
-opentelemetry-zipkin = { version = "0.14", features = ["reqwest-client"], default-features = false, optional = true }
+opentelemetry = { version = "0.17", features = ["rt-tokio"], optional = true }
+opentelemetry-zipkin = { version = "0.15", features = ["reqwest-client"], default-features = false, optional = true }
 tracing = { version = "0.1", features = ["max_level_debug", "release_max_level_info"] }
-tracing-opentelemetry = { version = "0.16", optional = true }
+tracing-opentelemetry = { version = "0.17", optional = true }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 tracing-log = { version = "0.1", optional = true }
 
@@ -45,6 +45,7 @@ chrono = { version = "^0.4", features = ["serde"] }
 uuid = { version = "^0.8", features = ["serde", "v4"] }
 
 [dev-dependencies]
-actix-web = "4.0.0-beta.13"
-tracing-actix-web = { version = "0.5.0-beta.1", features = ["opentelemetry_0_16"] }
-prima_bridge = "0.8"
+actix-web = "4.0.1"
+tracing-actix-web = { version = "0.5.1", features = ["opentelemetry_0_17"] }
+prima_bridge = "0.11"
+tokio = { version = "1.17", features = ["rt", "macros"] }

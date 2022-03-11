@@ -155,8 +155,12 @@ Check health of ping service (which calls pong service)
 curl http://localhost:8081/check
 ```
 
-Open the browser at `http://localhost:16686` to inspect the traced request
+Open the browser at <http://localhost:16686> to inspect the traced request
 
+#### OpenTelemetry + JSON logger with Datadog correlation IDs
+```sh
+ RUST_LOG=info cargo run --features=prima-logger-datadog,prima-telemetry --example datadog_json_logger
+```
 ### Custom formatter
 
 ```sh
@@ -168,12 +172,12 @@ cargo run --features=prima-logger-json --example custom_formatter
 
 ```sh
 export RUST_LOG=info
-cargo run --features=prima-logger-json --example custom_subscriber
+cargo run --features=prima-logger-json --example custom-subscriber
 ```
 
 ### Custom subscriber with custom JSON output
 
 ```sh
 export RUST_LOG=info
-cargo run --features=prima-logger-json --example custom_json_subscriber
+cargo run --features=prima-logger-json --example custom-json-subscriber
 ```

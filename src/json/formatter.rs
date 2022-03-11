@@ -1,6 +1,8 @@
-use serde::Serialize;
 use std::io::Stdout;
 use std::io::Write;
+
+use serde::ser::{SerializeMap, Serializer};
+use serde::Serialize;
 use tracing::{Event, Metadata, Subscriber};
 use tracing_subscriber::{
     fmt::MakeWriter,
@@ -8,8 +10,6 @@ use tracing_subscriber::{
     registry::{LookupSpan, SpanRef},
     Layer,
 };
-
-use serde::ser::{SerializeMap, Serializer};
 
 use crate::json::storage::PrimaJsonVisitor;
 use crate::subscriber::{ContextInfo, EventFormatter};
@@ -138,25 +138,24 @@ impl EventFormatter for DefaultEventFormatter {
         // https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/
         #[cfg(feature = "prima-logger-datadog")]
         {
-            use opentelemetry::trace::{SpanBuilder, TraceContextExt};
+            use opentelemetry::trace::TraceContextExt;
             use std::collections::HashMap;
+            use tracing_opentelemetry::OtelData;
 
             if let Some(current_span) = ctx.current_span().id().and_then(|id| ctx.span(id)) {
                 let ext = current_span.extensions();
+                if let Some(otel_data) = ext.get::<OtelData>() {
+                    let builder = &otel_data.builder;
 
-                if let Some(builder) = ext.get::<SpanBuilder>() {
-                    let parent_span = builder.parent_context.span();
+                    let parent_span = &otel_data.parent_cx.span();
                     let parent_span_ctx = parent_span.span_context();
 
-                    let trace_id = builder
-                        .trace_id
-                        .unwrap_or_else(|| parent_span_ctx.trace_id());
+                    let span_id = builder.span_id.unwrap_or(parent_span_ctx.span_id());
+                    let trace_id = builder.trace_id.unwrap_or(parent_span_ctx.trace_id());
 
-                    let span_id = builder.span_id.unwrap_or_else(|| parent_span_ctx.span_id());
-
-                    // Datadog trace IDs need to be 64 bits long
-                    let trace_id = trace_id.to_u128() as u64;
-                    let span_id = span_id.to_u64();
+                    // Datadog trace and span IDs need to be 64-bit unsigned integers
+                    let trace_id = u128::from_be_bytes(trace_id.to_bytes()) as u64;
+                    let span_id = u64::from_be_bytes(span_id.to_bytes());
 
                     let mut dd = HashMap::new();
                     dd.insert("trace_id", trace_id);

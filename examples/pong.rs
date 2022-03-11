@@ -1,4 +1,4 @@
-use actix_web::{middleware::Logger, web, App, HttpResponse, HttpServer};
+use actix_web::{middleware::Logger, web, App, HttpResponse, HttpServer, Responder};
 use prima_tracing::{builder, configure_subscriber, init_subscriber};
 use tracing_actix_web::TracingLogger;
 // RUN docker run -d -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 -p6831:6831/udp -p6832:6832/udp -p16686:16686 -p 9411:9411  jaegertracing/all-in-one:latest
@@ -29,7 +29,7 @@ async fn main() -> std::io::Result<()> {
 }
 
 #[tracing::instrument]
-fn check() -> HttpResponse {
+async fn check() -> impl Responder {
     tracing::info!("Checking heath status");
     HttpResponse::Ok()
         .content_type("application/json")
