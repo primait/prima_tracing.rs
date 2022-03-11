@@ -1,4 +1,3 @@
-use opentelemetry::trace::SpanBuilder;
 use opentelemetry::{
     sdk::{
         trace::{self, Tracer},
@@ -7,6 +6,7 @@ use opentelemetry::{
     KeyValue,
 };
 use tracing::{span, Subscriber};
+use tracing_opentelemetry::OtelData;
 use tracing_subscriber::{layer::Context, Layer};
 
 use crate::SubscriberConfig;
@@ -41,8 +41,10 @@ where
     fn on_new_span(&self, _attrs: &span::Attributes<'_>, id: &span::Id, ctx: Context<'_, S>) {
         let span = ctx.span(id).expect("Span not found, this is a bug");
         let mut extensions = span.extensions_mut();
-        if let (Some(builder), Some(version)) = (extensions.get_mut::<SpanBuilder>(), &self.version)
+
+        if let (Some(otel_data), Some(version)) = (extensions.get_mut::<OtelData>(), &self.version)
         {
+            let builder = &mut otel_data.builder;
             let root_version = KeyValue::new("version", version.clone());
             let service_version = KeyValue::new("service.version", version.clone());
             if let Some(ref mut attributes) = builder.attributes {
