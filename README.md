@@ -9,17 +9,21 @@
 
 ## Installation
 
-Install from GitHub
+Install from [crates.io](https://crates.io/crates/prima-tracing)
 
 ```toml
-prima-tracing = { git="https://github.com/primait/prima_tracing.rs", branch="master" }
+prima-tracing = "0.3.1"
 ```
 
 ## Cargo features
 
 - `prima-logger-json` use JSON as output format
-- `prima-logger-datadog` extends `prima-logger-json` output with [trace and span information](https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/) allowing Datadog to connect logs and traces
+- `prima-logger-datadog` extends `prima-logger-json` output
+  with [trace and span information](https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/) allowing
+  Datadog to connect logs and traces
 - `prima-telemetry` integrate opentelemetry with `opentelemetry-zipkin`
+- `rt-tokio-current-thread`  uses opentelemetry runtime implementation, which works with Tokio’s current thread runtime(
+  ex. `actix_web::main`). Without this feature the default uses Tokio’s multi thread runtime.
 
 ## Example
 
@@ -158,9 +162,11 @@ curl http://localhost:8081/check
 Open the browser at <http://localhost:16686> to inspect the traced request
 
 #### OpenTelemetry + JSON logger with Datadog correlation IDs
+
 ```sh
  RUST_LOG=info cargo run --features=prima-logger-datadog,prima-telemetry --example datadog_json_logger
 ```
+
 ### Custom formatter
 
 ```sh
