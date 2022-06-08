@@ -10,10 +10,7 @@ async fn main() {
             .with_version("1.0".to_string())
             // We need a tracer if we want trace and span IDs to be created and propagated, otherwise logs won't contain these correlation IDs
             // You can also setup custom tracer and custom subscriber if you don't wanna use the `prima-telemetry` feature
-            .with_telemetry(
-                "http://localhost:9411/api/v2/spans".to_string(),
-                service_name,
-            )
+            .with_telemetry("http://localhost:55681/v1/traces".to_string(), service_name)
             .build(),
     );
 
