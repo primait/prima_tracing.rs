@@ -16,7 +16,7 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
     let telemetry = config
         .telemetry
         .as_ref()
-        .expect("Tracing config should be provided when the feature `prima-tracing` is enabled");
+        .expect("Telemetry config must be provided when the `prima-telemetry` feature is enabled.");
 
     let runtime = {
         #[cfg(feature = "rt-tokio-current-thread")]
@@ -47,7 +47,7 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
                 )])),
         )
         .install_batch(runtime)
-        .expect("Failed to create the zipkin pipeline")
+        .expect("Failed to configure the OpenTelemetry tracer")
 }
 
 pub struct VersionLayer {

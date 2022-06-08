@@ -15,7 +15,7 @@ impl Tracing {}
 /// The configuration is behind feature flags
 /// - `default`: uses the [`tracing_subscriber::fmt::layer()`]
 /// - `prima-logger-json`: activate the json logger
-/// - `prima-telemetry`: activate the spans export via `opentelemetry-zipkin`
+/// - `prima-telemetry`: activate spans export via `opentelemetry-otlp`
 pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
     _config: SubscriberConfig<T>,
 ) -> impl Subscriber + Send + Sync {
