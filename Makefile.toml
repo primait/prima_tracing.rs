@@ -15,7 +15,7 @@ args = ["test", "${@}"]
 
 [tasks.clippy-ci]
 command = "cargo"
-args = ["clippy", "--", "-D", "warnings"]
+args = ["clippy", "--all-features", "--", "-D", "warnings"]
 
 [tasks.cargo-prune]
 description = "Run cargo prune"

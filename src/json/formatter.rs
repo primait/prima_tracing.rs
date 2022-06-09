@@ -151,8 +151,10 @@ impl EventFormatter for DefaultEventFormatter {
                     let parent_span = &otel_data.parent_cx.span();
                     let parent_span_ctx = parent_span.span_context();
 
-                    let span_id = builder.span_id.unwrap_or(parent_span_ctx.span_id());
-                    let trace_id = builder.trace_id.unwrap_or(parent_span_ctx.trace_id());
+                    let span_id = builder.span_id.unwrap_or_else(|| parent_span_ctx.span_id());
+                    let trace_id = builder
+                        .trace_id
+                        .unwrap_or_else(|| parent_span_ctx.trace_id());
 
                     // Datadog trace and span IDs need to be 64-bit unsigned integers
                     let trace_id = u128::from_be_bytes(trace_id.to_bytes()) as u64;

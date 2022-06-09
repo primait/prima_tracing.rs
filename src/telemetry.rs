@@ -5,6 +5,7 @@ use opentelemetry::{
     },
     KeyValue,
 };
+use opentelemetry_otlp::WithExportConfig;
 use tracing::{span, Subscriber};
 use tracing_opentelemetry::OtelData;
 use tracing_subscriber::{layer::Context, Layer};
@@ -15,7 +16,7 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
     let telemetry = config
         .telemetry
         .as_ref()
-        .expect("Tracing config should be provided when the feature `prima-tracing` is enabled");
+        .expect("Telemetry config must be provided when the `prima-telemetry` feature is enabled.");
 
     let runtime = {
         #[cfg(feature = "rt-tokio-current-thread")]
@@ -28,17 +29,25 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
         }
     };
 
-    opentelemetry_zipkin::new_pipeline()
-        .with_collector_endpoint(telemetry.collector_url.as_str())
-        .with_service_name(telemetry.service_name.as_str())
+    let otlp_exporter = opentelemetry_otlp::new_exporter()
+        .http()
+        .with_endpoint(telemetry.collector_url.as_str());
+    opentelemetry_otlp::new_pipeline()
+        .tracing()
+        .with_exporter(otlp_exporter)
         .with_trace_config(
-            trace::config().with_resource(Resource::new(vec![KeyValue::new(
-                "environment",
-                config.env.clone(),
-            )])),
+            trace::config()
+                .with_resource(Resource::new(vec![KeyValue::new(
+                    "environment",
+                    config.env.clone(),
+                )]))
+                .with_resource(Resource::new(vec![KeyValue::new(
+                    "service.name",
+                    telemetry.service_name.clone(),
+                )])),
         )
         .install_batch(runtime)
-        .expect("Failed to create the zipkin pipeline")
+        .expect("Failed to configure the OpenTelemetry tracer")
 }
 
 pub struct VersionLayer {
