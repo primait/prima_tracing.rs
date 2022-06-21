@@ -15,7 +15,7 @@ Install from [crates.io](https://crates.io/crates/prima-tracing)
 prima-tracing = "0.4.0"
 ```
 
-## Cargo features
+### Cargo features
 
 - `prima-logger-json` outputs traces to standard output in JSON format
 - `prima-logger-datadog` extends `prima-logger-json` output
@@ -24,6 +24,23 @@ prima-tracing = "0.4.0"
 - `prima-telemetry` exports OpenTelemetry traces using the [opentelemetry-otlp](https://crates.io/crates/opentelemetry-otlp) exporter
 - `rt-tokio-current-thread` configures the OpenTelemetry tracer to use Tokio’s current thread runtime
   (e.g. `actix_web::main`). Without this feature, the Tokio multi-thread runtime is used by default.
+
+## How to collect OpenTelemetry traces locally
+
+If you are using the `prima-telemetry` feature in your project, the recommended way to view exported traces on your machine is to use the [Jaeger all-in-one Docker image](https://hub.docker.com/r/jaegertracing/opentelemetry-all-in-one/).
+
+You need to add the following service to your Docker Compose setup (your main container should depend on it):
+```yaml
+  jaeger:
+    image: jaegertracing/all-in-one:1.35
+    ports:
+      - 16686:16686
+      - 55681:55681
+    environment:
+      COLLECTOR_OTLP_ENABLED: true
+      COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
+```
+You can then visit the [Jaeger web UI](http://localhost:16686/search) on your browser to search the traces.
 
 ## Usage examples
 
@@ -137,7 +154,7 @@ RUST_LOG=info cargo run --example simple
 Run [Jaeger](https://www.jaegertracing.io) locally
 
 ```sh
-docker run --rm -d -p 16686:16686 -p 55681:55681 jaegertracing/opentelemetry-all-in-one:latest
+docker run --rm -d -p 16686:16686 -p 55681:55681 -e COLLECTOR_OTLP_ENABLED=true -e COLLECTOR_OTLP_HTTP_HOST_PORT=55681 jaegertracing/all-in-one:1.35
 ```
 
 Run pong service:
