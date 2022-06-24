@@ -24,7 +24,9 @@ pub mod json;
 #[cfg(feature = "prima-telemetry")]
 pub mod telemetry;
 
-pub use crate::config::{builder, Environment, SubscriberConfig, SubscriberConfigBuilder};
+pub use crate::config::{
+    builder, Environment, EnvironmentParseError, SubscriberConfig, SubscriberConfigBuilder,
+};
 pub use crate::subscriber::{
     configure_subscriber, init_subscriber, ContextInfo, EventFormatter, Tracing, Uninstall,
 };
