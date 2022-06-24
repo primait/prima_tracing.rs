@@ -1,5 +1,8 @@
 #[cfg(feature = "prima-logger-json")]
 use crate::json::formatter::DefaultEventFormatter;
+use std::error::Error;
+use std::fmt::{Debug, Display, Formatter};
+use std::str::FromStr;
 
 #[cfg(not(feature = "prima-logger-json"))]
 use crate::subscriber::NopEventFormatter;
@@ -9,7 +12,7 @@ use crate::subscriber::NopEventFormatter;
 /// - Telemetry config
 /// - JSON formatter
 pub struct SubscriberConfig<T> {
-    pub env: String,
+    pub env: Environment,
     pub telemetry: Option<TelemetryConfig>,
     pub service: String,
     pub version: Option<String>,
@@ -23,7 +26,7 @@ impl<T> SubscriberConfig<T> {
         json_formatter: T,
     ) -> SubscriberConfig<T> {
         SubscriberConfig {
-            env: String::from("dev"),
+            env: Environment::Dev,
             telemetry: None,
             service,
             version,
@@ -56,6 +59,54 @@ pub struct TelemetryConfig {
     pub service_name: String,
 }
 
+#[derive(PartialEq, Debug, Clone, Copy)]
+pub enum Environment {
+    Dev,
+    Qa,
+    Staging,
+    Production,
+}
+
+impl FromStr for Environment {
+    type Err = EnvironmentParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "dev" => Ok(Self::Dev),
+            "qa" => Ok(Self::Qa),
+            "staging" => Ok(Self::Staging),
+            "production" => Ok(Self::Production),
+            _ => Err(EnvironmentParseError(s.to_string())),
+        }
+    }
+}
+
+impl Display for Environment {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let str = match self {
+            Self::Dev => "dev",
+            Self::Qa => "qa",
+            Self::Staging => "staging",
+            Self::Production => "production",
+        };
+        f.write_str(str)
+    }
+}
+
+#[derive(Debug)]
+pub struct EnvironmentParseError(String);
+
+impl Display for EnvironmentParseError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!(
+            "{} is not a valid environment string. Allowed values are 'dev', 'qa', 'staging' and 'production'.",
+            &self.0
+        ))
+    }
+}
+
+impl Error for EnvironmentParseError {}
+
 pub struct SubscriberConfigBuilder<T>(SubscriberConfig<T>);
 
 impl<T> SubscriberConfigBuilder<T> {
@@ -63,11 +114,13 @@ impl<T> SubscriberConfigBuilder<T> {
     pub fn build(self) -> SubscriberConfig<T> {
         self.0
     }
-    /// Set the environment. By `dev` default
-    pub fn with_env(mut self, env: String) -> Self {
+
+    /// Set the environment. If you do not specify it, it is set by default to `Environment::Dev`
+    pub fn with_env(mut self, env: Environment) -> Self {
         self.0.env = env;
         self
     }
+
     /// Set the service version.
     pub fn with_version(mut self, version: String) -> Self {
         self.0.version = Some(version);
