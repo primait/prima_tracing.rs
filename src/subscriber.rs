@@ -42,7 +42,7 @@ pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
             .with(PrimaJsonStorage::default())
             .with(PrimaFormattingLayer::new(
                 _config.service.clone(),
-                _config.env.clone(),
+                _config.env.to_string(),
                 &std::io::stdout,
                 _config.json_formatter,
             ))

@@ -39,7 +39,7 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
             trace::config()
                 .with_resource(Resource::new(vec![KeyValue::new(
                     "environment",
-                    config.env.clone(),
+                    config.env.to_string(),
                 )]))
                 .with_resource(Resource::new(vec![KeyValue::new(
                     "service.name",

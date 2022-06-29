@@ -2,7 +2,6 @@ use actix_web::{middleware::Logger, web, App, HttpResponse, HttpServer};
 use chrono::{DateTime, Utc};
 use prima_tracing::{json, ContextInfo, EventFormatter};
 use serde::Serialize;
-use serde_json;
 use tracing_actix_web::TracingLogger;
 use tracing_log::LogTracer;
 use tracing_subscriber::{layer::SubscriberExt, EnvFilter};

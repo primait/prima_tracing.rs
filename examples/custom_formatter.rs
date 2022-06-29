@@ -1,16 +1,17 @@
 use actix_web::{middleware::Logger, web, App, HttpResponse, HttpServer};
 use chrono::{DateTime, Utc};
-use prima_tracing::{builder, configure_subscriber, init_subscriber, ContextInfo, EventFormatter};
+use prima_tracing::{
+    builder, configure_subscriber, init_subscriber, ContextInfo, Environment, EventFormatter,
+};
 use serde::Serialize;
 
-use serde_json;
 use tracing_actix_web::TracingLogger;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let subscriber = configure_subscriber(
         builder("custom")
-            .with_env("dev".to_string())
+            .with_env(Environment::Dev)
             .with_custom_json_formatter(MyCustomFormatter {})
             .build(),
     );

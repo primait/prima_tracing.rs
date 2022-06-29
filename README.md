@@ -47,11 +47,11 @@ You can then visit the [Jaeger web UI](http://localhost:16686/search) on your br
 ### Simple
 
 ```rust
-use prima_tracing::{builder, configure_subscriber, init_subscriber};
+use prima_tracing::{builder, configure_subscriber, init_subscriber, Environment};
 use tracing::{info, info_span};
 
 fn main() -> std::io::Result<()> {
-    let subscriber = configure_subscriber(builder("simple").with_env("dev".to_string()).build());
+    let subscriber = configure_subscriber(builder("simple").with_env(Environment::Dev).build());
 
     let _guard = init_subscriber(subscriber);
 
@@ -68,11 +68,11 @@ fn main() -> std::io::Result<()> {
 It works like the simple example, but activating the `prima-json-logger` automatically uses the JSON format as output
 
 ```rust
-use prima_tracing::{builder, configure_subscriber, init_subscriber};
+use prima_tracing::{builder, configure_subscriber, init_subscriber, Environment};
 use tracing::{info, info_span};
 
 fn main() -> std::io::Result<()> {
-    let subscriber = configure_subscriber(builder("json").with_env("dev".to_string()).build());
+    let subscriber = configure_subscriber(builder("json").with_env(Environment::Dev).build());
 
     let _guard = init_subscriber(subscriber);
 
@@ -90,13 +90,13 @@ fn main() -> std::io::Result<()> {
 You need to have an OpenTelemetry collector (such as Jaeger) running locally.
 
 ```rust
-use prima_tracing::{builder, configure_subscriber, init_subscriber};
+use prima_tracing::{builder, configure_subscriber, init_subscriber, Environment};
 use tracing::{info, info_span};
 
 fn main() -> std::io::Result<()> {
     let subscriber = configure_subscriber(
         builder("myapp")
-            .with_env("dev".to_string())
+            .with_env(Environment::Dev)
             .with_version("1.0".to_string())
             .with_telemetry(
                 "http://localhost:55681/v1/traces".to_string(),
