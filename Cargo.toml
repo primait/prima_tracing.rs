@@ -46,6 +46,6 @@ chrono = { version = "^0.4", default-features = false, features = ["serde", "clo
 
 [dev-dependencies]
 actix-web = "4.0.1"
-tracing-actix-web = { version = "0.5.1", features = ["opentelemetry_0_17"] }
+tracing-actix-web = { version = "0.6.0", features = ["opentelemetry_0_17"] }
 prima_bridge = "0.13"
 tokio = { version = "1.17", features = ["rt", "macros", "rt-multi-thread"] }
