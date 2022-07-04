@@ -56,7 +56,7 @@ pub fn init_subscriber(subscriber: impl Subscriber + Sync + Send) -> Uninstall {
     tracing::subscriber::set_global_default(subscriber).expect("Setting default subscriber failed");
 
     #[cfg(feature = "prima-telemetry")]
-    let _ = {
+    {
         use opentelemetry::{global, sdk::propagation::TraceContextPropagator};
         global::set_text_map_propagator(TraceContextPropagator::new());
     };
