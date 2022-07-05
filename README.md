@@ -12,7 +12,7 @@
 Install from [crates.io](https://crates.io/crates/prima-tracing)
 
 ```toml
-prima-tracing = "0.4.*"
+prima-tracing = "0.5.*"
 ```
 
 ### Cargo features
