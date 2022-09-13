@@ -29,7 +29,7 @@ required-features = ["prima-logger-json"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-opentelemetry = { version = "0.17", features = ["rt-tokio"], optional = true }
+opentelemetry = { version = "0.18", features = ["rt-tokio"], optional = true }
 opentelemetry-otlp = { version = "0.10", features = ["http-proto", "reqwest-client"], default-features = false, optional = true }
 tracing = { version = "0.1", features = ["max_level_debug", "release_max_level_info"] }
 tracing-opentelemetry = { version = "0.17", optional = true }
