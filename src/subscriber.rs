@@ -14,15 +14,15 @@ impl Tracing {}
 /// Configure a subscriber using [`SubscriberConfig`].
 /// The configuration is behind feature flags
 /// - `default`: uses the [`tracing_subscriber::fmt::layer()`]
-/// - `prima-logger-json`: activate the json logger
-/// - `prima-telemetry`: activate spans export via `opentelemetry-otlp`
+/// - `json-logger`: activate the json logger
+/// - `tracing`: activate spans export via `opentelemetry-otlp`
 pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
     _config: SubscriberConfig<T>,
 ) -> impl Subscriber + Send + Sync {
     let subscriber = tracing_subscriber::Registry::default();
     let subscriber = subscriber.with(EnvFilter::from_default_env());
 
-    #[cfg(feature = "prima-telemetry")]
+    #[cfg(feature = "tracing")]
     let subscriber = {
         let tracer = crate::telemetry::configure(&_config);
         subscriber
@@ -32,9 +32,9 @@ pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
             })
     };
 
-    #[cfg(not(feature = "prima-logger-json"))]
+    #[cfg(not(feature = "json-logger"))]
     let subscriber = subscriber.with(tracing_subscriber::fmt::layer());
-    #[cfg(feature = "prima-logger-json")]
+    #[cfg(feature = "json-logger")]
     let subscriber = {
         use crate::json::formatter::PrimaFormattingLayer;
         use crate::json::storage::PrimaJsonStorage;
@@ -55,14 +55,14 @@ pub fn init_subscriber(subscriber: impl Subscriber + Sync + Send) -> Uninstall {
     LogTracer::init().expect("Failed to set logger");
     tracing::subscriber::set_global_default(subscriber).expect("Setting default subscriber failed");
 
-    #[cfg(feature = "prima-telemetry")]
+    #[cfg(feature = "tracing")]
     {
         use opentelemetry::{global, sdk::propagation::TraceContextPropagator};
         global::set_text_map_propagator(TraceContextPropagator::new());
     };
     Uninstall
 }
-/// `EventFormatter` allows you to customise the format of [`tracing::Event`] if the `prima-json-logger` feature is active
+/// `EventFormatter` allows you to customise the format of [`tracing::Event`] if the `json-logger` feature is active
 pub trait EventFormatter {
     fn format_event<S>(
         &self,
@@ -78,7 +78,7 @@ pub struct Uninstall;
 
 impl Drop for Uninstall {
     fn drop(&mut self) {
-        #[cfg(feature = "prima-telemetry")]
+        #[cfg(feature = "tracing")]
         opentelemetry::global::shutdown_tracer_provider();
     }
 }

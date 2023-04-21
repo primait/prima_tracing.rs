@@ -5,6 +5,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Next]
 
+### Changed
+
+- Renamed feature flags
+  * prima-logger-datadog -> datadog
+  * prima-logger-json -> logger-json
+  * prima-telemetry -> tracing
+
+  Old feature names will continue to function as aliases to the new names
+
+### Removed
+
+- Removed the default `prima-logger` feature. This is a non-breaking change since the library already failed to compile without it.
+
 ## [0.5.0] - 2022-07-04
 
 ### Changed
