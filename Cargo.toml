@@ -19,6 +19,10 @@ json-logger = []
 datadog = ["json-logger", "opentelemetry", "tracing-opentelemetry"]
 tracing = ["tracing-opentelemetry", "opentelemetry", "opentelemetry-otlp"]
 
+# feature sets most likely used in given environment
+live = [ "json-logger", "datadog", "tracing" ]
+dev = [ "tracing" ]
+
 rt-tokio-current-thread = ["opentelemetry/rt-tokio-current-thread"]
 
 [[example]]

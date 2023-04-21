@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Next]
 
+### Added
+
+- `dev` and `live` feature sets
+
 ### Changed
 
 - Renamed feature flags

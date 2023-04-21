@@ -17,6 +17,11 @@ prima-tracing = "0.5"
 
 ### Cargo features
 
+For ease of use you can use the following feature sets:
+
+- `live` enables the feature you will most likely want in a production/staging environment
+- `dev` enables the features you will most likely want in a dev environment
+
 - `json-logger` outputs traces to standard output in JSON format
 - `datadog` extends `json-logger` output
   with [trace and span information](https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/) allowing
