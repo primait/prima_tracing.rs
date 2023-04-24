@@ -26,7 +26,7 @@ For ease of use you can use the following feature sets:
 - `datadog` extends `json-logger` output
   with [trace and span information](https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/) allowing
   Datadog to connect logs and traces
-- `tracing` exports [tracing](https://lib.rs/crates/tracing) spans and events using the [opentelemetry-otlp](https://crates.io/crates/opentelemetry-otlp) exporter
+- `traces` exports [tracing](https://lib.rs/crates/tracing) spans and events using the [opentelemetry-otlp](https://crates.io/crates/opentelemetry-otlp) exporter
 - `rt-tokio-current-thread` configures the OpenTelemetry tracer to use Tokio’s current thread runtime
   (e.g. `actix_web::main`). Without this feature, the Tokio multi-thread runtime is used by default.
 
@@ -165,13 +165,13 @@ docker run --rm -d -p 16686:16686 -p 55681:55681 -e COLLECTOR_OTLP_ENABLED=true 
 Run pong service:
 
 ```sh
-RUST_LOG=info cargo run --features=tracing --example pong
+RUST_LOG=info cargo run --features=traces --example pong
 ```
 
 Run ping service:
 
 ```sh
-RUST_LOG=info cargo run --features=tracing --example ping
+RUST_LOG=info cargo run --features=traces --example ping
 ```
 
 Check health of ping service (which calls pong service)
@@ -185,7 +185,7 @@ Open the browser at <http://localhost:16686> to inspect the traced request
 #### OpenTelemetry + JSON logger with Datadog correlation IDs
 
 ```sh
-RUST_LOG=info cargo run --features=datadog,tracing --example datadog_json_logger
+RUST_LOG=info cargo run --features=datadog,traces --example datadog_json_logger
 ```
 
 ### Custom formatter

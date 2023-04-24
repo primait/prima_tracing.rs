@@ -9,19 +9,19 @@ description = "Prima.it opentelemetry standard library"
 repository = "https://github.com/primait/prima_tracing.rs"
 
 [features]
-default = ["tracing"]
+default = ["traces"]
 # Legacy feature names kept for compatibility reasons
 prima-logger-datadog = ["datadog"]
 prima-logger-json = ["json-logger"]
-prima-telemetry = ["tracing"]
+prima-telemetry = ["traces"]
 
 json-logger = []
 datadog = ["json-logger", "opentelemetry", "tracing-opentelemetry"]
-tracing = ["tracing-opentelemetry", "opentelemetry", "opentelemetry-otlp"]
+traces = ["tracing-opentelemetry", "opentelemetry", "opentelemetry-otlp"]
 
 # feature sets most likely used in given environment
-live = [ "json-logger", "datadog", "tracing" ]
-dev = [ "tracing" ]
+live = [ "json-logger", "datadog", "traces" ]
+dev = [ "traces" ]
 
 rt-tokio-current-thread = ["opentelemetry/rt-tokio-current-thread"]
 

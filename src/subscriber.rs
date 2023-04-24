@@ -15,14 +15,14 @@ impl Tracing {}
 /// The configuration is behind feature flags
 /// - `default`: uses the [`tracing_subscriber::fmt::layer()`]
 /// - `json-logger`: activate the json logger
-/// - `tracing`: activate spans export via `opentelemetry-otlp`
+/// - `traces`: activate spans export via `opentelemetry-otlp`
 pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
     _config: SubscriberConfig<T>,
 ) -> impl Subscriber + Send + Sync {
     let subscriber = tracing_subscriber::Registry::default();
     let subscriber = subscriber.with(EnvFilter::from_default_env());
 
-    #[cfg(feature = "tracing")]
+    #[cfg(feature = "traces")]
     let subscriber = {
         let tracer = crate::telemetry::configure(&_config);
         subscriber
@@ -55,7 +55,7 @@ pub fn init_subscriber(subscriber: impl Subscriber + Sync + Send) -> Uninstall {
     LogTracer::init().expect("Failed to set logger");
     tracing::subscriber::set_global_default(subscriber).expect("Setting default subscriber failed");
 
-    #[cfg(feature = "tracing")]
+    #[cfg(feature = "traces")]
     {
         use opentelemetry::{global, sdk::propagation::TraceContextPropagator};
         global::set_text_map_propagator(TraceContextPropagator::new());
@@ -78,7 +78,7 @@ pub struct Uninstall;
 
 impl Drop for Uninstall {
     fn drop(&mut self) {
-        #[cfg(feature = "tracing")]
+        #[cfg(feature = "traces")]
         opentelemetry::global::shutdown_tracer_provider();
     }
 }

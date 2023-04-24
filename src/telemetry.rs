@@ -16,7 +16,7 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
     let telemetry = config
         .telemetry
         .as_ref()
-        .expect("Telemetry config must be provided when the `tracing` feature is enabled.");
+        .expect("Telemetry config must be provided when the `traces` feature is enabled.");
 
     let runtime = {
         #[cfg(feature = "rt-tokio-current-thread")]
