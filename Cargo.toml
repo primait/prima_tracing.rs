@@ -9,7 +9,7 @@ description = "Prima.it opentelemetry standard library"
 repository = "https://github.com/primait/prima_tracing.rs"
 
 [features]
-default = ["traces"]
+default = []
 # Legacy feature names kept for compatibility reasons
 prima-logger-datadog = ["datadog"]
 prima-logger-json = ["json-logger"]
