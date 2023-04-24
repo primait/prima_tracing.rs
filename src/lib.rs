@@ -19,7 +19,7 @@ mod config;
 
 mod subscriber;
 
-#[cfg(feature = "logger-json")]
+#[cfg(feature = "json-logger")]
 pub mod json;
 #[cfg(feature = "traces")]
 pub mod telemetry;

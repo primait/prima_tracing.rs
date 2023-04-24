@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Renamed feature flags
   * prima-logger-datadog -> datadog
-  * prima-logger-json -> logger-json
+  * prima-logger-json -> json-logger
   * prima-telemetry -> traces 
 
   Old feature names will continue to function as aliases to the new names
