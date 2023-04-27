@@ -12,6 +12,7 @@ use crate::subscriber::NopEventFormatter;
 /// - Telemetry config
 /// - JSON formatter
 pub struct SubscriberConfig<T> {
+    pub country: Option<Country>,
     pub env: Environment,
     pub telemetry: Option<TelemetryConfig>,
     pub service: String,
@@ -27,6 +28,7 @@ impl<T> SubscriberConfig<T> {
     ) -> SubscriberConfig<T> {
         SubscriberConfig {
             env: Environment::Dev,
+            country: None,
             telemetry: None,
             service,
             version,
@@ -57,6 +59,41 @@ pub fn builder(service: &str) -> SubscriberConfigBuilder<DefaultEventFormatter> 
 pub struct TelemetryConfig {
     pub collector_url: String,
     pub service_name: String,
+}
+
+/// All the possible countries in which the application can run.
+#[derive(PartialEq, Eq, Debug, Clone)]
+pub enum Country {
+    Common,
+    It,
+    Es,
+    Uk,
+}
+
+impl FromStr for Country {
+    type Err = CountryParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "common" => Ok(Self::Common),
+            "it" => Ok(Self::It),
+            "es" => Ok(Self::Es),
+            "uk" => Ok(Self::Uk),
+            _ => Err(CountryParseError(s.to_string())),
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct CountryParseError(String);
+
+impl Display for CountryParseError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!(
+            "{} is not a valid country string. Allowed strings are 'common', 'it', 'es' and 'uk'.",
+            &self.0
+        ))
+    }
 }
 
 /// All the possible environments in which the application can run.
@@ -116,6 +153,12 @@ impl<T> SubscriberConfigBuilder<T> {
         self.0
     }
 
+    /// Set the country in which the application is running.
+    pub fn with_country(mut self, country: Country) -> Self {
+        self.0.country = Some(country);
+        self
+    }
+
     /// Set the environment in which the application is running.
     /// If you do not specify it, it defaults to `Environment::Dev`.
     pub fn with_env(mut self, env: Environment) -> Self {
@@ -143,6 +186,7 @@ impl<T> SubscriberConfigBuilder<T> {
     pub fn with_custom_json_formatter<F>(self, formatter: F) -> SubscriberConfigBuilder<F> {
         SubscriberConfigBuilder(SubscriberConfig {
             json_formatter: formatter,
+            country: self.0.country,
             env: self.0.env,
             service: self.0.service,
             version: self.0.version,
