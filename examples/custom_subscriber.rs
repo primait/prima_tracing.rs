@@ -11,7 +11,7 @@ async fn main() -> std::io::Result<()> {
         .with(json::storage::layer())
         .with(json::formatter::layer(
             "test".to_owned(),
-            Some("common".to_owned()),
+            "common".to_owned(),
             "dev".to_owned(),
         ));
 

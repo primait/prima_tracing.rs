@@ -17,7 +17,7 @@ use crate::subscriber::{ContextInfo, EventFormatter};
 pub struct PrimaFormattingLayer<'writer, W: MakeWriter<'writer>, F: EventFormatter> {
     make_writer: &'writer W,
     app_name: String,
-    country: Option<String>,
+    country: String,
     environment: String,
     formatter: F,
 }
@@ -26,7 +26,7 @@ pub struct PrimaFormattingLayer<'writer, W: MakeWriter<'writer>, F: EventFormatt
 /// and [`std::io::Stdout`] as output
 pub fn layer<'writer>(
     app_name: String,
-    country: Option<String>,
+    country: String,
     environment: String,
 ) -> PrimaFormattingLayer<'writer, impl Fn() -> Stdout, DefaultEventFormatter> {
     PrimaFormattingLayer::new(
@@ -41,7 +41,7 @@ pub fn layer<'writer>(
 impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'writer, W, F> {
     pub(crate) fn new(
         app_name: String,
-        country: Option<String>,
+        country: String,
         environment: String,
         make_writer: &'writer W,
         formatter: F,
@@ -86,7 +86,7 @@ impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'w
             ctx,
             ContextInfo {
                 app_name: self.app_name.as_str(),
-                country: &self.country.as_deref(),
+                country: self.country.as_str(),
                 environment: self.environment.as_str(),
             },
         )
@@ -128,10 +128,10 @@ impl EventFormatter for DefaultEventFormatter {
             "level",
             metadata.level().to_string().to_lowercase().as_str(),
         )?;
-        if let Some(country) = info.country() {
-            map_serializer
-                .serialize_entry("country", format!("prima:country:{}", country).as_str())?;
-        }
+        map_serializer.serialize_entry(
+            "country",
+            format!("prima:country:{}", info.country()).as_str(),
+        )?;
         map_serializer.serialize_entry("environment", info.environment())?;
         map_serializer.serialize_entry("type", info.app_name())?;
 

@@ -12,12 +12,8 @@ async fn main() -> std::io::Result<()> {
         .with(EnvFilter::from_default_env())
         .with(json::storage::layer())
         .with(
-            json::formatter::layer(
-                "test".to_owned(),
-                Some("common".to_owned()),
-                "dev".to_owned(),
-            )
-            .with_formatter(MyCustomFormatter {}),
+            json::formatter::layer("test".to_owned(), "common".to_owned(), "dev".to_owned())
+                .with_formatter(MyCustomFormatter {}),
         );
 
     LogTracer::init().expect("Failed to set logger");
