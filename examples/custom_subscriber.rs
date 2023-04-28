@@ -9,7 +9,11 @@ async fn main() -> std::io::Result<()> {
     let subscriber = tracing_subscriber::Registry::default()
         .with(EnvFilter::from_default_env())
         .with(json::storage::layer())
-        .with(json::formatter::layer("test".to_owned(), "dev".to_owned()));
+        .with(json::formatter::layer(
+            "test".to_owned(),
+            Some("common".to_owned()),
+            "dev".to_owned(),
+        ));
 
     LogTracer::init().expect("Failed to set logger");
     tracing::subscriber::set_global_default(subscriber).expect("Setting default subscriber failed");

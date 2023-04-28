@@ -17,7 +17,7 @@ use crate::subscriber::{ContextInfo, EventFormatter};
 pub struct PrimaFormattingLayer<'writer, W: MakeWriter<'writer>, F: EventFormatter> {
     make_writer: &'writer W,
     app_name: String,
-    country: String,
+    country: Option<String>,
     environment: String,
     formatter: F,
 }
@@ -26,7 +26,7 @@ pub struct PrimaFormattingLayer<'writer, W: MakeWriter<'writer>, F: EventFormatt
 /// and [`std::io::Stdout`] as output
 pub fn layer<'writer>(
     app_name: String,
-    country: String,
+    country: Option<String>,
     environment: String,
 ) -> PrimaFormattingLayer<'writer, impl Fn() -> Stdout, DefaultEventFormatter> {
     PrimaFormattingLayer::new(
@@ -41,7 +41,7 @@ pub fn layer<'writer>(
 impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'writer, W, F> {
     pub(crate) fn new(
         app_name: String,
-        country: String,
+        country: Option<String>,
         environment: String,
         make_writer: &'writer W,
         formatter: F,

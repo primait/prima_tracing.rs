@@ -109,7 +109,7 @@ impl Display for CountryParseError {
 }
 
 /// All the possible environments in which the application can run.
-#[derive(PartialEq, Debug, Clone, Copy)]
+#[derive(Eq, PartialEq, Debug, Clone, Copy)]
 pub enum Environment {
     Dev,
     Qa,
