@@ -86,6 +86,7 @@ impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'w
             ctx,
             ContextInfo {
                 app_name: self.app_name.as_str(),
+                country: &self.country.as_deref(),
                 environment: self.environment.as_str(),
             },
         )
@@ -127,6 +128,10 @@ impl EventFormatter for DefaultEventFormatter {
             "level",
             metadata.level().to_string().to_lowercase().as_str(),
         )?;
+        if let Some(country) = info.country() {
+            map_serializer
+                .serialize_entry("country", format!("prima:country:{}", country).as_str())?;
+        }
         map_serializer.serialize_entry("environment", info.environment())?;
         map_serializer.serialize_entry("type", info.app_name())?;
 

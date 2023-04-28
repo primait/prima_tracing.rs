@@ -86,12 +86,17 @@ impl Drop for Uninstall {
 /// Information about the current app context like name or environment
 pub struct ContextInfo<'a> {
     pub(crate) app_name: &'a str,
+    pub(crate) country: &'a Option<&'a str>,
     pub(crate) environment: &'a str,
 }
 
 impl<'a> ContextInfo<'a> {
     pub fn app_name(&self) -> &'a str {
         self.app_name
+    }
+
+    pub fn country(&self) -> &'a Option<&'a str> {
+        self.country
     }
 
     pub fn environment(&self) -> &'a str {
