@@ -1,10 +1,10 @@
-#[cfg(feature = "prima-logger-json")]
+#[cfg(feature = "json-logger")]
 use crate::json::formatter::DefaultEventFormatter;
 use std::error::Error;
 use std::fmt::{Debug, Display, Formatter};
 use std::str::FromStr;
 
-#[cfg(not(feature = "prima-logger-json"))]
+#[cfg(not(feature = "json-logger"))]
 use crate::subscriber::NopEventFormatter;
 /// `SubscriberConfig` configuration built via [`SubscriberConfigBuilder`]
 /// It contains
@@ -34,7 +34,7 @@ impl<T> SubscriberConfig<T> {
         }
     }
 }
-#[cfg(not(feature = "prima-logger-json"))]
+#[cfg(not(feature = "json-logger"))]
 /// Create a [`SubscriberConfigBuilder`]
 pub fn builder(service: &str) -> SubscriberConfigBuilder<NopEventFormatter> {
     SubscriberConfigBuilder(SubscriberConfig::new(
@@ -44,7 +44,7 @@ pub fn builder(service: &str) -> SubscriberConfigBuilder<NopEventFormatter> {
     ))
 }
 
-#[cfg(feature = "prima-logger-json")]
+#[cfg(feature = "json-logger")]
 /// Create a [`SubscriberConfigBuilder`]
 pub fn builder(service: &str) -> SubscriberConfigBuilder<DefaultEventFormatter> {
     SubscriberConfigBuilder(SubscriberConfig::new(
@@ -139,7 +139,7 @@ impl<T> SubscriberConfigBuilder<T> {
         self
     }
 
-    /// Set the custom JSON formatter to be used when the feature `prima-logger-json` is activated.
+    /// Set the custom JSON formatter to be used when the feature `json-logger` is activated.
     pub fn with_custom_json_formatter<F>(self, formatter: F) -> SubscriberConfigBuilder<F> {
         SubscriberConfigBuilder(SubscriberConfig {
             json_formatter: formatter,

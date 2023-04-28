@@ -137,7 +137,7 @@ impl EventFormatter for DefaultEventFormatter {
         // Adds support for correlating logs and traces on datadog
         // In order for Datadog to be able to correlate the logs with the traces we need to insert `dd.trace_id` and `dd.span_id` at root level
         // https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/
-        #[cfg(feature = "prima-logger-datadog")]
+        #[cfg(feature = "datadog")]
         {
             use opentelemetry::trace::TraceContextExt;
             use std::collections::HashMap;

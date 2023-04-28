@@ -12,22 +12,27 @@
 Install from [crates.io](https://crates.io/crates/prima-tracing)
 
 ```toml
-prima-tracing = "0.5.*"
+prima-tracing = "0.5"
 ```
 
 ### Cargo features
 
-- `prima-logger-json` outputs traces to standard output in JSON format
-- `prima-logger-datadog` extends `prima-logger-json` output
+For ease of use you can use the following feature sets:
+
+- `live` enables the feature you will most likely want in a production/staging environment
+- `dev` enables the features you will most likely want in a dev environment
+
+- `json-logger` outputs traces to standard output in JSON format
+- `datadog` extends `json-logger` output
   with [trace and span information](https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/) allowing
   Datadog to connect logs and traces
-- `prima-telemetry` exports OpenTelemetry traces using the [opentelemetry-otlp](https://crates.io/crates/opentelemetry-otlp) exporter
+- `traces` exports [tracing](https://lib.rs/crates/tracing) spans and events using the [opentelemetry-otlp](https://crates.io/crates/opentelemetry-otlp) exporter
 - `rt-tokio-current-thread` configures the OpenTelemetry tracer to use Tokio’s current thread runtime
   (e.g. `actix_web::main`). Without this feature, the Tokio multi-thread runtime is used by default.
 
-## How to collect OpenTelemetry traces locally
+## How to collect traces locally
 
-If you are using the `prima-telemetry` feature in your project, the recommended way to view exported traces on your machine is to use the [Jaeger all-in-one Docker image](https://hub.docker.com/r/jaegertracing/opentelemetry-all-in-one/).
+If you are using the `tracing` feature in your project, the recommended way to view exported traces on your machine is to use the [Jaeger all-in-one Docker image](https://hub.docker.com/r/jaegertracing/opentelemetry-all-in-one/).
 
 You need to add the following service to your Docker Compose setup (your main container should depend on it):
 ```yaml
@@ -65,7 +70,7 @@ fn main() -> std::io::Result<()> {
 
 ### JSON output
 
-It works like the simple example, but activating the `prima-json-logger` automatically uses the JSON format as output
+It works like the simple example, but activating the `json-logger` automatically uses the JSON format as output
 
 ```rust
 use prima_tracing::{builder, configure_subscriber, init_subscriber, Environment};
@@ -160,13 +165,13 @@ docker run --rm -d -p 16686:16686 -p 55681:55681 -e COLLECTOR_OTLP_ENABLED=true 
 Run pong service:
 
 ```sh
-RUST_LOG=info cargo run --features=prima-telemetry --example pong
+RUST_LOG=info cargo run --features=traces --example pong
 ```
 
 Run ping service:
 
 ```sh
-RUST_LOG=info cargo run --features=prima-telemetry --example ping
+RUST_LOG=info cargo run --features=traces --example ping
 ```
 
 Check health of ping service (which calls pong service)
@@ -180,23 +185,23 @@ Open the browser at <http://localhost:16686> to inspect the traced request
 #### OpenTelemetry + JSON logger with Datadog correlation IDs
 
 ```sh
-RUST_LOG=info cargo run --features=prima-logger-datadog,prima-telemetry --example datadog_json_logger
+RUST_LOG=info cargo run --features=datadog,traces --example datadog_json_logger
 ```
 
 ### Custom formatter
 
 ```sh
-RUST_LOG=info cargo run --features=prima-logger-json --example custom_formatter
+RUST_LOG=info cargo run --features=json-logger --example custom_formatter
 ```
 
 ### Custom subscriber with default JSON output
 
 ```sh
-RUST_LOG=info cargo run --features=prima-logger-json --example custom-subscriber
+RUST_LOG=info cargo run --features=json-logger --example custom-subscriber
 ```
 
 ### Custom subscriber with custom JSON output
 
 ```sh
-RUST_LOG=info cargo run --features=prima-logger-json --example custom-json-subscriber
+RUST_LOG=info cargo run --features=json-logger --example custom-json-subscriber
 ```

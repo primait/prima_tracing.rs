@@ -9,22 +9,31 @@ description = "Prima.it opentelemetry standard library"
 repository = "https://github.com/primait/prima_tracing.rs"
 
 [features]
-default = ["prima-logger"]
-prima-logger = ["tracing-log"]
-prima-telemetry = ["tracing-opentelemetry", "opentelemetry", "opentelemetry-otlp"]
-prima-logger-json = ["prima-logger"]
-prima-logger-datadog = ["prima-logger-json", "opentelemetry", "tracing-opentelemetry"]
+default = []
+# Legacy feature names kept for compatibility reasons
+prima-logger-datadog = ["datadog"]
+prima-logger-json = ["json-logger"]
+prima-telemetry = ["traces"]
+
+json-logger = []
+datadog = ["json-logger", "opentelemetry", "tracing-opentelemetry"]
+traces = ["tracing-opentelemetry", "opentelemetry", "opentelemetry-otlp"]
+
+# feature sets most likely used in given environment
+live = [ "json-logger", "datadog", "traces" ]
+dev = [ "traces" ]
+
 rt-tokio-current-thread = ["opentelemetry/rt-tokio-current-thread"]
 
 [[example]]
 name = "custom-json-subscriber"
 path = "examples/custom_json_subscriber.rs"
-required-features = ["prima-logger-json"]
+required-features = ["json-logger"]
 
 [[example]]
 name = "custom-subscriber"
 path = "examples/custom_subscriber.rs"
-required-features = ["prima-logger-json"]
+required-features = ["json-logger"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
@@ -33,7 +42,7 @@ opentelemetry-otlp = { version = "0.10", features = ["http-proto", "reqwest-clie
 tracing = { version = "0.1", features = ["max_level_debug", "release_max_level_info"] }
 tracing-opentelemetry = { version = "0.17", optional = true }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-tracing-log = { version = "0.1", optional = true }
+tracing-log = { version = "0.1" }
 
 # serialization/deserialization
 serde = { version = "^1.0", features = ["derive"] }

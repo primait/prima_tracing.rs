@@ -19,9 +19,9 @@ mod config;
 
 mod subscriber;
 
-#[cfg(feature = "prima-logger-json")]
+#[cfg(feature = "json-logger")]
 pub mod json;
-#[cfg(feature = "prima-telemetry")]
+#[cfg(feature = "traces")]
 pub mod telemetry;
 
 pub use crate::config::{
