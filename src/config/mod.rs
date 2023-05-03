@@ -27,28 +27,20 @@ pub struct SubscriberConfig<T> {
 
 #[cfg(not(feature = "json-logger"))]
 /// Create a [`SubscriberConfigBuilder`]
-pub fn builder(service: &str) -> SubscriberConfigBuilder<NopEventFormatter, WithoutCountry> {
-    SubscriberConfigBuilder {
-        service: service.to_owned(),
-        country: WithoutCountry,
-        env: Environment::Dev,
-        telemetry: None,
-        version: None,
-        formatter: NopEventFormatter,
-    }
+pub fn builder(
+    service: &str,
+) -> SubscriberConfigBuilder<NopEventFormatter, WithoutCountry, WithoutEnvironment> {
+    SubscriberConfigBuilder::<NopEventFormatter, WithoutCountry, WithoutEnvironment>::new(service)
 }
 
 #[cfg(feature = "json-logger")]
 /// Create a [`SubscriberConfigBuilder`]
-pub fn builder(service: &str) -> SubscriberConfigBuilder<DefaultEventFormatter, WithoutCountry> {
-    SubscriberConfigBuilder {
-        service: service.to_owned(),
-        country: WithoutCountry,
-        env: Environment::Dev,
-        telemetry: None,
-        version: None,
-        formatter: DefaultEventFormatter,
-    }
+pub fn builder(
+    service: &str,
+) -> SubscriberConfigBuilder<DefaultEventFormatter, WithoutCountry, WithoutEnvironment> {
+    SubscriberConfigBuilder::<DefaultEventFormatter, WithoutCountry, WithoutEnvironment>::new(
+        service,
+    )
 }
 
 pub struct TelemetryConfig {
@@ -59,22 +51,19 @@ pub struct TelemetryConfig {
 pub struct WithoutCountry;
 pub struct WithCountry(Country);
 
-pub struct SubscriberConfigBuilder<F, C> {
+pub struct WithoutEnvironment;
+pub struct WithEnvironment(Environment);
+
+pub struct SubscriberConfigBuilder<F, C, E> {
     country: C,
-    env: Environment,
+    env: E,
     telemetry: Option<TelemetryConfig>,
     service: String,
     version: Option<String>,
     formatter: F,
 }
 
-impl<F, C> SubscriberConfigBuilder<F, C> {
-    /// Set the environment in which the application is running.
-    pub fn with_env(mut self, env: Environment) -> Self {
-        self.env = env;
-        self
-    }
-
+impl<F, C, E> SubscriberConfigBuilder<F, C, E> {
     /// Set the application version.
     pub fn with_version(mut self, version: String) -> Self {
         self.version = Some(version);
@@ -92,7 +81,7 @@ impl<F, C> SubscriberConfigBuilder<F, C> {
     }
 
     /// Set the custom JSON formatter to be used when the feature `json-logger` is activated.
-    pub fn with_custom_json_formatter<G>(self, formatter: G) -> SubscriberConfigBuilder<G, C> {
+    pub fn with_custom_json_formatter<G>(self, formatter: G) -> SubscriberConfigBuilder<G, C, E> {
         SubscriberConfigBuilder {
             formatter,
             country: self.country,
@@ -104,32 +93,39 @@ impl<F, C> SubscriberConfigBuilder<F, C> {
     }
 }
 
-impl<F> SubscriberConfigBuilder<F, WithoutCountry> {
+impl<F> SubscriberConfigBuilder<F, WithoutCountry, WithoutEnvironment> {
     #[cfg(not(feature = "json-logger"))]
     /// Create a [`SubscriberConfigBuilder`]
-    pub fn new(service: &str) -> SubscriberConfigBuilder<NopEventFormatter> {
+    pub fn new(service: &str) -> SubscriberConfigBuilder<NopEventFormatter, WithoutEnvironment> {
         Self::_new(service, NopEventFormatter)
     }
 
     #[cfg(feature = "json-logger")]
     /// Create a [`SubscriberConfigBuilder`]
-    pub fn new(service: &str) -> SubscriberConfigBuilder<DefaultEventFormatter, WithoutCountry> {
+    pub fn new(
+        service: &str,
+    ) -> SubscriberConfigBuilder<DefaultEventFormatter, WithoutCountry, WithoutEnvironment> {
         Self::_new(service, DefaultEventFormatter)
     }
 
-    fn _new<G>(service: &str, formatter: G) -> SubscriberConfigBuilder<G, WithoutCountry> {
+    fn _new<G>(
+        service: &str,
+        formatter: G,
+    ) -> SubscriberConfigBuilder<G, WithoutCountry, WithoutEnvironment> {
         SubscriberConfigBuilder {
             service: service.to_owned(),
             country: WithoutCountry,
-            env: Environment::Dev,
+            env: WithoutEnvironment,
             telemetry: None,
             version: None,
             formatter,
         }
     }
+}
 
+impl<F, E> SubscriberConfigBuilder<F, WithoutCountry, E> {
     /// Set the country in which the application is running.
-    pub fn with_country(self, country: Country) -> SubscriberConfigBuilder<F, WithCountry> {
+    pub fn with_country(self, country: Country) -> SubscriberConfigBuilder<F, WithCountry, E> {
         SubscriberConfigBuilder {
             country: WithCountry(country),
             env: self.env,
@@ -141,12 +137,26 @@ impl<F> SubscriberConfigBuilder<F, WithoutCountry> {
     }
 }
 
-impl<F> SubscriberConfigBuilder<F, WithCountry> {
+impl<F, C> SubscriberConfigBuilder<F, C, WithoutEnvironment> {
+    /// Set the country in which the application is running.
+    pub fn with_env(self, env: Environment) -> SubscriberConfigBuilder<F, C, WithEnvironment> {
+        SubscriberConfigBuilder {
+            country: self.country,
+            env: WithEnvironment(env),
+            telemetry: self.telemetry,
+            service: self.service,
+            version: self.version,
+            formatter: self.formatter,
+        }
+    }
+}
+
+impl<F> SubscriberConfigBuilder<F, WithCountry, WithEnvironment> {
     /// Build a [`SubscriberConfig`]
     pub fn build(self) -> SubscriberConfig<F> {
         SubscriberConfig {
             country: self.country.0,
-            env: self.env,
+            env: self.env.0,
             telemetry: self.telemetry,
             service: self.service,
             version: self.version,
