@@ -1,7 +1,8 @@
 use actix_web::{middleware::Logger, web, App, HttpResponse, HttpServer};
 use chrono::{DateTime, Utc};
 use prima_tracing::{
-    builder, configure_subscriber, init_subscriber, ContextInfo, Environment, EventFormatter,
+    builder, configure_subscriber, init_subscriber, ContextInfo, Country, Environment,
+    EventFormatter,
 };
 use serde::Serialize;
 
@@ -13,6 +14,7 @@ async fn main() -> std::io::Result<()> {
         builder("custom")
             .with_env(Environment::Dev)
             .with_custom_json_formatter(MyCustomFormatter {})
+            .with_country(Country::Common)
             .build(),
     );
 
