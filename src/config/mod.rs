@@ -96,7 +96,9 @@ impl<F, C, E> SubscriberConfigBuilder<F, C, E> {
 impl<F> SubscriberConfigBuilder<F, WithoutCountry, WithoutEnvironment> {
     #[cfg(not(feature = "json-logger"))]
     /// Create a [`SubscriberConfigBuilder`]
-    pub fn new(service: &str) -> SubscriberConfigBuilder<NopEventFormatter, WithoutEnvironment> {
+    pub fn new(
+        service: &str,
+    ) -> SubscriberConfigBuilder<NopEventFormatter, WithoutCountry, WithoutEnvironment> {
         Self::_new(service, NopEventFormatter)
     }
 
