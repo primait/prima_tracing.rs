@@ -14,7 +14,7 @@ async fn main() -> std::io::Result<()> {
         builder("custom")
             .with_env(Environment::Dev)
             .with_custom_json_formatter(MyCustomFormatter {})
-            .with_country(Country::Common)
+            .with_country(Country::Es)
             .build(),
     );
 
