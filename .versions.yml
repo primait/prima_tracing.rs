@@ -1,0 +1,6 @@
+files:
+  - path: Cargo.toml
+    pattern: "\\[package\\][\\s\\S]*?version = \"{version}\""
+
+  - path: README.md
+    pattern: "prima-tracing = \"{version}\""
