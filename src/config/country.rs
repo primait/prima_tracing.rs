@@ -41,7 +41,7 @@ pub struct CountryParseError(String);
 impl Display for CountryParseError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!(
-            "{} is not a valid country string. Allowed strings are 'Es', 'it', 'es' and 'uk'.",
+            "{} is not a valid country string. Allowed strings are 'it', 'es' and 'uk'.",
             &self.0
         ))
     }
