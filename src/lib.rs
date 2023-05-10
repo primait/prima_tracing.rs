@@ -4,10 +4,11 @@
 //!
 //! ```rust
 //!
-//! use prima_tracing::{builder, configure_subscriber, Environment, init_subscriber};
+//! use prima_tracing::{builder, configure_subscriber, Country, Environment, init_subscriber};
 //!
 //! let subscriber = configure_subscriber(
 //!   builder("ping")
+//!     .with_country(Country::Es)
 //!     .with_env(Environment::Dev)
 //!     .build()
 //! );
@@ -25,7 +26,7 @@ pub mod json;
 pub mod telemetry;
 
 pub use crate::config::{
-    builder, Environment, EnvironmentParseError, SubscriberConfig, SubscriberConfigBuilder,
+    builder, Country, Environment, EnvironmentParseError, SubscriberConfig, SubscriberConfigBuilder,
 };
 pub use crate::subscriber::{
     configure_subscriber, init_subscriber, ContextInfo, EventFormatter, Tracing, Uninstall,

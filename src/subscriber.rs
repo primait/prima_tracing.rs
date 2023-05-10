@@ -42,6 +42,7 @@ pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
             .with(PrimaJsonStorage::default())
             .with(PrimaFormattingLayer::new(
                 _config.service.clone(),
+                _config.country.to_string(),
                 _config.env.to_string(),
                 &std::io::stdout,
                 _config.json_formatter,
@@ -85,6 +86,7 @@ impl Drop for Uninstall {
 /// Information about the current app context like name or environment
 pub struct ContextInfo<'a> {
     pub(crate) app_name: &'a str,
+    pub(crate) country: &'a str,
     pub(crate) environment: &'a str,
 }
 
@@ -93,12 +95,16 @@ impl<'a> ContextInfo<'a> {
         self.app_name
     }
 
+    pub fn country(&self) -> &'a str {
+        self.country
+    }
+
     pub fn environment(&self) -> &'a str {
         self.environment
     }
 }
 
-pub struct NopEventFormatter {}
+pub struct NopEventFormatter;
 
 impl EventFormatter for NopEventFormatter {
     fn format_event<S>(
