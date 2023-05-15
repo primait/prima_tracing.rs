@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `dev` and `live` feature sets
-- ⚠️️ added mandatory `country` field
+- ⚠️️ Added mandatory `country` field
 
 ### Changed
 
