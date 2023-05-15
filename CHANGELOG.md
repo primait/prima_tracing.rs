@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - SubscriberConfig env field value changed from string to enumeration (Environment)
 - Update dependencies  
-- ⚠️ Increase the minimum rust version to 1.57.0
+- ⚠️ Increased the minimum rust version to 1.57.0
 
 ### Security
 
