@@ -64,15 +64,14 @@ where
 
         if let (Some(otel_data), Some(version)) = (extensions.get_mut::<OtelData>(), &self.version)
         {
-            let builder = &mut otel_data.builder;
-            let root_version = KeyValue::new("version", version.clone());
-            let service_version = KeyValue::new("service.version", version.clone());
-            if let Some(ref mut attributes) = builder.attributes {
-                attributes.push(root_version);
-                attributes.push(service_version);
-            } else {
-                builder.attributes = Some(vec![root_version, service_version]);
-            }
+            otel_data
+                .builder
+                .attributes
+                .get_or_insert_with(Default::default)
+                .extend([
+                    KeyValue::new("version", version.clone()),
+                    KeyValue::new("service.version", version.clone()),
+                ]);
         }
     }
 }
