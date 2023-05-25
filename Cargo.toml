@@ -37,10 +37,10 @@ required-features = ["json-logger"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-opentelemetry = { version = "0.18", features = ["rt-tokio"], optional = true }
-opentelemetry-otlp = { version = "0.11", features = ["http-proto", "reqwest-client"], default-features = false, optional = true }
+opentelemetry = { version = "0.19", features = ["rt-tokio"], optional = true }
+opentelemetry-otlp = { version = "0.12", features = ["http-proto", "reqwest-client"], default-features = false, optional = true }
 tracing = { version = "0.1", features = ["max_level_debug", "release_max_level_info"] }
-tracing-opentelemetry = { version = "0.18", optional = true }
+tracing-opentelemetry = { version = "0.19", optional = true }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 tracing-log = { version = "0.1" }
 
@@ -54,6 +54,6 @@ chrono = { version = "^0.4", default-features = false, features = ["serde", "clo
 
 [dev-dependencies]
 actix-web = "4.0.1"
-tracing-actix-web = { version = "0.7.0", features = ["opentelemetry_0_18"] }
+tracing-actix-web = { version = "0.7.0", features = ["opentelemetry_0_19"] }
 prima_bridge = "0.13"
 tokio = { version = "1.17", features = ["rt", "macros", "rt-multi-thread"] }
