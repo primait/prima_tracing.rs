@@ -5,7 +5,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Next]
 
-## [0.6.0] - 2023-05-15
+## [0.6.0] - 2023-05-26
 
 ### Added
 
@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Old feature names will continue to function as aliases to the new names
 
 - ⚠️️ `env` is now required and will not default to `Dev` anymore
+- Bumped opentelemetry to v0.19
 
 ### Removed
 
