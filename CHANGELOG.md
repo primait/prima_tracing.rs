@@ -5,6 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Next]
 
+## [0.6.1] - 2023-05-30
+
+### Changed
+
+- `country` is actually added as an attribute to traces
+
 ## [0.6.0] - 2023-05-26
 
 ### Added
@@ -60,7 +66,8 @@ If you are using Jaeger to collect traces locally on your machine, you will need
       COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
 
-[Next]: https://github.com/primait/prima_tracing.rs/compare/0.6.0...HEAD
+[Next]: https://github.com/primait/prima_tracing.rs/compare/0.6.1...HEAD
+[0.6.1]: https://github.com/primait/prima_tracing.rs/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/primait/prima_tracing.rs/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/primait/prima_tracing.rs/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/primait/prima_tracing.rs/compare/0.3.1...0.4.0
