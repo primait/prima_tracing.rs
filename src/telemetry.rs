@@ -32,24 +32,17 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
     let otlp_exporter = opentelemetry_otlp::new_exporter()
         .http()
         .with_endpoint(telemetry.collector_url.as_str());
+
+    let resource = Resource::new(vec![
+        KeyValue::new("environment", config.env.to_string()),
+        KeyValue::new("country", config.country.to_string()),
+        KeyValue::new("service.name", telemetry.service_name.clone()),
+    ]);
+
     opentelemetry_otlp::new_pipeline()
         .tracing()
         .with_exporter(otlp_exporter)
-        .with_trace_config(
-            trace::config()
-                .with_resource(Resource::new(vec![KeyValue::new(
-                    "environment",
-                    config.env.to_string(),
-                )]))
-                .with_resource(Resource::new(vec![KeyValue::new(
-                    "country",
-                    config.country.to_string(),
-                )]))
-                .with_resource(Resource::new(vec![KeyValue::new(
-                    "service.name",
-                    telemetry.service_name.clone(),
-                )])),
-        )
+        .with_trace_config(trace::config().with_resource(resource))
         .install_batch(runtime)
         .expect("Failed to configure the OpenTelemetry tracer")
 }
