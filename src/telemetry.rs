@@ -42,6 +42,10 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
                     config.env.to_string(),
                 )]))
                 .with_resource(Resource::new(vec![KeyValue::new(
+                    "country",
+                    config.country.to_string(),
+                )]))
+                .with_resource(Resource::new(vec![KeyValue::new(
                     "service.name",
                     telemetry.service_name.clone(),
                 )])),
