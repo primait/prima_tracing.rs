@@ -26,12 +26,12 @@ impl FromStr for Country {
 
 impl Display for Country {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let str = match self {
+        let country = match self {
             Self::Es => "es",
             Self::It => "it",
             Self::Uk => "uk",
         };
-        f.write_str(str)
+        f.write_str(format!("prima:country:{}", country).as_str())
     }
 }
 
