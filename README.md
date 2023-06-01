@@ -35,6 +35,7 @@ For ease of use you can use the following feature sets:
 If you are using the `tracing` feature in your project, the recommended way to view exported traces on your machine is to use the [Jaeger all-in-one Docker image](https://hub.docker.com/r/jaegertracing/opentelemetry-all-in-one/).
 
 You need to add the following service to your Docker Compose setup (your main container should depend on it):
+
 ```yaml
   jaeger:
     image: jaegertracing/all-in-one:1.35
@@ -45,6 +46,7 @@ You need to add the following service to your Docker Compose setup (your main co
       COLLECTOR_OTLP_ENABLED: true
       COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
+
 You can then visit the [Jaeger web UI](http://localhost:16686/search) on your browser to search the traces.
 
 ## Usage examples
@@ -56,7 +58,12 @@ use prima_tracing::{builder, configure_subscriber, init_subscriber, Environment}
 use tracing::{info, info_span};
 
 fn main() -> std::io::Result<()> {
-    let subscriber = configure_subscriber(builder("simple").with_env(Environment::Dev).build());
+    let subscriber = configure_subscriber(
+      builder("simple")
+        .with_country(Country::Common)
+        .with_env(Environment::Dev)
+        .build()
+    );
 
     let _guard = init_subscriber(subscriber);
 
@@ -77,7 +84,12 @@ use prima_tracing::{builder, configure_subscriber, init_subscriber, Environment}
 use tracing::{info, info_span};
 
 fn main() -> std::io::Result<()> {
-    let subscriber = configure_subscriber(builder("json").with_env(Environment::Dev).build());
+    let subscriber = configure_subscriber(
+      builder("json")
+        .with_country(Country::Common)
+        .with_env(Environment::Dev)
+        .build()
+    );
 
     let _guard = init_subscriber(subscriber);
 
@@ -101,6 +113,7 @@ use tracing::{info, info_span};
 fn main() -> std::io::Result<()> {
     let subscriber = configure_subscriber(
         builder("myapp")
+            .with_country(Country::Common)
             .with_env(Environment::Dev)
             .with_version("1.0".to_string())
             .with_telemetry(

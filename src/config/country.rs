@@ -6,8 +6,9 @@ use std::{
 /// All the possible countries in which the application can run.
 #[derive(PartialEq, Eq, Debug, Clone)]
 pub enum Country {
-    It,
+    Common,
     Es,
+    It,
     Uk,
 }
 
@@ -16,6 +17,7 @@ impl FromStr for Country {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
+            "common" => Ok(Self::Common),
             "it" => Ok(Self::It),
             "es" => Ok(Self::Es),
             "uk" => Ok(Self::Uk),
@@ -27,11 +29,12 @@ impl FromStr for Country {
 impl Display for Country {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let country = match self {
+            Self::Common => "common",
             Self::Es => "es",
             Self::It => "it",
             Self::Uk => "uk",
         };
-        f.write_str(format!("prima:country:{}", country).as_str())
+        f.write_str(country)
     }
 }
 
@@ -41,7 +44,7 @@ pub struct CountryParseError(String);
 impl Display for CountryParseError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!(
-            "{} is not a valid country string. Allowed strings are 'it', 'es' and 'uk'.",
+            "{} is not a valid country string. Allowed strings are 'common', 'it', 'es' and 'uk'.",
             &self.0
         ))
     }

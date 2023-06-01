@@ -7,7 +7,7 @@ async fn main() {
     let subscriber = configure_subscriber(
         builder(&service_name)
             .with_env(Environment::Dev)
-            .with_country(Country::Es)
+            .with_country(Country::Common)
             .with_version("1.0".to_string())
             // We need a tracer if we want trace and span IDs to be created and propagated, otherwise logs won't contain these correlation IDs
             // You can also setup custom tracer and custom subscriber if you don't wanna use the `traces` feature

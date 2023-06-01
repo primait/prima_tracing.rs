@@ -5,11 +5,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Next]
 
+### Added
+
+- Add `Common` to `Country`, since some services are common to all countries
+
 ## [0.6.2] - 2023-05-30
 
 ### Changed
 
-- trace resources are all set correctly
+- Trace resources are all set correctly
 
 ## [0.6.1] - 2023-05-30
 

@@ -8,7 +8,7 @@
 //!
 //! let subscriber = configure_subscriber(
 //!   builder("ping")
-//!     .with_country(Country::Es)
+//!     .with_country(Country::Common)
 //!     .with_env(Environment::Dev)
 //!     .build()
 //! );

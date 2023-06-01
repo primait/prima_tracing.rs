@@ -5,7 +5,7 @@ fn main() -> std::io::Result<()> {
     let subscriber = configure_subscriber(
         builder("simple")
             .with_env(Environment::Dev)
-            .with_country(Country::Es)
+            .with_country(Country::Common)
             .build(),
     );
 
