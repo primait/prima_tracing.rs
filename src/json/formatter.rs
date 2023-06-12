@@ -17,6 +17,7 @@ use crate::subscriber::{ContextInfo, EventFormatter};
 pub struct PrimaFormattingLayer<'writer, W: MakeWriter<'writer>, F: EventFormatter> {
     make_writer: &'writer W,
     app_name: String,
+    country: String,
     environment: String,
     formatter: F,
 }
@@ -25,10 +26,12 @@ pub struct PrimaFormattingLayer<'writer, W: MakeWriter<'writer>, F: EventFormatt
 /// and [`std::io::Stdout`] as output
 pub fn layer<'writer>(
     app_name: String,
+    country: String,
     environment: String,
 ) -> PrimaFormattingLayer<'writer, impl Fn() -> Stdout, DefaultEventFormatter> {
     PrimaFormattingLayer::new(
         app_name,
+        country,
         environment,
         &std::io::stdout,
         DefaultEventFormatter,
@@ -38,6 +41,7 @@ pub fn layer<'writer>(
 impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'writer, W, F> {
     pub(crate) fn new(
         app_name: String,
+        country: String,
         environment: String,
         make_writer: &'writer W,
         formatter: F,
@@ -45,6 +49,7 @@ impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'w
         Self {
             make_writer,
             app_name,
+            country,
             environment,
             formatter,
         }
@@ -54,7 +59,13 @@ impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'w
         self,
         formatter: A,
     ) -> PrimaFormattingLayer<'writer, W, A> {
-        PrimaFormattingLayer::new(self.app_name, self.environment, self.make_writer, formatter)
+        PrimaFormattingLayer::new(
+            self.app_name,
+            self.country,
+            self.environment,
+            self.make_writer,
+            formatter,
+        )
     }
 
     fn emit(&self, mut buffer: Vec<u8>) -> Result<(), std::io::Error> {
@@ -75,6 +86,7 @@ impl<'writer, W: MakeWriter<'writer>, F: EventFormatter> PrimaFormattingLayer<'w
             ctx,
             ContextInfo {
                 app_name: self.app_name.as_str(),
+                country: self.country.as_str(),
                 environment: self.environment.as_str(),
             },
         )
@@ -116,6 +128,7 @@ impl EventFormatter for DefaultEventFormatter {
             "level",
             metadata.level().to_string().to_lowercase().as_str(),
         )?;
+        map_serializer.serialize_entry("country", info.country())?;
         map_serializer.serialize_entry("environment", info.environment())?;
         map_serializer.serialize_entry("type", info.app_name())?;
 
@@ -137,7 +150,7 @@ impl EventFormatter for DefaultEventFormatter {
         // Adds support for correlating logs and traces on datadog
         // In order for Datadog to be able to correlate the logs with the traces we need to insert `dd.trace_id` and `dd.span_id` at root level
         // https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/
-        #[cfg(feature = "prima-logger-datadog")]
+        #[cfg(feature = "datadog")]
         {
             use opentelemetry::trace::TraceContextExt;
             use std::collections::HashMap;

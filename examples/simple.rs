@@ -1,8 +1,13 @@
-use prima_tracing::{builder, configure_subscriber, init_subscriber, Environment};
+use prima_tracing::{builder, configure_subscriber, init_subscriber, Country, Environment};
 use tracing::{info, info_span};
 
 fn main() -> std::io::Result<()> {
-    let subscriber = configure_subscriber(builder("simple").with_env(Environment::Dev).build());
+    let subscriber = configure_subscriber(
+        builder("simple")
+            .with_env(Environment::Dev)
+            .with_country(Country::Common)
+            .build(),
+    );
 
     let _trace_guard = init_subscriber(subscriber);
 

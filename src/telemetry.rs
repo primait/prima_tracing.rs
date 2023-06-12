@@ -16,7 +16,7 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
     let telemetry = config
         .telemetry
         .as_ref()
-        .expect("Telemetry config must be provided when the `prima-telemetry` feature is enabled.");
+        .expect("Telemetry config must be provided when the `traces` feature is enabled.");
 
     let runtime = {
         #[cfg(feature = "rt-tokio-current-thread")]
@@ -32,20 +32,17 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
     let otlp_exporter = opentelemetry_otlp::new_exporter()
         .http()
         .with_endpoint(telemetry.collector_url.as_str());
+
+    let resource = Resource::new(vec![
+        KeyValue::new("environment", config.env.to_string()),
+        KeyValue::new("country", config.country.to_string()),
+        KeyValue::new("service.name", telemetry.service_name.clone()),
+    ]);
+
     opentelemetry_otlp::new_pipeline()
         .tracing()
         .with_exporter(otlp_exporter)
-        .with_trace_config(
-            trace::config()
-                .with_resource(Resource::new(vec![KeyValue::new(
-                    "environment",
-                    config.env.to_string(),
-                )]))
-                .with_resource(Resource::new(vec![KeyValue::new(
-                    "service.name",
-                    telemetry.service_name.clone(),
-                )])),
-        )
+        .with_trace_config(trace::config().with_resource(resource))
         .install_batch(runtime)
         .expect("Failed to configure the OpenTelemetry tracer")
 }
@@ -64,15 +61,14 @@ where
 
         if let (Some(otel_data), Some(version)) = (extensions.get_mut::<OtelData>(), &self.version)
         {
-            let builder = &mut otel_data.builder;
-            let root_version = KeyValue::new("version", version.clone());
-            let service_version = KeyValue::new("service.version", version.clone());
-            if let Some(ref mut attributes) = builder.attributes {
-                attributes.push(root_version);
-                attributes.push(service_version);
-            } else {
-                builder.attributes = Some(vec![root_version, service_version]);
-            }
+            otel_data
+                .builder
+                .attributes
+                .get_or_insert_with(Default::default)
+                .extend([
+                    KeyValue::new("version", version.clone()),
+                    KeyValue::new("service.version", version.clone()),
+                ]);
         }
     }
 }

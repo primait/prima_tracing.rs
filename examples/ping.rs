@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use actix_web::{middleware::Logger, web, App, HttpResponse, HttpServer};
 use prima_bridge::{prelude::*, Bridge, Request};
-use prima_tracing::{builder, configure_subscriber, init_subscriber, Environment};
+use prima_tracing::{builder, configure_subscriber, init_subscriber, Country, Environment};
 use tracing_actix_web::TracingLogger;
 
 type HttpClient = Arc<Bridge>;
@@ -13,6 +13,7 @@ async fn main() -> std::io::Result<()> {
     let subscriber = configure_subscriber(
         builder("ping")
             .with_env(Environment::Dev)
+            .with_country(Country::Common)
             .with_version("1.0".to_string())
             .with_telemetry(
                 "http://localhost:55681/v1/traces".to_string(),
