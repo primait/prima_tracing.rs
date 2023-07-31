@@ -37,7 +37,7 @@ required-features = ["json-logger"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-opentelemetry = {version = "0.19", features = ["rt-tokio"], optional = true}
+opentelemetry = {version = "0.20", features = ["rt-tokio"], optional = true}
 opentelemetry-otlp = {version = "0.12", features = ["http-proto", "reqwest-client"], default-features = false, optional = true}
 tracing = {version = "0.1", features = ["max_level_debug", "release_max_level_info"]}
 tracing-log = {version = "0.1"}
