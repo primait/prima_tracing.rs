@@ -9,10 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.7.0] - 2023-08-29
 
----
-
-## [0.6.4] - 2023-08-29
-
 ### Changed
 
 - Bump otel to v0.20
