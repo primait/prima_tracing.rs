@@ -5,6 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [0.7.0] - 2023-08-29
+
+---
+
+## [0.6.4] - 2023-08-29
+
 ### Changed
 
 - Bump otel to v0.20
@@ -83,7 +91,11 @@ If you are using Jaeger to collect traces locally on your machine, you will need
       COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.6.3...HEAD
+
+
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.7.0...HEAD
+[0.7.0]: https://github.com/primait/prima_tracing.rs/compare/0.6.3...0.7.0
+[0.6.4]: https://github.com/primait/prima_tracing.rs/compare/0.6.3...0.6.4
 [0.6.3]: https://github.com/primait/prima_tracing.rs/compare/0.6.2...0.6.3
 [0.6.2]: https://github.com/primait/prima_tracing.rs/compare/0.6.1...0.6.2
 [0.6.1]: https://github.com/primait/prima_tracing.rs/compare/0.6.0...0.6.1
