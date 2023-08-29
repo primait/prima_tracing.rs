@@ -5,6 +5,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Bump otel to v0.20
+- ⚠️ Increased the minimum rust version to 1.68
+
 ## [0.6.3] - 2023-06-13
 
 ### Added
