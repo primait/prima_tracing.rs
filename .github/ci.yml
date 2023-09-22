@@ -1,32 +1,40 @@
 name: CI
 
-on:
-  pull_request:
-    branches:
-      - master
+on: [push, pull_request]
 
-concurrency:
-  group: ${{ github.ref }}
-  cancel-in-progress: true
+env:
+  CARGO_TERM_COLOR: always
 
 jobs:
-  rust:
-    uses: primait/shared-github-actions/.github/workflows/rust-ci.yml@rust-ci-v1
-    with:
-      enforce-coverage-threshold: false
-      run-coverage-task: false
+  lint:
+    # Avoid duplicate jobs on PR from a branch on the same repo
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
 
-      rust-toolchain-version: "1.72.0"
-
-  alls-green:
-    if: always()
-    needs:
-      - rust
-    runs-on: [self-hosted, k8s-small]
-    container:
-      image: public.ecr.aws/prima/python:3.9.10-3
+    name: "Continuous Integration / lint"
+    runs-on: ubuntu-latest
     steps:
-      - name: Decide whether the needed jobs succeeded or failed
-        uses: re-actors/alls-green@release/v1
-        with:
-          jobs: ${{ toJSON(needs) }}
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+      - name: Build
+        run: cargo build --workspace --all-features
+      - name: cargo fmt
+        run: cargo fmt --all -- --check
+      - name: Clippy
+        run: cargo clippy --workspace --all-features -- -D warnings
+      - name: Build docs
+        run: cargo doc --document-private-items --workspace --all-features --no-deps
+    env:
+      RUSTDOCFLAGS: -Dwarnings
+  test:
+    # Avoid duplicate jobs on PR from a branch on the same repo
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+
+    name: "Continuous Integration / test"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+      - name: Run tests for no features
+        run: cargo test --all
+      - name: Run tests with toggle feature
+        run: cargo test --all --features toggle
