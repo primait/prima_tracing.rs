@@ -25,20 +25,19 @@ jobs:
         env:
           RUSTDOCFLAGS: -Dwarnings
 
-  # test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: Swatinem/rust-cache@v2
-  #     - name: Run tests for no features
-  #       run: cargo test --all
-  #     - name: Run tests with toggle feature
-  #       run: cargo test --all --features toggle
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+      - name: Run tests for no features
+        run: cargo test --all
 
   alls-green:
     if: always()
     needs:
       - lint
+      - test
     runs-on: ubuntu-latest
     steps:
       - uses: re-actors/alls-green@release/v1
