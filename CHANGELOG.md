@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.1] - 2023-10-11
+
+### Changed
+
+- Bump `tracing-opentelemetry` to 0.21
+
+---
+
 ## [0.7.0] - 2023-08-29
 
 ### Changed
@@ -89,7 +97,9 @@ If you are using Jaeger to collect traces locally on your machine, you will need
 
 
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.7.0...HEAD
+
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.7.1...HEAD
+[0.7.1]: https://github.com/primait/prima_tracing.rs/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/primait/prima_tracing.rs/compare/0.6.3...0.7.0
 [0.6.3]: https://github.com/primait/prima_tracing.rs/compare/0.6.2...0.6.3
 [0.6.2]: https://github.com/primait/prima_tracing.rs/compare/0.6.1...0.6.2
