@@ -5,9 +5,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New `opentelemetry_sdk` dependency, which inherits the `rt-tokio` feature
+
+### Changed
+
+- Bump `opentelemetry` to 0.21 and remove the `rt-tokio` feature
+- Bump `opentelemetry-otlp` to 0.14
+- Bump `tracing-opentelemetry` to 0.22
+- Move `rt-tokio-current-thread` to map to `["opentelemetry_sdk/rt-tokio-current-thread"]`, the tokio stuff has been moved to `opentelemetry_sdk`
+
 ---
 
 ## [0.7.2] - 2023-10-26
+
+### Changed
 
 - Bump `tracing-log` to 0.2
 
@@ -101,7 +114,6 @@ If you are using Jaeger to collect traces locally on your machine, you will need
       COLLECTOR_OTLP_ENABLED: true
       COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
-
 
 [Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.7.2...HEAD
 [0.7.2]: https://github.com/primait/prima_tracing.rs/compare/0.7.1...0.7.2
