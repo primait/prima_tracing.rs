@@ -1,11 +1,9 @@
-use opentelemetry::{
-    sdk::{
-        trace::{self, Tracer},
-        Resource,
-    },
-    KeyValue,
-};
+use opentelemetry::KeyValue;
 use opentelemetry_otlp::WithExportConfig;
+use opentelemetry_sdk::{
+    trace::{self, Tracer},
+    Resource,
+};
 use tracing::{span, Subscriber};
 use tracing_opentelemetry::OtelData;
 use tracing_subscriber::{layer::Context, Layer};
@@ -21,11 +19,11 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
     let runtime = {
         #[cfg(feature = "rt-tokio-current-thread")]
         {
-            opentelemetry::runtime::TokioCurrentThread
+            opentelemetry_sdk::runtime::TokioCurrentThread
         }
         #[cfg(not(feature = "rt-tokio-current-thread"))]
         {
-            opentelemetry::runtime::Tokio
+            opentelemetry_sdk::runtime::Tokio
         }
     };
 
