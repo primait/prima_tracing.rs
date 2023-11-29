@@ -1,0 +1,20 @@
+name: CD
+
+on:
+  release:
+    types: [published]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: taiki-e/install-action@cargo-release
+      - uses: taiki-e/install-action@cargo-make
+      - run: cargo login "$CARGO_AUTH_KEY"
+        env:
+          CARGO_AUTH_KEY: ${{ secrets.CARGO_AUTH_KEY }}
+      - run: cargo make release
