@@ -1,45 +1,37 @@
 name: CI
 
-on:
-  pull_request:
-    branches:
-      - master
+on: [push, pull_request]
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
   lint:
+    # Avoid duplicate jobs on PR from a branch on the same repo
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
-      - name: Build
-        run: cargo build --workspace --all-features
-      - name: cargo fmt
-        run: cargo fmt --all -- --check
-      - name: Clippy
-        run: cargo clippy --workspace --all-features -- -D warnings
-      - name: Build docs
-        run: cargo doc --document-private-items --workspace --all-features --no-deps
-        env:
-          RUSTDOCFLAGS: -Dwarnings
-
+      - uses: taiki-e/install-action@cargo-make
+      - run: cargo make fmt-check
+      - run: cargo make clippy
+      - run: cargo make docs
   test:
+    # Avoid duplicate jobs on PR from a branch on the same repo
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
-      - name: Run tests for no features
-        run: cargo test --all
+      - uses: taiki-e/install-action@cargo-make
+      - run: cargo make test
 
   alls-green:
-    if: always()
+    if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name)
+    runs-on: ubuntu-latest
     needs:
       - lint
       - test
-    runs-on: ubuntu-latest
     steps:
-      - uses: re-actors/alls-green@release/v1
-        with:
-          jobs: ${{ toJSON(needs) }}
+      - run: ${{ !contains(needs.*.result, 'failure') }}

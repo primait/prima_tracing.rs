@@ -1,45 +1,35 @@
-[tasks.build-ci]
-description = "Build prima_tracing.rs inside CI."
+[tasks.build]
+description = "Runs the rust compiler."
+category = "Build"
+install_crate = false
 command = "cargo"
-args = ["build", "-j", "2", "--all-features"]
+args = [
+    "build",
+    "@@remove-empty(CARGO_MAKE_CARGO_VERBOSE_FLAGS)",
+    "@@split(CARGO_MAKE_CARGO_BUILD_TEST_FLAGS, )",
+]
 
-[tasks.format-ci]
-description = "Runs the cargo rustfmt plugin during CI."
+[tasks.fmt-check]
+description = "Runs the cargo rustfmt plugin."
 command = "cargo"
-args = ["fmt", "--all", "--", "--check"]
+args = ["fmt", "--", "--check"]
 
 [tasks.test]
 description = "Run tests."
 command = "cargo"
 args = ["test", "${@}"]
 
-[tasks.clippy-ci]
+[tasks.clippy]
 command = "cargo"
-args = ["clippy", "--all-features", "--", "-D", "warnings"]
+args = ["clippy", "--all-features", "--all-targets", "--", "-D", "warnings"]
 
-[tasks.cargo-prune]
-description = "Run cargo prune"
+[tasks.docs]
+description = "Build docs as they are rendered on docs.rs"
 command = "cargo"
-args = ["prune"]
+args = ["doc", "--document-private-items", "--all-features", "--no-deps"]
+env = { "RUSTDOCFLAGS" = "-Dwarnings" }
 
-[tasks.print-stats]
-description = "Print cache size"
-command = "du"
-args = ["-sh", "target", ".cargo"]
-
-[tasks.cache-cleanup]
-description = "Clean CI cache"
-dependencies = ["cargo-prune", "delete-artifacts", "print-stats"]
-
-[tasks.delete-artifacts]
-description = "Remove non cachable artifacts"
-script = [
-    '''
-    #!/bin/bash
-    set -e
-    set -x
-    find ./target/debug -type f -maxdepth 1 -delete || true
-    rm -rf ./target/{debug,release}/deps/{*prima-tracing*}
-    rm -rf ./target/{debug,release}/.fingerprint/*prima-tracing*
-    ''',
-]
+[tasks.release]
+description = "Task to release the package to crates.io"
+command = "cargo"
+args = ["release", "publish", "--no-confirm", "--allow-branch \"*\"", "--all-features", "--execute"]
