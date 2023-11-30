@@ -58,7 +58,8 @@ pub fn init_subscriber(subscriber: impl Subscriber + Sync + Send) -> Uninstall {
 
     #[cfg(feature = "traces")]
     {
-        use opentelemetry::{global, sdk::propagation::TraceContextPropagator};
+        use opentelemetry::global;
+        use opentelemetry_sdk::propagation::TraceContextPropagator;
         global::set_text_map_propagator(TraceContextPropagator::new());
     };
     Uninstall
