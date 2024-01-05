@@ -22,4 +22,4 @@ jobs:
         env:
           CARGO_AUTH_KEY: ${{ secrets.CARGO_AUTH_KEY }}
       - name: Yank
-        run: cargo yank --version "$VERSION" prima-tracing
+        run: cargo yank --version "$VERSION"
