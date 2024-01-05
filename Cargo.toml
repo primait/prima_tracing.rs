@@ -6,7 +6,7 @@ license = "MIT OR Apache-2.0"
 name = "prima-tracing"
 readme = "README.md"
 repository = "https://github.com/primait/prima_tracing.rs"
-version = "0.8.0"
+version = "0.8.1"
 
 [features]
 default = []
@@ -17,7 +17,7 @@ prima-telemetry = ["traces"]
 
 datadog = ["json-logger", "opentelemetry", "tracing-opentelemetry"]
 json-logger = []
-traces = ["tracing-opentelemetry", "opentelemetry", "opentelemetry-otlp"]
+traces = ["tracing-opentelemetry", "opentelemetry", "opentelemetry_sdk", "opentelemetry-otlp"]
 
 # feature sets most likely used in given environment
 dev = ["traces"]

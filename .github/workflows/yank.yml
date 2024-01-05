@@ -1,0 +1,25 @@
+name: Yank
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to yank
+        required: true
+        default: x.y.z
+        type: string
+
+jobs:
+  retire:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Attempting to yank version $VERSION"
+      - name: Login
+        run: cargo login "$CARGO_AUTH_KEY"
+        env:
+          CARGO_AUTH_KEY: ${{ secrets.CARGO_AUTH_KEY }}
+      - name: Yank
+        run: cargo yank --version "$VERSION"
