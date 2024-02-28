@@ -5,6 +5,8 @@ use std::time::SystemTime;
 #[cfg(feature = "traces")]
 #[tokio::test(flavor = "multi_thread")]
 async fn it_sends_traces_to_jaeger() {
+    std::env::set_var("RUST_LOG", "info");
+
     let service_name = "it_sends_traces_to_jaeger";
     // Unique id for this test run
     let seed = SystemTime::now()
