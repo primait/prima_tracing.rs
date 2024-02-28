@@ -5,7 +5,8 @@
 //! ```rust
 //!
 //! use prima_tracing::{builder, configure_subscriber, Country, Environment, init_subscriber};
-//!
+//! # #[cfg(not(feature = "traces"))]
+//! # {
 //! let subscriber = configure_subscriber(
 //!   builder("ping")
 //!     .with_country(Country::Common)
@@ -14,6 +15,7 @@
 //! );
 //!
 //! let _guard = init_subscriber(subscriber);
+//! # }
 //! ```
 
 mod config;
