@@ -51,6 +51,4 @@ async fn it_sends_traces_to_jaeger() {
 
     let msg = spans[0].logs[0].fields[0].v_str.as_str();
     assert_eq!(log_message, msg);
-
-    assert!(true);
 }
