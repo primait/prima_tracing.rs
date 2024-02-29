@@ -1,5 +1,5 @@
 pub use self::{
-    country::{Country, CountryParseError},
+    country::Country,
     environment::{Environment, EnvironmentParseError},
 };
 #[cfg(feature = "json-logger")]
