@@ -21,7 +21,18 @@ jobs:
     # Avoid duplicate jobs on PR from a branch on the same repo
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
+    services:
+      jaeger:
+        image: jaegertracing/all-in-one:1.35
+        env:
+          COLLECTOR_OTLP_ENABLED: "true"
+          COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
+        ports:
+        - 16685:16685
+        - 55681:55681
+
     steps:
+      - run: sudo echo "127.0.0.1 jaeger" | sudo tee -a /etc/hosts
       - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@cargo-make
