@@ -3,7 +3,8 @@ use std::io::Write;
 
 use serde::ser::{SerializeMap, Serializer};
 use serde::Serialize;
-use tracing::{Event, Metadata, Subscriber};
+use tracing::{Event, Subscriber};
+use tracing_log::NormalizeEvent;
 use tracing_subscriber::{
     fmt::MakeWriter,
     layer::Context,
@@ -118,7 +119,12 @@ impl EventFormatter for DefaultEventFormatter {
     where
         S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>,
     {
-        let metadata = event.metadata();
+        let normalized_metadata = event.normalized_metadata();
+
+        let metadata = normalized_metadata
+            .as_ref()
+            .unwrap_or_else(|| event.metadata());
+
         let mut buffer = Vec::new();
         let mut serializer = serde_json::Serializer::new(&mut buffer);
         let mut map_serializer = serializer.serialize_map(None)?;
@@ -141,8 +147,6 @@ impl EventFormatter for DefaultEventFormatter {
             "metadata",
             &MetadataSerializer {
                 ctx: &ctx,
-                metadata,
-                visitor: &visitor,
                 environment: info.environment(),
             },
         )?;
@@ -193,8 +197,6 @@ where
     S: Subscriber + tracing_subscriber::registry::LookupSpan<'a>,
 {
     ctx: &'a Context<'a, S>,
-    metadata: &'a Metadata<'a>,
-    visitor: &'a PrimaJsonVisitor<'a>,
     environment: &'a str,
 }
 
@@ -209,36 +211,6 @@ where
         let mut map_serializer = serializer.serialize_map(None)?;
 
         map_serializer.serialize_entry("environment", self.environment)?;
-        map_serializer.serialize_entry(
-            "target",
-            self.visitor
-                .get("log.target")
-                .unwrap_or_else(|| self.metadata.target()),
-        )?;
-        map_serializer.serialize_entry(
-            "file",
-            self.metadata
-                .file()
-                .or_else(|| self.visitor.get("log.file"))
-                .unwrap_or("-"),
-        )?;
-        map_serializer.serialize_entry(
-            "line",
-            &self
-                .metadata
-                .line()
-                .or_else(|| self.visitor.get("log.line"))
-                .unwrap_or(0),
-        )?;
-
-        for (key, value) in self
-            .visitor
-            .fields()
-            .iter()
-            .filter(|(&key, _)| key != "message" && !key.starts_with("log."))
-        {
-            map_serializer.serialize_entry(key, value)?;
-        }
 
         if let Some(current_span) = self
             .ctx

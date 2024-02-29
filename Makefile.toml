@@ -21,7 +21,8 @@ args = ["test", "--all-features", "${@}"]
 
 [tasks.clippy]
 command = "cargo"
-args = ["clippy", "--all-features", "--all-targets", "--", "-D", "warnings"]
+args = ["clippy", "--all-features", "--all-targets", "${@}"]
+env.RUSTFLAGS = "-Dwarnings"
 
 [tasks.docs]
 description = "Build docs as they are rendered on docs.rs"
