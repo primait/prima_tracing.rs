@@ -55,3 +55,26 @@ async fn traces_are_sent_to_datadog() {
     let msg = spans[0].logs[0].fields[0].v_str.as_str();
     assert_eq!(log_message, msg);
 }
+
+#[cfg(feature = "traces")]
+#[tokio::test(flavor = "multi_thread")]
+async fn events_contain_metadata() {
+    let spans = get_spans(|| {
+        let span = tracing::info_span!("my span");
+        span.in_scope(|| {
+            tracing::info!(hello = "meta!", "meta?");
+        });
+    })
+    .await
+    .expect("Failed to fetch traces from jaeger");
+
+    assert_eq!(
+        "meta!",
+        &spans[0].logs[0]
+            .fields
+            .iter()
+            .find(|f| f.key == "hello")
+            .unwrap()
+            .v_str
+    );
+}
