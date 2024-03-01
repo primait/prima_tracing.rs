@@ -15,9 +15,10 @@ command = "cargo"
 args = ["fmt", "--", "--check"]
 
 [tasks.test]
+install_crate = "cargo-nextest"
 description = "Run tests."
 command = "cargo"
-args = ["test", "--all-features", "${@}"]
+args = ["nextest", "run", "--all-features", "${@}"]
 
 [tasks.clippy]
 command = "cargo"

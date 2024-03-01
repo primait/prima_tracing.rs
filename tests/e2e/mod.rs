@@ -1,16 +1,12 @@
 use opentelemetry_jaeger::testing::jaeger_api_v2::Span;
 use opentelemetry_jaeger::testing::jaeger_client::JaegerTestClient;
 use prima_tracing::{builder, configure_subscriber, init_subscriber, Country, Environment};
-use std::time::SystemTime;
 
 async fn get_spans(f: impl FnOnce()) -> Option<Vec<Span>> {
     std::env::set_var("RUST_LOG", "info");
 
     // Unique id for this test run
-    let seed = SystemTime::now()
-        .duration_since(SystemTime::UNIX_EPOCH)
-        .unwrap()
-        .as_millis();
+    let seed = std::fs::read_to_string("/proc/sys/kernel/random/uuid").unwrap();
     let service_name = format!("e2e-test-{seed}");
 
     let collector_url = "http://jaeger:55681";
@@ -41,7 +37,7 @@ async fn get_spans(f: impl FnOnce()) -> Option<Vec<Span>> {
 
 #[cfg(feature = "traces")]
 #[tokio::test(flavor = "multi_thread")]
-async fn it_sends_traces_to_jaeger() {
+async fn traces_are_sent_to_datadog() {
     let log_message = "hello it_sends_traces_to_jaeger";
 
     let spans = get_spans(|| {
