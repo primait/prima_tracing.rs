@@ -128,6 +128,16 @@ impl EventFormatter for DefaultEventFormatter {
         let mut buffer = Vec::new();
         let mut serializer = serde_json::Serializer::new(&mut buffer);
         let mut map_serializer = serializer.serialize_map(None)?;
+        let mut visitor = PrimaJsonVisitor::default();
+        event.record(&mut visitor);
+
+        for (key, value) in visitor
+            .fields()
+            .iter()
+            .filter(|(&key, _)| key != "message" && !key.starts_with("log."))
+        {
+            map_serializer.serialize_entry(key, value)?;
+        }
 
         map_serializer.serialize_entry("timestamp", &chrono::Utc::now())?;
         map_serializer.serialize_entry(
@@ -138,18 +148,15 @@ impl EventFormatter for DefaultEventFormatter {
         map_serializer.serialize_entry("environment", info.environment())?;
         map_serializer.serialize_entry("type", info.app_name())?;
 
-        let mut visitor = PrimaJsonVisitor::default();
-        event.record(&mut visitor);
-
         map_serializer.serialize_entry("message", &visitor.fields().get("message"))?;
 
-        map_serializer.serialize_entry(
-            "metadata",
-            &MetadataSerializer {
-                ctx: &ctx,
-                environment: info.environment(),
-            },
-        )?;
+        map_serializer.serialize_entry("environment", info.environment)?;
+
+        if let Some(current_span) = ctx.current_span().id().and_then(|id| ctx.span(id)) {
+            map_serializer.serialize_entry("current_span", &SpanSerializer(&current_span))?;
+        }
+
+        map_serializer.serialize_entry("spans", &SpanListSerializer(&ctx))?;
 
         // Adds support for correlating logs and traces on datadog
         // In order for Datadog to be able to correlate the logs with the traces we need to insert `dd.trace_id` and `dd.span_id` at root level
@@ -189,41 +196,6 @@ impl EventFormatter for DefaultEventFormatter {
         map_serializer.end()?;
 
         Ok(buffer)
-    }
-}
-
-pub struct MetadataSerializer<'a, S>
-where
-    S: Subscriber + tracing_subscriber::registry::LookupSpan<'a>,
-{
-    ctx: &'a Context<'a, S>,
-    environment: &'a str,
-}
-
-impl<'a, Sub> Serialize for MetadataSerializer<'a, Sub>
-where
-    Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut map_serializer = serializer.serialize_map(None)?;
-
-        map_serializer.serialize_entry("environment", self.environment)?;
-
-        if let Some(current_span) = self
-            .ctx
-            .current_span()
-            .id()
-            .and_then(|id| self.ctx.span(id))
-        {
-            map_serializer.serialize_entry("current_span", &SpanSerializer(&current_span))?;
-        }
-
-        map_serializer.serialize_entry("spans", &SpanListSerializer(self.ctx))?;
-
-        map_serializer.end()
     }
 }
 
