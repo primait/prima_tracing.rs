@@ -38,7 +38,7 @@ async fn get_spans(f: impl FnOnce()) -> Option<Vec<Span>> {
 #[cfg(feature = "traces")]
 #[tokio::test(flavor = "multi_thread")]
 async fn traces_are_sent_to_datadog() {
-    let log_message = "hello it_sends_traces_to_jaeger";
+    let log_message = "hello traces_are_sent_to_datadog";
 
     let spans = get_spans(|| {
         let span = tracing::info_span!("my span");
