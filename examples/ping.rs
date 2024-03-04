@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use actix_web::{middleware::Logger, web, App, HttpResponse, HttpServer};
-use prima_bridge::{prelude::*, Bridge, Request};
+use prima_bridge::prelude::*;
 use prima_tracing::{builder, configure_subscriber, init_subscriber, Country, Environment};
 use tracing_actix_web::TracingLogger;
 

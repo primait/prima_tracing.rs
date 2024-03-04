@@ -15,13 +15,15 @@ command = "cargo"
 args = ["fmt", "--", "--check"]
 
 [tasks.test]
+install_crate = "cargo-nextest"
 description = "Run tests."
 command = "cargo"
-args = ["test", "--all-features", "${@}"]
+args = ["nextest", "run", "--all-features", "${@}"]
 
 [tasks.clippy]
 command = "cargo"
-args = ["clippy", "--all-features", "--all-targets", "--", "-D", "warnings"]
+args = ["clippy", "--all-features", "--all-targets", "${@}"]
+env.RUSTFLAGS = "-Dwarnings"
 
 [tasks.docs]
 description = "Build docs as they are rendered on docs.rs"
