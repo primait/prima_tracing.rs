@@ -150,8 +150,6 @@ impl EventFormatter for DefaultEventFormatter {
 
         map_serializer.serialize_entry("message", &visitor.fields().get("message"))?;
 
-        map_serializer.serialize_entry("environment", info.environment)?;
-
         if let Some(current_span) = ctx.current_span().id().and_then(|id| ctx.span(id)) {
             map_serializer.serialize_entry("current_span", &SpanSerializer(&current_span))?;
         }
