@@ -5,13 +5,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [0.9.0-rc.0] - 2024-03-04
+
 ### Changed
 
 - All log metadata is now stored in the top level object instead of under a `metadata` key.
-
----
-
-## [0.9.0] - 2024-03-04
 
 ---
 
