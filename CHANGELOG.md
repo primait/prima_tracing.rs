@@ -5,6 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Automatically append /v1/traces to the collector endpoint
+
+This is only done if a /v1/traces suffix isn't already there, meaning old configurations should continue to function
+
 ---
 
 ## [0.9.0-rc.0] - 2024-03-04
