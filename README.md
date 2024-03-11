@@ -117,7 +117,7 @@ fn main() -> std::io::Result<()> {
             .with_env(Environment::Dev)
             .with_version("1.0".to_string())
             .with_telemetry(
-                "http://localhost:55681/v1/traces".to_string(),
+                "http://localhost:55681".to_string(),
                 "myapp".to_string(),
             )
             .build(),
