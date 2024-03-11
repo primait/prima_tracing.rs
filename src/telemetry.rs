@@ -32,13 +32,13 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
     // For backwards compatibility we strip it from configurations that do have it
     let collector_url = collector_url
         // In case of a trailing slash strip it
-        .strip_suffix("/")
+        .strip_suffix('/')
         .unwrap_or(collector_url)
         .strip_suffix("/v1/traces")
         .unwrap_or(collector_url);
 
     // Backport https://github.com/open-telemetry/opentelemetry-rust/pull/1553
-    let collector_url = collector_url.strip_suffix("/").unwrap_or(collector_url);
+    let collector_url = collector_url.strip_suffix('/').unwrap_or(collector_url);
 
     let otlp_exporter = opentelemetry_otlp::new_exporter()
         .http()

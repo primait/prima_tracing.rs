@@ -15,10 +15,7 @@ async fn main() -> std::io::Result<()> {
             .with_env(Environment::Dev)
             .with_country(Country::Common)
             .with_version("1.0".to_string())
-            .with_telemetry(
-                "http://localhost:55681".to_string(),
-                "ping".to_string(),
-            )
+            .with_telemetry("http://localhost:55681".to_string(), "ping".to_string())
             .build(),
     );
 
