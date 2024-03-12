@@ -2,15 +2,14 @@ use opentelemetry_jaeger::testing::jaeger_api_v2::Span;
 use opentelemetry_jaeger::testing::jaeger_client::JaegerTestClient;
 use prima_tracing::{builder, configure_subscriber, init_subscriber, Country, Environment};
 
-async fn get_spans(f: impl FnOnce()) -> Option<Vec<Span>> {
+async fn get_spans(f: impl FnOnce(), collector_url: &str) -> Option<Vec<Span>> {
     std::env::set_var("RUST_LOG", "info");
 
     // Unique id for this test run
     let seed = std::fs::read_to_string("/proc/sys/kernel/random/uuid").unwrap();
     let service_name = format!("e2e-test-{seed}");
 
-    let collector_url = "http://jaeger:55681";
-    let query_api_url = "http://jaeger:16685";
+    let query_api_url = "http://jaeger:16685/";
 
     let subscriber = configure_subscriber(
         builder(&service_name)
@@ -40,12 +39,15 @@ async fn get_spans(f: impl FnOnce()) -> Option<Vec<Span>> {
 async fn traces_are_sent_to_datadog() {
     let log_message = "hello traces_are_sent_to_datadog";
 
-    let spans = get_spans(|| {
-        let span = tracing::info_span!("my span");
-        span.in_scope(|| {
-            tracing::info!("{log_message}");
-        });
-    })
+    let spans = get_spans(
+        || {
+            let span = tracing::info_span!("my span");
+            span.in_scope(|| {
+                tracing::info!("{log_message}");
+            });
+        },
+        "http://jaeger:55681",
+    )
     .await
     .expect("Failed to fetch traces from jaeger");
 
@@ -59,12 +61,15 @@ async fn traces_are_sent_to_datadog() {
 #[cfg(feature = "traces")]
 #[tokio::test(flavor = "multi_thread")]
 async fn events_contain_metadata() {
-    let spans = get_spans(|| {
-        let span = tracing::info_span!("my span");
-        span.in_scope(|| {
-            tracing::info!(hello = "meta!", "meta?");
-        });
-    })
+    let spans = get_spans(
+        || {
+            let span = tracing::info_span!("my span");
+            span.in_scope(|| {
+                tracing::info!(hello = "meta!", "meta?");
+            });
+        },
+        "http://jaeger:55681",
+    )
     .await
     .expect("Failed to fetch traces from jaeger");
 
@@ -77,4 +82,36 @@ async fn events_contain_metadata() {
             .unwrap()
             .v_str
     );
+}
+
+#[cfg(feature = "traces")]
+#[tokio::test(flavor = "multi_thread")]
+async fn strips_trailing_slash() {
+    get_spans(
+        || {
+            let span = tracing::info_span!("my span");
+            span.in_scope(|| {
+                tracing::info!(hello = "meta!", "meta?");
+            });
+        },
+        "http://jaeger:55681/",
+    )
+    .await
+    .expect("Failed to fetch traces from jaeger");
+}
+
+#[cfg(feature = "traces")]
+#[tokio::test(flavor = "multi_thread")]
+async fn strips_trailing_endpoint() {
+    get_spans(
+        || {
+            let span = tracing::info_span!("my span");
+            span.in_scope(|| {
+                tracing::info!(hello = "meta!", "meta?");
+            });
+        },
+        "http://jaeger:55681/v1/traces/",
+    )
+    .await
+    .expect("Failed to fetch traces from jaeger");
 }
