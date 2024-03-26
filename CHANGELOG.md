@@ -5,6 +5,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+No new changes since 0.9.0-rc.1
+
+### Changed
+
+- Automatically append /v1/traces to the collector endpoint
+
+This is only done if a /v1/traces suffix isn't already there, meaning old configurations should continue to function
+
+- All log metadata is now stored in the top level object instead of under a `metadata` key.
+
 ---
 
 ## [0.9.0-rc.1] - 2024-03-11
