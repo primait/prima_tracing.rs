@@ -2,8 +2,8 @@ use opentelemetry::KeyValue;
 use tracing::span;
 use tracing::Subscriber;
 use tracing_opentelemetry::OtelData;
-use tracing_subscriber::Layer;
 use tracing_subscriber::layer::Context;
+use tracing_subscriber::Layer;
 
 pub struct VersionLayer {
     pub version: Option<String>,
