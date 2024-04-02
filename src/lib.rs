@@ -25,6 +25,8 @@ mod subscriber;
 #[cfg(feature = "json-logger")]
 pub mod json;
 #[cfg(feature = "traces")]
+pub mod layer;
+#[cfg(feature = "traces")]
 pub mod telemetry;
 
 pub use crate::config::{
