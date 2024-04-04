@@ -57,6 +57,6 @@ url = "2.5.0"
 [dev-dependencies]
 actix-web = "4.0.1"
 opentelemetry-jaeger = {version = "0.21", features = ["integration_test"]}
-prima_bridge = "0.15"
+prima_bridge = "0.16"
 tokio = {version = "1.17", features = ["rt", "macros", "rt-multi-thread"]}
 tracing-actix-web = {version = "0.7.0", features = ["opentelemetry_0_21"]}
