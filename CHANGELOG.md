@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.1] - 2024-04-08
+
+### Added
+
+- Added an `ErrorLayer` to add `error.message`, `error.type` and `error.stack` to the log metadata when a `tracing::Event` 
+  is an `Error`.
+
+---
+
 ## [0.9.0] - 2024-03-26
 
 No new changes since 0.9.0-rc.1
@@ -163,7 +172,8 @@ If you are using Jaeger to collect traces locally on your machine, you will need
 
 
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.9.0...HEAD
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.9.1...HEAD
+[0.9.1]: https://github.com/primait/prima_tracing.rs/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/primait/prima_tracing.rs/compare/0.9.0-rc.1...0.9.0
 [0.9.0-rc.1]: https://github.com/primait/prima_tracing.rs/compare/0.9.0-rc.0...0.9.0-rc.1
 [0.9.0-rc.0]: https://github.com/primait/prima_tracing.rs/compare/0.8.1...0.9.0-rc.0
