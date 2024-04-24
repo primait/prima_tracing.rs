@@ -41,7 +41,7 @@ pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
         use crate::json::formatter::PrimaFormattingLayer;
         use crate::json::storage::PrimaJsonStorage;
         subscriber
-            .with(PrimaJsonStorage::default())
+            .with(PrimaJsonStorage)
             .with(crate::layer::KubeEnvLayer::default())
             .with(PrimaFormattingLayer::new(
                 _config.service.clone(),
