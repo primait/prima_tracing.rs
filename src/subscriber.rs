@@ -31,6 +31,7 @@ pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
                 version: _config.version.clone(),
             })
             .with(crate::layer::ErrorLayer)
+            .with(crate::layer::KubeEnvLayer::default())
     };
 
     #[cfg(not(feature = "json-logger"))]
@@ -40,7 +41,8 @@ pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
         use crate::json::formatter::PrimaFormattingLayer;
         use crate::json::storage::PrimaJsonStorage;
         subscriber
-            .with(PrimaJsonStorage)
+            .with(PrimaJsonStorage::default())
+            .with(crate::layer::KubeEnvLayer::default())
             .with(PrimaFormattingLayer::new(
                 _config.service.clone(),
                 _config.country.to_string(),

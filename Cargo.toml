@@ -9,7 +9,7 @@ repository = "https://github.com/primait/prima_tracing.rs"
 version = "0.9.1"
 
 [features]
-default = []
+default = ["live", "dev"]
 # Legacy feature names kept for compatibility reasons
 prima-logger-datadog = ["datadog"]
 prima-logger-json = ["json-logger"]
