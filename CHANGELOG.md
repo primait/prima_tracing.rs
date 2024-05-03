@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [0.9.2] - 2024-05-03
+
 ### Added
 
 - Added metadata based on the kubernetes environment variables:
@@ -180,7 +184,9 @@ If you are using Jaeger to collect traces locally on your machine, you will need
 
 
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.9.1...HEAD
+
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.9.2...HEAD
+[0.9.2]: https://github.com/primait/prima_tracing.rs/compare/0.9.1...0.9.2
 [0.9.1]: https://github.com/primait/prima_tracing.rs/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/primait/prima_tracing.rs/compare/0.9.0-rc.1...0.9.0
 [0.9.0-rc.1]: https://github.com/primait/prima_tracing.rs/compare/0.9.0-rc.0...0.9.0-rc.1
