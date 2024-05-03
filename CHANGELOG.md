@@ -5,6 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added metadata based on the kubernetes environment variables:
+  * KUBE_APP_PART_OF
+  * KUBE_APP_MANAGED_BY
+  * KUBE_APP_VERSION
+  * KUBE_APP_INSTANCE
+
 ---
 
 ## [0.9.1] - 2024-04-08
