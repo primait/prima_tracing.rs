@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Added `error.kind` to `ErrorLayer` hopefully fixing datadog error tracking.
+
 ---
 
 ## [0.9.2] - 2024-05-03
