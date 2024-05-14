@@ -24,7 +24,7 @@ where
                         data.builder.attributes.get_or_insert(Vec::with_capacity(4));
                     builder_attrs.extend([
                         KeyValue::new("error.message", visitor.message),
-                        KeyValue::new("error.type", visitor.kind),
+                        KeyValue::new("error.type", visitor.kind.clone()),
                         KeyValue::new("error.kind", visitor.kind),
                         KeyValue::new("error.stack", visitor.stack),
                     ]);
