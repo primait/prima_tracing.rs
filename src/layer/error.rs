@@ -63,7 +63,7 @@ struct ErrorVisitor {
     message: String,
     kind: String,
     stack: String,
-    error: Option<Box<dyn std::error::Error>>
+    error: Option<Box<dyn std::error::Error>>,
 }
 
 impl Visit for ErrorVisitor {
