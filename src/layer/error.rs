@@ -19,37 +19,39 @@ where
                 let mut visitor = ErrorVisitor::default();
                 event.record(&mut visitor);
 
-                let otel_data = span.extensions_mut().remove::<OtelData>();
+                if let Some(_) = visitor.error {
+                    let otel_data = span.extensions_mut().remove::<OtelData>();
 
-                if let Some(mut otel_data) = otel_data {
-                    let builder = &mut otel_data.builder;
-                    let builder_attrs = builder.attributes.get_or_insert(vec![]);
+                    if let Some(mut otel_data) = otel_data {
+                        let builder = &mut otel_data.builder;
+                        let builder_attrs = builder.attributes.get_or_insert(vec![]);
 
-                    // Adding fields to existing trace events (logs)
-                    if let Some(ref mut events) = builder.events {
-                        for event in events.iter_mut() {
-                            event
-                                .attributes
-                                .push(KeyValue::new("error.message", visitor.message.clone()));
-                            event
-                                .attributes
-                                .push(KeyValue::new("error.type", visitor.kind.clone()));
-                            event
-                                .attributes
-                                .push(KeyValue::new("error.kind", visitor.kind.clone()));
-                            event
-                                .attributes
-                                .push(KeyValue::new("error.stack", visitor.stack.clone()));
+                        // Adding fields to existing trace events (logs)
+                        if let Some(ref mut events) = builder.events {
+                            for event in events.iter_mut() {
+                                event
+                                    .attributes
+                                    .push(KeyValue::new("error.message", visitor.message.clone()));
+                                event
+                                    .attributes
+                                    .push(KeyValue::new("error.type", visitor.kind.clone()));
+                                event
+                                    .attributes
+                                    .push(KeyValue::new("error.kind", visitor.kind.clone()));
+                                event
+                                    .attributes
+                                    .push(KeyValue::new("error.stack", visitor.stack.clone()));
+                            }
                         }
+
+                        // Adding fields to existing trace tags
+                        builder_attrs.push(KeyValue::new("error.message", visitor.message));
+                        builder_attrs.push(KeyValue::new("error.type", visitor.kind.clone()));
+                        builder_attrs.push(KeyValue::new("error.kind", visitor.kind));
+                        builder_attrs.push(KeyValue::new("error.stack", visitor.stack));
+
+                        span.extensions_mut().replace(otel_data);
                     }
-
-                    // Adding fields to existing trace tags
-                    builder_attrs.push(KeyValue::new("error.message", visitor.message));
-                    builder_attrs.push(KeyValue::new("error.type", visitor.kind.clone()));
-                    builder_attrs.push(KeyValue::new("error.kind", visitor.kind));
-                    builder_attrs.push(KeyValue::new("error.stack", visitor.stack));
-
-                    span.extensions_mut().replace(otel_data);
                 }
             }
         }
@@ -61,6 +63,7 @@ struct ErrorVisitor {
     message: String,
     kind: String,
     stack: String,
+    error: Option<Box<dyn std::error::Error>>
 }
 
 impl Visit for ErrorVisitor {
@@ -78,6 +81,7 @@ impl Visit for ErrorVisitor {
         self.message = error_msg;
         self.kind = "Error".to_string();
         self.stack = source;
+        self.error = Some(Box::new(value));
     }
 
     fn record_debug(&mut self, _field: &Field, _value: &dyn std::fmt::Debug) {}
