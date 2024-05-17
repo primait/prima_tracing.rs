@@ -19,7 +19,7 @@ where
                 let mut visitor = ErrorVisitor::default();
                 event.record(&mut visitor);
 
-                if let Some(_) = visitor.error {
+                if visitor.is_error {
                     let otel_data = span.extensions_mut().remove::<OtelData>();
 
                     if let Some(mut otel_data) = otel_data {
@@ -63,7 +63,7 @@ struct ErrorVisitor {
     message: String,
     kind: String,
     stack: String,
-    error: Option<Box<dyn std::error::Error>>,
+    is_error: bool,
 }
 
 impl Visit for ErrorVisitor {
@@ -81,7 +81,7 @@ impl Visit for ErrorVisitor {
         self.message = error_msg;
         self.kind = "Error".to_string();
         self.stack = source;
-        self.error = Some(Box::new(value));
+        self.is_error = true;
     }
 
     fn record_debug(&mut self, _field: &Field, _value: &dyn std::fmt::Debug) {}
