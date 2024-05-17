@@ -172,9 +172,18 @@ async fn error_layer_enrich_errored_spans() {
 
     assert_eq!(spans[0].logs.len(), 1);
 
-    let err_msg = spans[0].logs[0].fields.iter().find(|f| f.key == "error.message");
-    let err_kind = spans[0].logs[0].fields.iter().find(|f| f.key == "error.type");
-    let err_stack = spans[0].logs[0].fields.iter().find(|f| f.key == "error.stack");
+    let err_msg = spans[0].logs[0]
+        .fields
+        .iter()
+        .find(|f| f.key == "error.message");
+    let err_kind = spans[0].logs[0]
+        .fields
+        .iter()
+        .find(|f| f.key == "error.type");
+    let err_stack = spans[0].logs[0]
+        .fields
+        .iter()
+        .find(|f| f.key == "error.stack");
 
     assert_eq!("Error: error message", err_msg.unwrap().v_str);
     assert_eq!("Error", err_kind.unwrap().v_str);
