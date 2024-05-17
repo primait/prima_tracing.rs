@@ -15,21 +15,43 @@ where
 {
     fn on_event(&self, event: &Event<'_>, ctx: tracing_subscriber::layer::Context<'_, S>) {
         if event.metadata().is_event() && event.metadata().level() == &Level::ERROR {
-            let mut visitor = ErrorVisitor::default();
-            event.record(&mut visitor);
-
             if let Some(span) = ctx.lookup_current() {
-                if let Some(data) = span.extensions_mut().get_mut::<OtelData>() {
-                    let builder_attrs =
-                        data.builder.attributes.get_or_insert(Vec::with_capacity(4));
-                    builder_attrs.extend([
-                        KeyValue::new("error.message", visitor.message),
-                        KeyValue::new("error.type", visitor.kind.clone()),
-                        KeyValue::new("error.kind", visitor.kind),
-                        KeyValue::new("error.stack", visitor.stack),
-                    ]);
+                let mut visitor = ErrorVisitor::default();
+                event.record(&mut visitor);
+
+                let otel_data = span.extensions_mut().remove::<OtelData>();
+
+                if let Some(mut otel_data) = otel_data {
+                    let builder = &mut otel_data.builder;
+                    let builder_attrs = builder.attributes.get_or_insert(vec![]);
+
+                    // Adding fields to existing trace events (logs)
+                    if let Some(ref mut events) = builder.events {
+                        for event in events.iter_mut() {
+                            event
+                                .attributes
+                                .push(KeyValue::new("error.message", visitor.message.clone()));
+                            event
+                                .attributes
+                                .push(KeyValue::new("error.type", visitor.kind.clone()));
+                            event
+                                .attributes
+                                .push(KeyValue::new("error.kind", visitor.kind.clone()));
+                            event
+                                .attributes
+                                .push(KeyValue::new("error.stack", visitor.stack.clone()));
+                        }
+                    }
+
+                    // Adding fields to existing trace tags
+                    builder_attrs.push(KeyValue::new("error.message", visitor.message));
+                    builder_attrs.push(KeyValue::new("error.type", visitor.kind.clone()));
+                    builder_attrs.push(KeyValue::new("error.kind", visitor.kind));
+                    builder_attrs.push(KeyValue::new("error.stack", visitor.stack));
+
+                    span.extensions_mut().replace(otel_data);
                 }
-            };
+            }
         }
     }
 }
@@ -43,7 +65,7 @@ struct ErrorVisitor {
 
 impl Visit for ErrorVisitor {
     fn record_error(&mut self, _field: &Field, value: &(dyn std::error::Error + 'static)) {
-        let mut source: String = format!("Stack:\n{}", value);
+        let mut source: String = value.to_string();
         let mut next_err = value.source();
 
         while let Some(err) = next_err {
@@ -57,5 +79,6 @@ impl Visit for ErrorVisitor {
         self.kind = "Error".to_string();
         self.stack = source;
     }
+
     fn record_debug(&mut self, _field: &Field, _value: &dyn std::fmt::Debug) {}
 }
