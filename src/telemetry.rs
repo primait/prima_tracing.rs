@@ -62,3 +62,25 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
         .install_batch(runtime)
         .expect("Failed to configure the OpenTelemetry tracer")
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn normalize_collector_url_test() {
+        let base = "http://localhost:8080";
+        let expected = "http://localhost:8080/v1/traces";
+
+        assert_eq!(normalize_collector_url(base), expected);
+
+        let with_trailing_slash = format!("{}/", base);
+        assert_eq!(
+            normalize_collector_url(with_trailing_slash.as_str()),
+            expected
+        );
+
+        let complete = format!("{}/v1/traces", base);
+        assert_eq!(normalize_collector_url(complete.as_str()), expected);
+    }
+}
