@@ -1,9 +1,14 @@
 # Changelog
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+--
+
+## [0.9.5] - 2024-07-03
 
 ### Updated
 
@@ -15,7 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Added `error.type`, `error.kind`, `error.stack` and `error.message` to trace events (logs).
+- Added `error.type`, `error.kind`, `error.stack` and `error.message` to trace
+  events (logs).
 
 ---
 
@@ -32,10 +38,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added metadata based on the kubernetes environment variables:
-  * KUBE_APP_PART_OF
-  * KUBE_APP_MANAGED_BY
-  * KUBE_APP_VERSION
-  * KUBE_APP_INSTANCE
+  - KUBE_APP_PART_OF
+  - KUBE_APP_MANAGED_BY
+  - KUBE_APP_VERSION
+  - KUBE_APP_INSTANCE
 
 ---
 
@@ -43,8 +49,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added an `ErrorLayer` to add `error.message`, `error.type` and `error.stack` to the log metadata when a `tracing::Event` 
-  is an `Error`.
+- Added an `ErrorLayer` to add `error.message`, `error.type` and `error.stack`
+  to the log metadata when a `tracing::Event` is an `Error`.
 
 ---
 
@@ -56,9 +62,11 @@ No new changes since 0.9.0-rc.1
 
 - Automatically append /v1/traces to the collector endpoint
 
-This is only done if a /v1/traces suffix isn't already there, meaning old configurations should continue to function
+This is only done if a /v1/traces suffix isn't already there, meaning old
+configurations should continue to function
 
-- All log metadata is now stored in the top level object instead of under a `metadata` key.
+- All log metadata is now stored in the top level object instead of under a
+  `metadata` key.
 
 ---
 
@@ -68,7 +76,8 @@ This is only done if a /v1/traces suffix isn't already there, meaning old config
 
 - Automatically append /v1/traces to the collector endpoint
 
-This is only done if a /v1/traces suffix isn't already there, meaning old configurations should continue to function
+This is only done if a /v1/traces suffix isn't already there, meaning old
+configurations should continue to function
 
 ---
 
@@ -76,7 +85,8 @@ This is only done if a /v1/traces suffix isn't already there, meaning old config
 
 ### Changed
 
-- All log metadata is now stored in the top level object instead of under a `metadata` key.
+- All log metadata is now stored in the top level object instead of under a
+  `metadata` key.
 
 ---
 
@@ -99,7 +109,9 @@ This is only done if a /v1/traces suffix isn't already there, meaning old config
 - Bump `opentelemetry` to 0.21 and remove the `rt-tokio` feature
 - Bump `opentelemetry-otlp` to 0.14
 - Bump `tracing-opentelemetry` to 0.22
-- Move `rt-tokio-current-thread` to map to `["opentelemetry_sdk/rt-tokio-current-thread"]`, the tokio stuff has been moved to `opentelemetry_sdk`
+- Move `rt-tokio-current-thread` to map to
+  `["opentelemetry_sdk/rt-tokio-current-thread"]`, the tokio stuff has been
+  moved to `opentelemetry_sdk`
 
 ---
 
@@ -166,14 +178,16 @@ This is only done if a /v1/traces suffix isn't already there, meaning old config
 
 ### Removed
 
-- Removed the default `prima-logger` feature. This is a non-breaking change since the library already failed to compile without it.
+- Removed the default `prima-logger` feature. This is a non-breaking change
+  since the library already failed to compile without it.
 
 ## [0.5.0] - 2022-07-04
 
 ### Changed
 
-- SubscriberConfig env field value changed from string to enumeration (Environment)
-- Update dependencies  
+- SubscriberConfig env field value changed from string to enumeration
+  (Environment)
+- Update dependencies
 - ⚠️ Increased the minimum rust version to 1.57.0
 
 ### Security
@@ -184,27 +198,24 @@ Avoid to depend on time 0.1 that has security issues.
 
 ### Changed
 
-OpenTelemetry traces are now exported using the **OTLP** format instead of the Zipkin one.  
-⚠️ You will need to change the OpenTelemetry collector endpoint to `http://[HOSTNAME]:55681/v1/traces`.
+OpenTelemetry traces are now exported using the **OTLP** format instead of the
+Zipkin one.\
+⚠️ You will need to change the OpenTelemetry collector endpoint to
+`http://[HOSTNAME]:55681/v1/traces`.
 
-If you are using Jaeger to collect traces locally on your machine, you will need to update your Docker Compose setup to the following:
+If you are using Jaeger to collect traces locally on your machine, you will need
+to update your Docker Compose setup to the following:
 
 ```yaml
-  jaeger:
-    image: jaegertracing/all-in-one:1.35
-    ports:
-      - 16686:16686
-      - 55681:55681
-    environment:
-      COLLECTOR_OTLP_ENABLED: true
-      COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
+jaeger:
+  image: jaegertracing/all-in-one:1.35
+  ports:
+    - 16686:16686
+    - 55681:55681
+  environment:
+    COLLECTOR_OTLP_ENABLED: true
+    COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
-
-
-
-
-
-
 
 [Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.9.4...HEAD
 [0.9.4]: https://github.com/primait/prima_tracing.rs/compare/0.9.3...0.9.4
