@@ -6,9 +6,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+---
+
+## [0.10.0] - 2024-07-08
+
 --
 
-## [0.9.5] - 2024-07-03
+## (yanked) [0.9.5] - 2024-07-03
 
 ### Updated
 
@@ -217,7 +221,9 @@ jaeger:
     COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.9.4...HEAD
+
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.10.0...HEAD
+[0.10.0]: https://github.com/primait/prima_tracing.rs/compare/0.9.5...0.10.0
 [0.9.4]: https://github.com/primait/prima_tracing.rs/compare/0.9.3...0.9.4
 [0.9.3]: https://github.com/primait/prima_tracing.rs/compare/0.9.2...0.9.3
 [0.9.2]: https://github.com/primait/prima_tracing.rs/compare/0.9.1...0.9.2
