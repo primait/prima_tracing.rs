@@ -27,6 +27,8 @@ async fn get_spans(f: impl FnOnce(), collector_url: &str) -> Option<Vec<Span>> {
         f()
     }
 
+    std::thread::sleep(std::time::Duration::from_secs(10));
+
     let mut client = JaegerTestClient::new(query_api_url);
 
     if !client.contain_service(&service_name).await {
@@ -151,6 +153,8 @@ async fn error_layer_enrich_errored_spans() {
             );
         });
     };
+
+    std::thread::sleep(std::time::Duration::from_secs(10));
 
     let mut client = JaegerTestClient::new(query_api_url);
 
