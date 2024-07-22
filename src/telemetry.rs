@@ -1,3 +1,5 @@
+use opentelemetry::global;
+use opentelemetry::trace::TracerProvider;
 use opentelemetry::KeyValue;
 use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::{
@@ -55,12 +57,19 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
         KeyValue::new("service.name", telemetry.service_name.clone()),
     ]);
 
-    opentelemetry_otlp::new_pipeline()
+    let tracer_provider = opentelemetry_otlp::new_pipeline()
         .tracing()
         .with_exporter(otlp_exporter)
-        .with_trace_config(trace::config().with_resource(resource))
+        .with_trace_config(trace::Config::default().with_resource(resource))
         .install_batch(runtime)
-        .expect("Failed to configure the OpenTelemetry tracer")
+        .expect("Failed to configure the OpenTelemetry tracer provider");
+
+    global::set_tracer_provider(tracer_provider.clone());
+
+    tracer_provider
+        .tracer_builder("prima-tracing")
+        .with_version(env!("CARGO_PKG_VERSION"))
+        .build()
 }
 
 #[cfg(test)]
