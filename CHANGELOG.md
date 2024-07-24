@@ -6,6 +6,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Updated
+
+- Bumped opentelemetry version to 0.24
+
 ---
 
 ## [0.10.0] - 2024-07-08
