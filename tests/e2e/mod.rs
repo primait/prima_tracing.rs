@@ -9,7 +9,7 @@ async fn get_spans(f: impl FnOnce(), collector_url: &str) -> Option<Vec<Span>> {
     std::env::set_var("RUST_LOG", "info");
 
     // Unique id for this test run
-    let seed = std::fs::read_to_string("/proc/sys/kernel/random/uuid").unwrap();
+    let seed = uuid::Uuid::new_v4();
     let service_name = format!("e2e-test-{seed}");
 
     let query_api_url = "http://jaeger:16685/";
@@ -26,6 +26,8 @@ async fn get_spans(f: impl FnOnce(), collector_url: &str) -> Option<Vec<Span>> {
         let _guard = init_subscriber(subscriber);
         f()
     }
+
+    std::thread::sleep(std::time::Duration::from_secs(10));
 
     let mut client = JaegerTestClient::new(query_api_url);
 
@@ -125,7 +127,7 @@ async fn error_layer_enrich_errored_spans() {
     std::env::set_var("RUST_LOG", "info");
 
     // Unique id for this test run
-    let seed = std::fs::read_to_string("/proc/sys/kernel/random/uuid").unwrap();
+    let seed = uuid::Uuid::new_v4();
     let service_name = format!("e2e-test-{seed}");
 
     let query_api_url = "http://jaeger:16685/";
@@ -151,6 +153,8 @@ async fn error_layer_enrich_errored_spans() {
             );
         });
     };
+
+    std::thread::sleep(std::time::Duration::from_secs(10));
 
     let mut client = JaegerTestClient::new(query_api_url);
 
