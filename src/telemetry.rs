@@ -75,6 +75,7 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
         .build()
 }
 
+// Consider to remove this wrapper when https://github.com/open-telemetry/opentelemetry-rust/issues/1961 is resolved
 static TRACER_PROVIDER: Lazy<Mutex<Option<trace::TracerProvider>>> = Lazy::new(Default::default);
 
 fn set_tracer_provider(new_provider: trace::TracerProvider) {
