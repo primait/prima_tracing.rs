@@ -1,3 +1,4 @@
+use once_cell::sync::Lazy;
 use opentelemetry::global;
 use opentelemetry::trace::TracerProvider;
 use opentelemetry::KeyValue;
@@ -6,6 +7,8 @@ use opentelemetry_sdk::{
     trace::{self, Tracer},
     Resource,
 };
+use std::mem;
+use std::sync::Mutex;
 
 use crate::SubscriberConfig;
 
@@ -64,12 +67,38 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
         .install_batch(runtime)
         .expect("Failed to configure the OpenTelemetry tracer provider");
 
-    global::set_tracer_provider(tracer_provider.clone());
+    set_tracer_provider(tracer_provider.clone());
 
     tracer_provider
         .tracer_builder("prima-tracing")
         .with_version(env!("CARGO_PKG_VERSION"))
         .build()
+}
+
+// Consider to remove this wrapper when https://github.com/open-telemetry/opentelemetry-rust/issues/1961 is resolved
+static TRACER_PROVIDER: Lazy<Mutex<Option<trace::TracerProvider>>> = Lazy::new(Default::default);
+
+fn set_tracer_provider(new_provider: trace::TracerProvider) {
+    global::set_tracer_provider(new_provider.clone());
+
+    let mut tracer_provider = TRACER_PROVIDER
+        .lock()
+        .expect("OpenTelemetry tracer provider mutex poisoned");
+    _ = mem::replace(&mut *tracer_provider, Some(new_provider));
+}
+
+pub(crate) fn shutdown_tracer_provider() {
+    global::shutdown_tracer_provider();
+
+    let tracer_provider = TRACER_PROVIDER
+        .lock()
+        .expect("OpenTelemetry tracer provider mutex poisoned")
+        .take()
+        .expect("OpenTelemetry tracer provider is missing, cannot shutdown");
+
+    if let Err(err) = tracer_provider.shutdown() {
+        eprintln!("Failed to shutdown the OpenTelemetry tracer provider: {err:?}");
+    }
 }
 
 #[cfg(test)]

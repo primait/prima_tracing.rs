@@ -84,7 +84,7 @@ pub struct Uninstall;
 impl Drop for Uninstall {
     fn drop(&mut self) {
         #[cfg(feature = "traces")]
-        opentelemetry::global::shutdown_tracer_provider();
+        crate::telemetry::shutdown_tracer_provider();
     }
 }
 /// Information about the current app context like name or environment
