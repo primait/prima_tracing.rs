@@ -8,6 +8,14 @@ and this project adheres to
 
 ---
 
+## [0.11.1] - 2024-09-12
+
+### Fixed
+
+- Shutdown the tracing provider before exiting ([bug](https://github.com/open-telemetry/opentelemetry-rust/issues/1961))
+
+---
+
 ## [0.11.0] - 2024-07-24
 
 ### Updated
@@ -231,7 +239,8 @@ jaeger:
 
 
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.11.0...HEAD
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.11.1...HEAD
+[0.11.1]: https://github.com/primait/prima_tracing.rs/compare/0.11.0...0.11.1
 [0.11.0]: https://github.com/primait/prima_tracing.rs/compare/0.10.0...0.11.0
 [0.10.0]: https://github.com/primait/prima_tracing.rs/compare/0.9.5...0.10.0
 [0.9.4]: https://github.com/primait/prima_tracing.rs/compare/0.9.3...0.9.4
