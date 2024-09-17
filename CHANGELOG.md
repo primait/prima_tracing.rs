@@ -8,11 +8,20 @@ and this project adheres to
 
 ---
 
+## [0.12.0] - 2024-09-17
+
+### Updated
+
+- Bumped opentelemetry version to 0.25
+
+---
+
 ## [0.11.1] - 2024-09-12
 
 ### Fixed
 
-- Shutdown the tracing provider before exiting ([bug](https://github.com/open-telemetry/opentelemetry-rust/issues/1961))
+- Shutdown the tracing provider before exiting
+  ([bug](https://github.com/open-telemetry/opentelemetry-rust/issues/1961))
 
 ---
 
@@ -237,9 +246,8 @@ jaeger:
     COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
 
-
-
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.11.1...HEAD
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.12.0...HEAD
+[0.12.0]: https://github.com/primait/prima_tracing.rs/compare/0.11.1...0.12.0
 [0.11.1]: https://github.com/primait/prima_tracing.rs/compare/0.11.0...0.11.1
 [0.11.0]: https://github.com/primait/prima_tracing.rs/compare/0.10.0...0.11.0
 [0.10.0]: https://github.com/primait/prima_tracing.rs/compare/0.9.5...0.10.0
