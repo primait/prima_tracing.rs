@@ -42,7 +42,7 @@ opentelemetry-otlp = {version = "0.26", features = ["http-proto", "reqwest-clien
 opentelemetry_sdk = {version = "0.26", features = ["rt-tokio"], optional = true}
 tracing = {version = "0.1", features = ["max_level_debug", "release_max_level_info"]}
 tracing-log = {version = "0.2"}
-tracing-opentelemetry = {version = "0.26", optional = true}
+tracing-opentelemetry = {version = "0.27", optional = true}
 tracing-subscriber = {version = "0.3", features = ["env-filter"]}
 
 # serialization/deserialization
