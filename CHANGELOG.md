@@ -6,6 +6,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+---
+
+## [0.13.1] - 2024-10-18
+
 ### Added
 
 - Error impl for EnvironmentParseError
@@ -258,7 +262,9 @@ jaeger:
     COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.13.0...HEAD
+
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.13.1...HEAD
+[0.13.1]: https://github.com/primait/prima_tracing.rs/compare/0.13.0...0.13.1
 [0.13.0]: https://github.com/primait/prima_tracing.rs/compare/0.12.0...0.13.0
 [0.12.0]: https://github.com/primait/prima_tracing.rs/compare/0.11.1...0.12.0
 [0.11.1]: https://github.com/primait/prima_tracing.rs/compare/0.11.0...0.11.1
