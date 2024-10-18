@@ -6,6 +6,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Error impl for EnvironmentParseError
+
 ---
 
 ## [0.13.0] - 2024-10-09
