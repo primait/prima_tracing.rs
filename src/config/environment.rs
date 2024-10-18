@@ -1,4 +1,5 @@
 use std::{
+    error::Error,
     fmt::{Display, Formatter},
     str::FromStr,
 };
@@ -37,6 +38,8 @@ impl Display for Environment {
 
 #[derive(Debug)]
 pub struct EnvironmentParseError(String);
+
+impl Error for EnvironmentParseError {}
 
 impl Display for EnvironmentParseError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
