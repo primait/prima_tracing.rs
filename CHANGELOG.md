@@ -10,6 +10,10 @@ and this project adheres to
 
 - Error impl for EnvironmentParseError
 
+### Changed
+
+- `error.*` family of attributes will no longer be overriden
+
 ---
 
 ## [0.13.0] - 2024-10-09
