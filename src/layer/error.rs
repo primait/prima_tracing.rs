@@ -4,7 +4,7 @@ use tracing::field::Visit;
 use tracing::Event;
 use tracing::Level;
 use tracing::Subscriber;
-use tracing_opentelemetry::OtelData;
+use tracing_opentelemetry::OpenTelemetrySpanExt;
 use tracing_subscriber::{registry::LookupSpan, Layer};
 
 pub struct ErrorLayer;
@@ -20,38 +20,10 @@ where
                 event.record(&mut visitor);
 
                 if visitor.is_error {
-                    let otel_data = span.extensions_mut().remove::<OtelData>();
-
-                    if let Some(mut otel_data) = otel_data {
-                        let builder = &mut otel_data.builder;
-                        let builder_attrs = builder.attributes.get_or_insert(vec![]);
-
-                        // Adding fields to existing trace events (logs)
-                        if let Some(ref mut events) = builder.events {
-                            for event in events.iter_mut() {
-                                event
-                                    .attributes
-                                    .push(KeyValue::new("error.message", visitor.message.clone()));
-                                event
-                                    .attributes
-                                    .push(KeyValue::new("error.type", visitor.kind.clone()));
-                                event
-                                    .attributes
-                                    .push(KeyValue::new("error.kind", visitor.kind.clone()));
-                                event
-                                    .attributes
-                                    .push(KeyValue::new("error.stack", visitor.stack.clone()));
-                            }
-                        }
-
-                        // Adding fields to existing trace tags
-                        builder_attrs.push(KeyValue::new("error.message", visitor.message));
-                        builder_attrs.push(KeyValue::new("error.type", visitor.kind.clone()));
-                        builder_attrs.push(KeyValue::new("error.kind", visitor.kind));
-                        builder_attrs.push(KeyValue::new("error.stack", visitor.stack));
-
-                        span.extensions_mut().replace(otel_data);
-                    }
+                    span.set_attribute("error.message", visitor.message);
+                    span.set_attribute("error.type", visitor.kind.clone());
+                    span.set_attribute("error.kind", visitor.kind);
+                    span.set_attribute("error.stack", visitor.stack);
                 }
             }
         }
