@@ -3,6 +3,13 @@ all-features = true
 [output]
 feature-depth = 1
 
+[advisories]
+ignore = [
+    "RUSTSEC-2024-0384",
+    "instant@0.1.13",
+    { crate = "instant@0.1.13", reason = "Instant is need for WASM, we don't care about WASM" },
+]
+
 [licenses]
 allow = [
     "Apache-2.0",
