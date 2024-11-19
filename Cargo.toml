@@ -60,5 +60,5 @@ actix-web = "4.0.1"
 opentelemetry-jaeger = {version = "0.22", features = ["integration_test"]}
 prima_bridge = "0.18"
 tokio = {version = "1.17", features = ["rt", "macros", "rt-multi-thread"]}
-tracing-actix-web = {version = "0.7.11", features = ["opentelemetry_0_23"]}
+tracing-actix-web = {version = "0.7.11", features = ["opentelemetry_0_27"]}
 uuid = {version = "1.10", features = ["v4"]}

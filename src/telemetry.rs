@@ -1,12 +1,7 @@
 use once_cell::sync::Lazy;
-use opentelemetry::global;
-use opentelemetry::trace::TracerProvider;
-use opentelemetry::KeyValue;
-use opentelemetry_otlp::WithExportConfig;
-use opentelemetry_sdk::{
-    trace::{self, Tracer},
-    Resource,
-};
+use opentelemetry::{global, trace::TracerProvider, InstrumentationScope, KeyValue};
+use opentelemetry_otlp::{SpanExporter, WithExportConfig};
+use opentelemetry_sdk::{trace as sdktrace, Resource};
 use std::mem;
 use std::sync::Mutex;
 
@@ -31,7 +26,7 @@ fn normalize_collector_url(collector_url: &str) -> String {
     collector_url.to_string() + "/v1/traces"
 }
 
-pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
+pub fn configure<T>(config: &SubscriberConfig<T>) -> sdktrace::Tracer {
     let telemetry = config
         .telemetry
         .as_ref()
@@ -50,9 +45,11 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
 
     let collector_url = normalize_collector_url(&telemetry.collector_url);
 
-    let otlp_exporter = opentelemetry_otlp::new_exporter()
-        .http()
-        .with_endpoint(collector_url);
+    let otlp_exporter = SpanExporter::builder()
+        .with_http()
+        .with_endpoint(collector_url)
+        .build()
+        .expect("Failed to configure the OpenTelemetry OTLP span exporter");
 
     let resource = Resource::new(vec![
         KeyValue::new("environment", config.env.to_string()),
@@ -60,25 +57,25 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> Tracer {
         KeyValue::new("service.name", telemetry.service_name.clone()),
     ]);
 
-    let tracer_provider = opentelemetry_otlp::new_pipeline()
-        .tracing()
-        .with_exporter(otlp_exporter)
-        .with_trace_config(trace::Config::default().with_resource(resource))
-        .install_batch(runtime)
-        .expect("Failed to configure the OpenTelemetry tracer provider");
+    let tracer_provider = sdktrace::TracerProvider::builder()
+        .with_batch_exporter(otlp_exporter, runtime)
+        .with_config(sdktrace::Config::default().with_resource(resource))
+        .build();
 
     set_tracer_provider(tracer_provider.clone());
 
-    tracer_provider
-        .tracer_builder("prima-tracing")
+    let scope = InstrumentationScope::builder(env!("CARGO_PKG_NAME"))
         .with_version(env!("CARGO_PKG_VERSION"))
-        .build()
+        .build();
+
+    tracer_provider
+        .tracer_with_scope(scope)
 }
 
 // Consider to remove this wrapper when https://github.com/open-telemetry/opentelemetry-rust/issues/1961 is resolved
-static TRACER_PROVIDER: Lazy<Mutex<Option<trace::TracerProvider>>> = Lazy::new(Default::default);
+static TRACER_PROVIDER: Lazy<Mutex<Option<sdktrace::TracerProvider>>> = Lazy::new(Default::default);
 
-fn set_tracer_provider(new_provider: trace::TracerProvider) {
+fn set_tracer_provider(new_provider: sdktrace::TracerProvider) {
     global::set_tracer_provider(new_provider.clone());
 
     let mut tracer_provider = TRACER_PROVIDER
