@@ -68,8 +68,7 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> sdktrace::Tracer {
         .with_version(env!("CARGO_PKG_VERSION"))
         .build();
 
-    tracer_provider
-        .tracer_with_scope(scope)
+    tracer_provider.tracer_with_scope(scope)
 }
 
 // Consider to remove this wrapper when https://github.com/open-telemetry/opentelemetry-rust/issues/1961 is resolved
