@@ -64,7 +64,7 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> sdktrace::Tracer {
 
     set_tracer_provider(tracer_provider.clone());
 
-    let scope = InstrumentationScope::builder(env!("CARGO_PKG_NAME"))
+    let scope = InstrumentationScope::builder("prima-tracing")
         .with_version(env!("CARGO_PKG_VERSION"))
         .build();
 
