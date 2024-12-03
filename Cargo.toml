@@ -40,7 +40,7 @@ required-features = ["json-logger"]
 opentelemetry = {version = "0.27", optional = true}
 opentelemetry-otlp = {version = "0.27", features = ["http-proto", "reqwest-client"], default-features = false, optional = true}
 opentelemetry_sdk = {version = "0.27", features = ["rt-tokio"], optional = true}
-tracing = {version = "0.1", features = ["max_level_debug", "release_max_level_info"]}
+tracing = {version = "0.1"}
 tracing-log = {version = "0.2"}
 tracing-opentelemetry = {version = "0.28", optional = true}
 tracing-subscriber = {version = "0.3", features = ["env-filter"]}
