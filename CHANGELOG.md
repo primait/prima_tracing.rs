@@ -6,6 +6,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- No longer set the `tracing` max level features. This allows you to enable more verbose logging on runtime via the `RUST_LOG` environment variable.
+This should not affect most users, as the env filter by default is already set to `error`. In order to restore previous behavior you can enable the `tracing` features yourself
+```
+tracing = {version = "0.1", features = ["max_level_debug", "release_max_level_info"]}
+```
+
 ---
 
 ## [0.14.0] - 2024-12-03
