@@ -59,7 +59,7 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> sdktrace::Tracer {
 
     let tracer_provider = sdktrace::TracerProvider::builder()
         .with_batch_exporter(otlp_exporter, runtime)
-        .with_config(sdktrace::Config::default().with_resource(resource))
+        .with_resource(resource)
         .build();
 
     set_tracer_provider(tracer_provider.clone());
