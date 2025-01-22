@@ -12,7 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: rustup override set 1.76.0
+      - run: |
+          rustup override set 1.76.0
+          rustup component add rustfmt
+          rustup component add clippy
+          rustup component add rust-docs
       - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@cargo-make
       - uses: taiki-e/install-action@cargo-deny
