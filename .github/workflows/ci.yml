@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: rustup override set 1.76.0
       - uses: Swatinem/rust-cache@v2
-      - run: rustup toolchain install 1.76.0
       - uses: taiki-e/install-action@cargo-make
       - uses: taiki-e/install-action@cargo-deny
       - run: cargo make fmt-check
@@ -37,8 +37,8 @@ jobs:
     steps:
       - run: sudo echo "127.0.0.1 jaeger" | sudo tee -a /etc/hosts
       - uses: actions/checkout@v4
+      - run: rustup override set 1.76.0
       - uses: Swatinem/rust-cache@v2
-      - run: rustup toolchain install 1.76.0
       - uses: taiki-e/install-action@cargo-make
       - uses: taiki-e/install-action@nextest
       - run: cargo make test
