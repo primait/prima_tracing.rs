@@ -6,6 +6,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- `report_error` macro
+
 ---
 
 ## [0.14.1] - 2024-12-03
