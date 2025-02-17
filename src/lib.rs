@@ -45,7 +45,7 @@ pub use tracing;
 /// use prima_tracing::report_error;
 ///
 /// let error = "not a number".parse::<usize>().unwrap_err();
-/// report_error!(&error, "Parsing error!");
+/// report_error!(error, "Parsing error!");
 /// ```
 ///
 /// You can also add use add attributes and do things, just like with a regular [tracing::error]
@@ -56,14 +56,14 @@ pub use tracing;
 /// # let uid = "1223";
 ///
 /// let error = input.parse::<usize>().unwrap_err();
-/// report_error!(&error, input, user=uid, "Parsing error: {}", &error);
+/// report_error!(error, input, user=uid, "Parsing error: {}", error);
 /// ```
 #[macro_export]
 macro_rules! report_error {
     ($error:expr, $($args:tt)*) => {
         {
           let kind = ::std::any::type_name_of_val(&$error);
-          $crate::tracing::error!(error.kind = kind, error = $error as &dyn ::std::error::Error, $($args)+)
+          $crate::tracing::error!(error.kind = kind, error = &$error as &dyn ::std::error::Error, $($args)+)
         }
     };
 }
