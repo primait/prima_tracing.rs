@@ -8,6 +8,14 @@ and this project adheres to
 
 ---
 
+## [0.14.2] - 2025-02-17
+
+### Added
+
+- `report_error` macro
+
+---
+
 ## [0.14.1] - 2024-12-03
 
 ### Changed
@@ -283,7 +291,9 @@ jaeger:
 ```
 
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.14.1...HEAD
+
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.14.2...HEAD
+[0.14.2]: https://github.com/primait/prima_tracing.rs/compare/0.14.1...0.14.2
 [0.14.1]: https://github.com/primait/prima_tracing.rs/compare/0.14.0...0.14.1
 [0.14.0]: https://github.com/primait/prima_tracing.rs/compare/0.13.1...0.14.0
 [0.13.1]: https://github.com/primait/prima_tracing.rs/compare/0.13.0...0.13.1
