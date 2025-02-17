@@ -35,6 +35,7 @@ pub use crate::config::{
 pub use crate::subscriber::{
     configure_subscriber, init_subscriber, ContextInfo, EventFormatter, Tracing, Uninstall,
 };
+pub use tracing;
 
 /// Create a tracing error event, casting the error to &dyn [std::error::Error] for [layer::ErrorLayer],
 /// and adding the type name as error.kind.
@@ -62,7 +63,7 @@ macro_rules! report_error {
     ($error:expr, $($args:tt)*) => {
         {
           let kind = ::std::any::type_name_of_val(&$error);
-          ::tracing::error!(error.kind = kind, error = $error as &dyn ::std::error::Error, $($args)+)
+          $crate::tracing::error!(error.kind = kind, error = $error as &dyn ::std::error::Error, $($args)+)
         }
     };
 }
