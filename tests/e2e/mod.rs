@@ -40,7 +40,7 @@ async fn get_spans(f: impl FnOnce(), collector_url: &str) -> Option<Vec<Span>> {
 }
 
 #[cfg(feature = "traces")]
-#[tokio::test(flavor = "multi_thread")]
+#[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 async fn traces_are_sent_to_datadog() {
     let log_message = "hello traces_are_sent_to_datadog";
 
@@ -64,7 +64,7 @@ async fn traces_are_sent_to_datadog() {
 }
 
 #[cfg(feature = "traces")]
-#[tokio::test(flavor = "multi_thread")]
+#[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 async fn events_contain_metadata() {
     let spans = get_spans(
         || {
@@ -90,7 +90,7 @@ async fn events_contain_metadata() {
 }
 
 #[cfg(feature = "traces")]
-#[tokio::test(flavor = "multi_thread")]
+#[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 async fn strips_trailing_slash() {
     get_spans(
         || {
@@ -106,7 +106,7 @@ async fn strips_trailing_slash() {
 }
 
 #[cfg(feature = "traces")]
-#[tokio::test(flavor = "multi_thread")]
+#[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 async fn strips_trailing_endpoint() {
     get_spans(
         || {
@@ -122,7 +122,7 @@ async fn strips_trailing_endpoint() {
 }
 
 #[cfg(feature = "traces")]
-#[tokio::test(flavor = "multi_thread")]
+#[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 async fn error_layer_enrich_errored_spans() {
     std::env::set_var("RUST_LOG", "info");
 
