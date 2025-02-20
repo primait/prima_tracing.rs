@@ -6,6 +6,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Updated
+
+- MSRV is now 1.81
+
 ---
 
 ## [0.14.2] - 2025-02-17
@@ -20,8 +24,12 @@ and this project adheres to
 
 ### Changed
 
-- No longer set the `tracing` max level features. This allows you to enable more verbose logging on runtime via the `RUST_LOG` environment variable.
-This should not affect most users, as the env filter by default is already set to `error`. In order to restore previous behavior you can enable the `tracing` features yourself
+- No longer set the `tracing` max level features. This allows you to enable more
+  verbose logging on runtime via the `RUST_LOG` environment variable. This
+  should not affect most users, as the env filter by default is already set to
+  `error`. In order to restore previous behavior you can enable the `tracing`
+  features yourself
+
 ```
 tracing = {version = "0.1", features = ["max_level_debug", "release_max_level_info"]}
 ```
@@ -289,8 +297,6 @@ jaeger:
     COLLECTOR_OTLP_ENABLED: true
     COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
-
-
 
 [Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.14.2...HEAD
 [0.14.2]: https://github.com/primait/prima_tracing.rs/compare/0.14.1...0.14.2
