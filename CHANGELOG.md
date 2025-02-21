@@ -9,6 +9,7 @@ and this project adheres to
 ### Updated
 
 - Bumped opentelemetry version to 0.28
+- MSRV is now 1.81
 
 ---
 
