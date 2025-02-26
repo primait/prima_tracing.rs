@@ -32,17 +32,6 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> sdktrace::Tracer {
         .as_ref()
         .expect("Telemetry config must be provided when the `traces` feature is enabled.");
 
-    let runtime = {
-        #[cfg(feature = "rt-tokio-current-thread")]
-        {
-            opentelemetry_sdk::runtime::TokioCurrentThread
-        }
-        #[cfg(not(feature = "rt-tokio-current-thread"))]
-        {
-            opentelemetry_sdk::runtime::Tokio
-        }
-    };
-
     let collector_url = normalize_collector_url(&telemetry.collector_url);
 
     let otlp_exporter = SpanExporter::builder()
@@ -51,14 +40,14 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> sdktrace::Tracer {
         .build()
         .expect("Failed to configure the OpenTelemetry OTLP span exporter");
 
-    let resource = Resource::new(vec![
-        KeyValue::new("environment", config.env.to_string()),
-        KeyValue::new("country", config.country.to_string()),
-        KeyValue::new("service.name", telemetry.service_name.clone()),
-    ]);
+    let resource = Resource::builder()
+        .with_service_name(telemetry.service_name.clone())
+        .with_attribute(KeyValue::new("environment", config.env.to_string()))
+        .with_attribute(KeyValue::new("country", config.country.to_string()))
+        .build();
 
-    let tracer_provider = sdktrace::TracerProvider::builder()
-        .with_batch_exporter(otlp_exporter, runtime)
+    let tracer_provider = sdktrace::SdkTracerProvider::builder()
+        .with_batch_exporter(otlp_exporter)
         .with_resource(resource)
         .build();
 
@@ -72,9 +61,10 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> sdktrace::Tracer {
 }
 
 // Consider to remove this wrapper when https://github.com/open-telemetry/opentelemetry-rust/issues/1961 is resolved
-static TRACER_PROVIDER: Lazy<Mutex<Option<sdktrace::TracerProvider>>> = Lazy::new(Default::default);
+static TRACER_PROVIDER: Lazy<Mutex<Option<sdktrace::SdkTracerProvider>>> =
+    Lazy::new(Default::default);
 
-fn set_tracer_provider(new_provider: sdktrace::TracerProvider) {
+fn set_tracer_provider(new_provider: sdktrace::SdkTracerProvider) {
     global::set_tracer_provider(new_provider.clone());
 
     let mut tracer_provider = TRACER_PROVIDER
@@ -84,8 +74,6 @@ fn set_tracer_provider(new_provider: sdktrace::TracerProvider) {
 }
 
 pub(crate) fn shutdown_tracer_provider() {
-    global::shutdown_tracer_provider();
-
     let tracer_provider = TRACER_PROVIDER
         .lock()
         .expect("OpenTelemetry tracer provider mutex poisoned")
