@@ -6,6 +6,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Updated
+
+- Bumped opentelemetry version to 0.28
+
 ---
 
 ## [0.15.0] - 2025-02-26
@@ -302,7 +306,6 @@ jaeger:
     COLLECTOR_OTLP_ENABLED: true
     COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
-
 
 [Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.15.0...HEAD
 [0.15.0]: https://github.com/primait/prima_tracing.rs/compare/0.14.2...0.15.0

@@ -35,8 +35,8 @@ jobs:
           COLLECTOR_OTLP_ENABLED: "true"
           COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
         ports:
-        - 16685:16685
-        - 55681:55681
+          - 16685:16685
+          - 55681:55681
 
     steps:
       - run: sudo echo "127.0.0.1 jaeger" | sudo tee -a /etc/hosts
