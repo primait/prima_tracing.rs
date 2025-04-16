@@ -19,35 +19,43 @@ prima-tracing = "0.11"
 
 For ease of use you can use the following feature sets:
 
-- `live` enables the feature you will most likely want in a production/staging environment
+- `live` enables the feature you will most likely want in a production/staging
+  environment
 - `dev` enables the features you will most likely want in a dev environment
 
 - `json-logger` outputs traces to standard output in JSON format
-- `datadog` extends `json-logger` output
-  with [trace and span information](https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/) allowing
-  Datadog to connect logs and traces
-- `traces` exports [tracing](https://lib.rs/crates/tracing) spans and events using the [opentelemetry-otlp](https://crates.io/crates/opentelemetry-otlp) exporter
-- `rt-tokio-current-thread` configures the OpenTelemetry tracer to use Tokio’s current thread runtime
-  (e.g. `actix_web::main`). Without this feature, the Tokio multi-thread runtime is used by default.
+- `datadog` extends `json-logger` output with
+  [trace and span information](https://docs.datadoghq.com/tracing/connect_logs_and_traces/opentelemetry/)
+  allowing Datadog to connect logs and traces
+- `traces` exports [tracing](https://lib.rs/crates/tracing) spans and events
+  using the [opentelemetry-otlp](https://crates.io/crates/opentelemetry-otlp)
+  exporter
+- `rt-tokio-current-thread` configures the OpenTelemetry tracer to use Tokio’s
+  current thread runtime (e.g. `actix_web::main`). Without this feature, the
+  Tokio multi-thread runtime is used by default.
 
 ## How to collect traces locally
 
-If you are using the `tracing` feature in your project, the recommended way to view exported traces on your machine is to use the [Jaeger all-in-one Docker image](https://hub.docker.com/r/jaegertracing/opentelemetry-all-in-one/).
+If you are using the `tracing` feature in your project, the recommended way to
+view exported traces on your machine is to use the
+[Jaeger all-in-one Docker image](https://hub.docker.com/r/jaegertracing/opentelemetry-all-in-one/).
 
-You need to add the following service to your Docker Compose setup (your main container should depend on it):
+You need to add the following service to your Docker Compose setup (your main
+container should depend on it):
 
 ```yaml
-  jaeger:
-    image: jaegertracing/all-in-one:1.35
-    ports:
-      - 16686:16686
-      - 55681:55681
-    environment:
-      COLLECTOR_OTLP_ENABLED: true
-      COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
+jaeger:
+  image: jaegertracing/all-in-one:1.35
+  ports:
+    - 16686:16686
+    - 55681:55681
+  environment:
+    COLLECTOR_OTLP_ENABLED: true
+    COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
 
-You can then visit the [Jaeger web UI](http://localhost:16686/search) on your browser to search the traces.
+You can then visit the [Jaeger web UI](http://localhost:16686/search) on your
+browser to search the traces.
 
 ## Usage examples
 
@@ -77,7 +85,8 @@ fn main() -> std::io::Result<()> {
 
 ### JSON output
 
-It works like the simple example, but activating the `json-logger` automatically uses the JSON format as output
+It works like the simple example, but activating the `json-logger` automatically
+uses the JSON format as output
 
 ```rust
 use prima_tracing::{builder, configure_subscriber, init_subscriber, Environment};
@@ -99,7 +108,6 @@ fn main() -> std::io::Result<()> {
     info!("Starting my awesome app");
     Ok(())
 }
-
 ```
 
 ### OpenTelemetry
@@ -131,7 +139,6 @@ fn main() -> std::io::Result<()> {
     info!("Starting my awesome app");
     Ok(())
 }
-
 ```
 
 ### Custom Subscriber

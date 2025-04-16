@@ -8,6 +8,14 @@ and this project adheres to
 
 ---
 
+## [0.16.0] - 2025-04-16
+
+### Updated
+
+- Bumped opentelemetry version to 0.28
+
+---
+
 ## [0.15.0] - 2025-02-26
 
 ### Updated
@@ -304,7 +312,8 @@ jaeger:
 ```
 
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.15.0...HEAD
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.16.0...HEAD
+[0.16.0]: https://github.com/primait/prima_tracing.rs/compare/0.15.0...0.16.0
 [0.15.0]: https://github.com/primait/prima_tracing.rs/compare/0.14.2...0.15.0
 [0.14.2]: https://github.com/primait/prima_tracing.rs/compare/0.14.1...0.14.2
 [0.14.1]: https://github.com/primait/prima_tracing.rs/compare/0.14.0...0.14.1

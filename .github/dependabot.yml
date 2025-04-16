@@ -5,13 +5,13 @@
 
 version: 2
 updates:
-- package-ecosystem: cargo
-  directory: "/"
-  schedule:
-    interval: "weekly"
-  groups:
-    # Dependencies that need to be kept in sync
-    otel:
-      patterns: 
-        - "opentelemetry*"
-        - "tracing-opentelemetry"
+  - package-ecosystem: cargo
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      # Dependencies that need to be kept in sync
+      otel:
+        patterns:
+          - "opentelemetry*"
+          - "tracing-opentelemetry"
