@@ -6,6 +6,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+- MSRV is now 1.82
+
 ---
 
 ## [0.16.0] - 2025-04-16
