@@ -89,7 +89,7 @@ It works like the simple example, but activating the `json-logger` automatically
 uses the JSON format as output
 
 ```rust
-use prima_tracing::{builder, configure_subscriber, init_subscriber, Environment};
+use prima_tracing::{builder, configure_subscriber, init_subscriber, Country, Environment};
 use tracing::{info, info_span};
 
 fn main() -> std::io::Result<()> {
@@ -115,7 +115,7 @@ fn main() -> std::io::Result<()> {
 You need to have an OpenTelemetry collector (such as Jaeger) running locally.
 
 ```rust
-use prima_tracing::{builder, configure_subscriber, init_subscriber, Environment};
+use prima_tracing::{builder, configure_subscriber, init_subscriber, Country, Environment};
 use tracing::{info, info_span};
 
 fn main() -> std::io::Result<()> {
