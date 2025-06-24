@@ -6,7 +6,7 @@ license = "MIT OR Apache-2.0"
 name = "prima-tracing"
 readme = "README.md"
 repository = "https://github.com/primait/prima_tracing.rs"
-version = "0.16.0"
+version = "0.17.0"
 
 [features]
 default = []
