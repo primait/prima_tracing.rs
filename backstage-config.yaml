@@ -1,0 +1,24 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+spec:
+  type: library
+  lifecycle: production
+  owner: team-developer-experience
+  system: prima.it
+metadata:
+  name: prima_tracing.rs
+  description: opinionated rust tracing
+  tags:
+    - rust
+  links:
+    - url: https://crates.io/crates/prima_tracing
+      icon: link
+      title: crates.io page
+
+    - url: https://docs.rs/prima_tracing
+      icon: link
+      title: official documentation
+
+    - url: https://github.com/primait/prima_tracing.rs
+      icon: github
+      title: github repository
