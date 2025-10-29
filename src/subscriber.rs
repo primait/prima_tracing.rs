@@ -79,7 +79,7 @@ pub trait EventFormatter {
         S: Subscriber + for<'a> tracing_subscriber::registry::LookupSpan<'a>;
 }
 /// Uninstall guard for doing works in shutdown
-#[must_use = "Uninstall guard shuts down the trace provider when dropped. By not using it/assigning it to a variable the tracing provider will be immideately removed."]
+#[must_use = "Uninstall guard shuts down the trace provider when dropped. By not using it/assigning it to a variable the tracing provider will be immediately removed."]
 pub struct Uninstall;
 
 impl Drop for Uninstall {
