@@ -6,6 +6,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+---
+
+## [0.17.1] - 2025-10-29
+
 ### Changed
 
 - Uninstall guard is not annotated `must_use`.  
@@ -326,7 +330,9 @@ jaeger:
 ```
 
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.17.0...HEAD
+
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.17.1...HEAD
+[0.17.1]: https://github.com/primait/prima_tracing.rs/compare/0.17.0...0.17.1
 [0.17.0]: https://github.com/primait/prima_tracing.rs/compare/0.16.0...0.17.0
 [0.16.0]: https://github.com/primait/prima_tracing.rs/compare/0.15.0...0.16.0
 [0.15.0]: https://github.com/primait/prima_tracing.rs/compare/0.14.2...0.15.0
