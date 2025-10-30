@@ -163,30 +163,37 @@ impl EventFormatter for DefaultEventFormatter {
         {
             use opentelemetry::trace::TraceContextExt;
             use std::collections::HashMap;
-            use tracing_opentelemetry::OtelData;
+            use tracing_opentelemetry::{OpenTelemetrySpanExt, OtelData};
 
             if let Some(current_span) = ctx.current_span().id().and_then(|id| ctx.span(id)) {
                 let ext = current_span.extensions();
+
                 if let Some(otel_data) = ext.get::<OtelData>() {
-                    let builder = &otel_data.builder;
+                    let mut trace_id_opt = otel_data.trace_id();
+                    let mut span_id_opt = otel_data.span_id();
 
-                    let parent_span = &otel_data.parent_cx.span();
-                    let parent_span_ctx = parent_span.span_context();
+                    if trace_id_opt.is_none() || span_id_opt.is_none() {
+                        let ctx = tracing::Span::current().context();
+                        let span = ctx.span();
+                        let sctx = span.span_context();
 
-                    let span_id = builder.span_id.unwrap_or_else(|| parent_span_ctx.span_id());
-                    let trace_id = builder
-                        .trace_id
-                        .unwrap_or_else(|| parent_span_ctx.trace_id());
+                        if sctx.is_valid() {
+                            trace_id_opt = Some(sctx.trace_id());
+                            span_id_opt = Some(sctx.span_id());
+                        }
+                    }
 
-                    // Datadog trace and span IDs need to be 64-bit unsigned integers
-                    let trace_id = u128::from_be_bytes(trace_id.to_bytes()) as u64;
-                    let span_id = u64::from_be_bytes(span_id.to_bytes());
+                    if let (Some(trace_id), Some(span_id)) = (trace_id_opt, span_id_opt) {
+                        // Datadog trace and span IDs need to be 64-bit unsigned integers
+                        let trace_id_u64 = u128::from_be_bytes(trace_id.to_bytes()) as u64;
+                        let span_id_u64 = u64::from_be_bytes(span_id.to_bytes());
 
-                    let mut dd = HashMap::new();
-                    dd.insert("trace_id", trace_id);
-                    dd.insert("span_id", span_id);
+                        let mut dd = HashMap::new();
+                        dd.insert("trace_id", trace_id_u64);
+                        dd.insert("span_id", span_id_u64);
 
-                    map_serializer.serialize_entry("dd", &dd)?;
+                        map_serializer.serialize_entry("dd", &dd)?;
+                    }
                 }
             }
         }
