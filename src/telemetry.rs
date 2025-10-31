@@ -1,3 +1,4 @@
+use crate::resources::kube_env_resource;
 use once_cell::sync::Lazy;
 use opentelemetry::{global, trace::TracerProvider, InstrumentationScope, KeyValue};
 use opentelemetry_otlp::{SpanExporter, WithExportConfig};
@@ -44,6 +45,7 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> sdktrace::Tracer {
         .with_service_name(telemetry.service_name.clone())
         .with_attribute(KeyValue::new("environment", config.env.to_string()))
         .with_attribute(KeyValue::new("country", config.country.to_string()))
+        .with_attributes(kube_env_resource())
         .build();
 
     let tracer_provider = sdktrace::SdkTracerProvider::builder()
