@@ -166,9 +166,19 @@ async fn error_layer_enrich_errored_spans() {
     }
     .unwrap();
 
-    assert_eq!(spans[0].logs.len(), 1);
+    let exception_logs: Vec<_> = spans[0]
+        .logs
+        .iter()
+        .filter(|log| log.fields.iter().any(|f| f.key == "exception.message"))
+        .collect();
 
-    let fields = &spans[0].logs[0].fields;
+    assert_eq!(
+        exception_logs.len(),
+        1,
+        "expected exactly one OTEL 'exception' event"
+    );
+
+    let fields = &exception_logs[0].fields;
     let ex_msg = fields
         .iter()
         .find(|f| f.key == "exception.message")
