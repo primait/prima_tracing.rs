@@ -8,6 +8,16 @@ and this project adheres to
 
 ---
 
+## [0.17.1] - 2025-10-29
+
+### Changed
+
+- MSRV is now 1.83
+- Uninstall guard is not annotated `must_use`.  
+This is technically a breaking change but if the drop guard previously wasn't used
+it indicates a bug in the program, so we're marking it a minor.
+---
+
 ## [0.17.0] - 2025-06-24
 
 ### Updated
@@ -321,7 +331,9 @@ jaeger:
 ```
 
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.17.0...HEAD
+
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.17.1...HEAD
+[0.17.1]: https://github.com/primait/prima_tracing.rs/compare/0.17.0...0.17.1
 [0.17.0]: https://github.com/primait/prima_tracing.rs/compare/0.16.0...0.17.0
 [0.16.0]: https://github.com/primait/prima_tracing.rs/compare/0.15.0...0.16.0
 [0.15.0]: https://github.com/primait/prima_tracing.rs/compare/0.14.2...0.15.0
