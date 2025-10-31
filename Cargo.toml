@@ -15,9 +15,9 @@ prima-logger-datadog = ["datadog"]
 prima-logger-json = ["json-logger"]
 prima-telemetry = ["traces"]
 
-datadog = ["json-logger", "opentelemetry", "tracing-opentelemetry"]
+datadog = ["json-logger", "opentelemetry", "tracing-opentelemetry", "opentelemetry-semantic-conventions"]
 json-logger = []
-traces = ["tracing-opentelemetry", "opentelemetry", "opentelemetry_sdk", "opentelemetry-otlp"]
+traces = ["tracing-opentelemetry", "opentelemetry", "opentelemetry_sdk", "opentelemetry-otlp", "opentelemetry-semantic-conventions"]
 
 # feature sets most likely used in given environment
 dev = ["traces"]
@@ -38,6 +38,7 @@ required-features = ["json-logger"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 opentelemetry = {version = "0.31", optional = true}
+opentelemetry-semantic-conventions = {version = "0.31", optional = true}
 opentelemetry-otlp = {version = "0.31", features = ["http-proto", "reqwest-blocking-client"], default-features = false, optional = true}
 opentelemetry_sdk = {version = "0.31", features = ["rt-tokio"], optional = true}
 tracing = {version = "0.1"}
