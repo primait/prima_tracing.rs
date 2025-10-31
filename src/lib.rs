@@ -27,6 +27,8 @@ pub mod json;
 #[cfg(feature = "traces")]
 pub mod layer;
 #[cfg(feature = "traces")]
+pub mod resources;
+#[cfg(feature = "traces")]
 pub mod telemetry;
 
 pub use crate::config::{

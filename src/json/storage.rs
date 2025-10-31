@@ -50,8 +50,8 @@ where
     }
 }
 
-impl<'a> PrimaJsonVisitor<'a> {
-    pub fn fields(&self) -> &HashMap<&'a str, serde_json::Value> {
+impl PrimaJsonVisitor<'_> {
+    pub fn fields(&self) -> &HashMap<&str, serde_json::Value> {
         &self.fields
     }
 }
@@ -62,7 +62,7 @@ impl<'a> PrimaJsonVisitor<'a> {
     }
 }
 
-impl<'a> Visit for PrimaJsonVisitor<'a> {
+impl Visit for PrimaJsonVisitor<'_> {
     fn record_i64(&mut self, field: &Field, value: i64) {
         self.fields
             .insert(field.name(), serde_json::Value::from(value));

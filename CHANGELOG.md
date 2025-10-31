@@ -8,6 +8,36 @@ and this project adheres to
 
 ---
 
+## [0.18.0] - 2025-10-31
+
+### Changed
+
+- Bumped opentelemetry version to 0.31
+  - Removed internal access to `OtelData.builder`, which is no longer public in
+    `tracing_opentelemetry` 0.32
+- MSRV is now 1.83
+- `ErrorLayer` now emits standard OpenTelemetry **`exception` events** and sets
+  span status using `Status::error`
+  - Legacy `error.*` attributes are still attached to the `exception` event
+- `KubeEnvLayer` and `VersionLayer` responsibilities moved to **Resource
+  attributes**: K8s environment variables and service version are now attached
+  once at provider creation instead of being injected per-span
+  - `service.version` is now populated from `SubscriberConfig.version` using
+    semantic conventions
+
+### Removed
+
+- Deprecated `error.stack`, `error.kind`, and other non-standard span attributes
+- Removed redundant `version` attribute in favor of standardized
+  `service.version`
+
+### Added
+
+- Dependency on `opentelemetry_semantic_conventions` to avoid hard-coded
+  attribute keys
+
+---
+
 ## [0.17.0] - 2025-06-24
 
 ### Updated
@@ -320,8 +350,8 @@ jaeger:
     COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
 
-
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.17.0...HEAD
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.18.0...HEAD
+[0.18.0]: https://github.com/primait/prima_tracing.rs/compare/0.17.0...0.18.0
 [0.17.0]: https://github.com/primait/prima_tracing.rs/compare/0.16.0...0.17.0
 [0.16.0]: https://github.com/primait/prima_tracing.rs/compare/0.15.0...0.16.0
 [0.15.0]: https://github.com/primait/prima_tracing.rs/compare/0.14.2...0.15.0
