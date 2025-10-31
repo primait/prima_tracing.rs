@@ -166,32 +166,37 @@ async fn error_layer_enrich_errored_spans() {
     }
     .unwrap();
 
-    let err_msg = spans[0].tags.iter().find(|f| f.key == "error.message");
-    let err_kind = spans[0].tags.iter().find(|f| f.key == "error.type");
-    let err_stack = spans[0].tags.iter().find(|f| f.key == "error.stack");
-
-    assert_eq!("Error: error message", err_msg.unwrap().v_str);
-    assert_eq!("Error", err_kind.unwrap().v_str);
-    assert_eq!("Error: error message", err_stack.unwrap().v_str);
-
     assert_eq!(spans[0].logs.len(), 1);
 
-    let err_msg = spans[0].logs[0]
-        .fields
+    let fields = &spans[0].logs[0].fields;
+    let ex_msg = fields
         .iter()
-        .find(|f| f.key == "error.message");
-    let err_kind = spans[0].logs[0]
-        .fields
+        .find(|f| f.key == "exception.message")
+        .expect("missing exception.message");
+    let ex_type = fields
         .iter()
-        .find(|f| f.key == "error.type");
-    let err_stack = spans[0].logs[0]
-        .fields
+        .find(|f| f.key == "exception.type")
+        .expect("missing exception.type");
+    // We're just interested this exists
+    let _ex_stack = fields
         .iter()
-        .find(|f| f.key == "error.stack");
+        .find(|f| f.key == "exception.stacktrace")
+        .expect("missing exception.stacktrace");
 
-    assert_eq!("Error: error message", err_msg.unwrap().v_str);
-    assert_eq!("Error", err_kind.unwrap().v_str);
-    assert_eq!("Error: error message", err_stack.unwrap().v_str);
+    assert_eq!(ex_msg.v_str, "Error: error message");
+    assert_eq!(ex_type.v_str, "Error");
+
+    let legacy_msg = fields
+        .iter()
+        .find(|f| f.key == "error.message")
+        .expect("missing legacy error.message");
+    let legacy_type = fields
+        .iter()
+        .find(|f| f.key == "error.type")
+        .expect("missing legacy error.type");
+
+    assert_eq!(legacy_msg.v_str, "Error: error message");
+    assert_eq!(legacy_type.v_str, "Error");
 }
 
 #[derive(Debug)]
