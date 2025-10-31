@@ -208,7 +208,7 @@ struct SpanSerializer<'a, 'b, Span>(&'b SpanRef<'a, Span>)
 where
     Span: for<'lookup> LookupSpan<'lookup>;
 
-impl<'a, 'b, Span> Serialize for SpanSerializer<'a, 'b, Span>
+impl<Span> Serialize for SpanSerializer<'_, '_, Span>
 where
     Span: for<'lookup> LookupSpan<'lookup>,
 {
@@ -237,7 +237,7 @@ struct SpanListSerializer<'a, 'b, S>(&'b Context<'a, S>)
 where
     S: Subscriber + for<'lookup> LookupSpan<'lookup>;
 
-impl<'a, 'b, Sub> Serialize for SpanListSerializer<'a, 'b, Sub>
+impl<Sub> Serialize for SpanListSerializer<'_, '_, Sub>
 where
     Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
 {

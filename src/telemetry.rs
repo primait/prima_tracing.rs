@@ -42,16 +42,22 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> sdktrace::Tracer {
         .build()
         .expect("Failed to configure the OpenTelemetry OTLP span exporter");
 
-    let resource = Resource::builder()
+    let resource_builder = Resource::builder()
         .with_service_name(telemetry.service_name.clone())
         .with_attribute(KeyValue::new("environment", config.env.to_string()))
         .with_attribute(KeyValue::new("country", config.country.to_string()))
-        .with_attribute(KeyValue::new(
+        .with_attributes(kube_env_resource());
+
+    let resource_builder = if let Some(version) = &config.version {
+        resource_builder.with_attribute(KeyValue::new(
             resource::SERVICE_VERSION,
-            config.version.to_string(),
+            version.to_string(),
         ))
-        .with_attributes(kube_env_resource())
-        .build();
+    } else {
+        resource_builder
+    };
+
+    let resource = resource_builder.build();
 
     let tracer_provider = sdktrace::SdkTracerProvider::builder()
         .with_batch_exporter(otlp_exporter)
