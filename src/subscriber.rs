@@ -27,9 +27,6 @@ pub fn configure_subscriber<T: EventFormatter + Send + Sync + 'static>(
         let tracer = crate::telemetry::configure(&_config);
         subscriber
             .with(tracing_opentelemetry::layer().with_tracer(tracer))
-            .with(crate::layer::VersionLayer {
-                version: _config.version.clone(),
-            })
             .with(crate::layer::ErrorLayer)
     };
 

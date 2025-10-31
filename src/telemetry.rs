@@ -3,6 +3,7 @@ use once_cell::sync::Lazy;
 use opentelemetry::{global, trace::TracerProvider, InstrumentationScope, KeyValue};
 use opentelemetry_otlp::{SpanExporter, WithExportConfig};
 use opentelemetry_sdk::{trace as sdktrace, Resource};
+use opentelemetry_semantic_conventions::resource;
 use std::mem;
 use std::sync::Mutex;
 
@@ -45,6 +46,10 @@ pub fn configure<T>(config: &SubscriberConfig<T>) -> sdktrace::Tracer {
         .with_service_name(telemetry.service_name.clone())
         .with_attribute(KeyValue::new("environment", config.env.to_string()))
         .with_attribute(KeyValue::new("country", config.country.to_string()))
+        .with_attribute(KeyValue::new(
+            resource::SERVICE_VERSION,
+            config.version.to_string(),
+        ))
         .with_attributes(kube_env_resource())
         .build();
 
