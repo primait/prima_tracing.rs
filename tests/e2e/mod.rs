@@ -166,10 +166,24 @@ async fn error_layer_enrich_errored_spans() {
     }
     .unwrap();
 
+    let exc_message = spans[0].tags.iter().find(|f| f.key == "exception.message");
+    let exc_stacktrace = spans[0]
+        .tags
+        .iter()
+        .find(|f| f.key == "exception.stacktrace");
+
+    assert_eq!("Error: error message", exc_message.unwrap().v_str);
+    assert_eq!("[]", exc_stacktrace.unwrap().v_str);
+
     let exception_logs: Vec<_> = spans[0]
         .logs
         .iter()
-        .filter(|log| log.fields.iter().any(|f| f.key == "exception.message"))
+        .find(|log| {
+            log.fields
+                .iter()
+                .any(|f| f.key == "event" && f.v_str == "exception")
+        })
+        .into_iter()
         .collect();
 
     assert_eq!(
