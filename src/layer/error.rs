@@ -1,6 +1,4 @@
 use opentelemetry::trace::Status;
-use opentelemetry::KeyValue;
-use opentelemetry_semantic_conventions as semconv;
 
 use tracing::field::{Field, Visit};
 use tracing::{Event, Level, Span, Subscriber};
@@ -33,22 +31,15 @@ where
 
         let span: Span = Span::current();
 
-        // Create new exception event, as specified here
-        // https://opentelemetry.io/docs/specs/semconv/exceptions/exceptions-spans/
-        span.add_event(
-            "exception",
-            vec![
-                // semconv
-                KeyValue::new(semconv::trace::EXCEPTION_TYPE, visitor.kind.clone()),
-                KeyValue::new(semconv::trace::EXCEPTION_MESSAGE, visitor.message.clone()),
-                KeyValue::new(semconv::trace::EXCEPTION_STACKTRACE, visitor.stack.clone()),
-                // legacy
-                KeyValue::new("error.type", visitor.kind.clone()),
-                KeyValue::new("error.message", visitor.message.clone()),
-            ],
-        );
+        // Tag Datadog: error.* as span attributes
+        // See here for more info: https://docs.datadoghq.com/tracing/error_tracking/#use-span-attributes-to-track-error-spans
+        span.set_attribute("error.type", visitor.kind.clone());
+        span.set_attribute("error.message", visitor.message.clone());
+        span.set_attribute("error.stack", visitor.stack.clone());
 
-        // setta lo status span a errore
+        // Optional but useful
+        span.set_attribute("error", true);
+
         span.set_status(Status::error(visitor.message));
     }
 }
