@@ -1,10 +1,15 @@
 FROM public.ecr.aws/primaassicurazioni/rust:1.83.0
 
+USER root
+
 WORKDIR /code
+RUN mkdir -p /code/target && \
+    chown -R app:app /code/target
+
+COPY entrypoint /code/entrypoint
+
+VOLUME /code/target
 
 USER app
 
-COPY ["entrypoint", "/entrypoint"]
-
-ENTRYPOINT ["/entrypoint"]
-
+ENTRYPOINT ["./entrypoint"]
