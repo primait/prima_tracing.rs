@@ -158,13 +158,13 @@ async fn error_layer_enrich_errored_spans() {
 
     let mut client = JaegerTestClient::new(query_api_url);
 
-    let spans = dbg!(if !client.contain_service(&service_name).await {
+    let spans = if !client.contain_service(&service_name).await {
         None
     } else {
         let spans = client.find_traces_from_services(&service_name).await;
         Some(spans)
     }
-    .unwrap());
+    .unwrap();
 
     let err_msg = spans[0].tags.iter().find(|f| f.key == "error.message");
     let err_kind = spans[0].tags.iter().find(|f| f.key == "error.type");
