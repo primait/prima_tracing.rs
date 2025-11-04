@@ -1,10 +1,9 @@
 services:
   app:
-    user: root
     build: .
     volumes:
       - .:/code
-      - "app:/home/app/"
+      - target:/code/target
       - "~/.ssh:/home/app/.ssh"
       - "~/.aws:/home/app/.aws"
       - "~/.gitconfig:/home/app/.gitconfig"
@@ -33,4 +32,4 @@ services:
       COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 
 volumes:
-  app:
+  target: {}
