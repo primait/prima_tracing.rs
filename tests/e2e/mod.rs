@@ -158,69 +158,23 @@ async fn error_layer_enrich_errored_spans() {
 
     let mut client = JaegerTestClient::new(query_api_url);
 
-    let spans = if !client.contain_service(&service_name).await {
+    let spans = dbg!(if !client.contain_service(&service_name).await {
         None
     } else {
         let spans = client.find_traces_from_services(&service_name).await;
         Some(spans)
     }
-    .unwrap();
+    .unwrap());
 
-    let exc_message = spans[0].tags.iter().find(|f| f.key == "exception.message");
-    let exc_stacktrace = spans[0]
-        .tags
-        .iter()
-        .find(|f| f.key == "exception.stacktrace");
+    let err_msg = spans[0].tags.iter().find(|f| f.key == "error.message");
+    let err_kind = spans[0].tags.iter().find(|f| f.key == "error.type");
+    let err_stack = spans[0].tags.iter().find(|f| f.key == "error.stack");
 
-    assert_eq!("Error: error message", exc_message.unwrap().v_str);
-    assert_eq!("[]", exc_stacktrace.unwrap().v_str);
+    assert_eq!("Error: error message", err_msg.unwrap().v_str);
+    assert_eq!("Error", err_kind.unwrap().v_str);
+    assert_eq!("Error: error message", err_stack.unwrap().v_str);
 
-    let exception_logs: Vec<_> = spans[0]
-        .logs
-        .iter()
-        .find(|log| {
-            log.fields
-                .iter()
-                .any(|f| f.key == "event" && f.v_str == "exception")
-        })
-        .into_iter()
-        .collect();
-
-    assert_eq!(
-        exception_logs.len(),
-        1,
-        "expected exactly one OTEL 'exception' event"
-    );
-
-    let fields = &exception_logs[0].fields;
-    let ex_msg = fields
-        .iter()
-        .find(|f| f.key == "exception.message")
-        .expect("missing exception.message");
-    let ex_type = fields
-        .iter()
-        .find(|f| f.key == "exception.type")
-        .expect("missing exception.type");
-    // We're just interested this exists
-    let _ex_stack = fields
-        .iter()
-        .find(|f| f.key == "exception.stacktrace")
-        .expect("missing exception.stacktrace");
-
-    assert_eq!(ex_msg.v_str, "Error: error message");
-    assert_eq!(ex_type.v_str, "Error");
-
-    let legacy_msg = fields
-        .iter()
-        .find(|f| f.key == "error.message")
-        .expect("missing legacy error.message");
-    let legacy_type = fields
-        .iter()
-        .find(|f| f.key == "error.type")
-        .expect("missing legacy error.type");
-
-    assert_eq!(legacy_msg.v_str, "Error: error message");
-    assert_eq!(legacy_type.v_str, "Error");
+    assert_eq!(spans[0].logs.len(), 1);
 }
 
 #[derive(Debug)]
