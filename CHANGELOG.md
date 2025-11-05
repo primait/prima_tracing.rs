@@ -16,6 +16,7 @@ and this project adheres to
   `error.type`, `error.stack`): these values are now exported only as **span
   attributes** for trace backends (e.g. Datadog, Jaeger). Any log-based error
   parsing or alerting pipelines must be updated accordingly.
+- `version` is no longer added to span attributes, just `service.version`
 
 ### Added
 
@@ -31,12 +32,6 @@ and this project adheres to
   - Adds Datadog-compatible span attributes `error.message`, `error.type`, and
     `error.stack`
   - No longer add attributes to underlying OpenTelemetry events
-- `KubeEnvLayer` and `VersionLayer` responsibilities moved to **Resource
-  attributes**:
-  - Kubernetes environment variables and service version are now attached once
-    at tracer provider creation, instead of being injected per span
-  - `service.version` is populated from `SubscriberConfig.version` following
-    OpenTelemetry semantic conventions
 
 ---
 
