@@ -13,7 +13,7 @@ and this project adheres to
 ### Changed
 
 - MSRV is now 1.83
-- Uninstall guard is not annotated `must_use`.  
+- Uninstall guard is now annotated `must_use`.  
 This is technically a breaking change but if the drop guard previously wasn't used
 it indicates a bug in the program, so we're marking it a minor.
 ---
