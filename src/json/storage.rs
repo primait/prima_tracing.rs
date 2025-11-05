@@ -1,10 +1,11 @@
 use std::collections::HashMap;
 
 use tracing::{
+    Subscriber,
     field::{Field, Visit},
-    span, Subscriber,
+    span,
 };
-use tracing_subscriber::{layer::Context, Layer};
+use tracing_subscriber::{Layer, layer::Context};
 
 #[derive(Default)]
 pub struct PrimaJsonVisitor<'a> {
@@ -62,7 +63,7 @@ impl<'a> PrimaJsonVisitor<'a> {
     }
 }
 
-impl<'a> Visit for PrimaJsonVisitor<'a> {
+impl Visit for PrimaJsonVisitor<'_> {
     fn record_i64(&mut self, field: &Field, value: i64) {
         self.fields
             .insert(field.name(), serde_json::Value::from(value));

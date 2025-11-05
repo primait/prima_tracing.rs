@@ -1,15 +1,15 @@
 use std::io::Stdout;
 use std::io::Write;
 
-use serde::ser::{SerializeMap, Serializer};
 use serde::Serialize;
+use serde::ser::{SerializeMap, Serializer};
 use tracing::{Event, Subscriber};
 use tracing_log::NormalizeEvent;
 use tracing_subscriber::{
+    Layer,
     fmt::MakeWriter,
     layer::Context,
     registry::{LookupSpan, SpanRef},
-    Layer,
 };
 
 use crate::json::storage::PrimaJsonVisitor;
@@ -201,7 +201,7 @@ struct SpanSerializer<'a, 'b, Span>(&'b SpanRef<'a, Span>)
 where
     Span: for<'lookup> LookupSpan<'lookup>;
 
-impl<'a, 'b, Span> Serialize for SpanSerializer<'a, 'b, Span>
+impl<Span> Serialize for SpanSerializer<'_, '_, Span>
 where
     Span: for<'lookup> LookupSpan<'lookup>,
 {
@@ -230,7 +230,7 @@ struct SpanListSerializer<'a, 'b, S>(&'b Context<'a, S>)
 where
     S: Subscriber + for<'lookup> LookupSpan<'lookup>;
 
-impl<'a, 'b, Sub> Serialize for SpanListSerializer<'a, 'b, Sub>
+impl<Sub> Serialize for SpanListSerializer<'_, '_, Sub>
 where
     Sub: Subscriber + for<'lookup> LookupSpan<'lookup>,
 {
