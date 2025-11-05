@@ -1,15 +1,15 @@
 use std::io::Stdout;
 use std::io::Write;
 
-use serde::Serialize;
 use serde::ser::{SerializeMap, Serializer};
+use serde::Serialize;
 use tracing::{Event, Subscriber};
 use tracing_log::NormalizeEvent;
 use tracing_subscriber::{
-    Layer,
     fmt::MakeWriter,
     layer::Context,
     registry::{LookupSpan, SpanRef},
+    Layer,
 };
 
 use crate::json::storage::PrimaJsonVisitor;

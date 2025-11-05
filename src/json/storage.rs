@@ -1,11 +1,10 @@
 use std::collections::HashMap;
 
 use tracing::{
-    Subscriber,
     field::{Field, Visit},
-    span,
+    span, Subscriber,
 };
-use tracing_subscriber::{Layer, layer::Context};
+use tracing_subscriber::{layer::Context, Layer};
 
 #[derive(Default)]
 pub struct PrimaJsonVisitor<'a> {
