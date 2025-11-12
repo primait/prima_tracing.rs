@@ -1,10 +1,8 @@
-use opentelemetry::KeyValue;
-use tracing::field::Field;
-use tracing::field::Visit;
-use tracing::Event;
-use tracing::Level;
-use tracing::Subscriber;
-use tracing_opentelemetry::OtelData;
+use opentelemetry::trace::Status;
+
+use tracing::field::{Field, Visit};
+use tracing::{Event, Level, Span, Subscriber};
+use tracing_opentelemetry::OpenTelemetrySpanExt as _;
 use tracing_subscriber::{registry::LookupSpan, Layer};
 
 pub struct ErrorLayer;
@@ -14,47 +12,35 @@ where
     S: Subscriber + for<'span> LookupSpan<'span>,
 {
     fn on_event(&self, event: &Event<'_>, ctx: tracing_subscriber::layer::Context<'_, S>) {
-        if event.metadata().is_event() && event.metadata().level() == &Level::ERROR {
-            if let Some(span) = ctx.lookup_current() {
-                let mut visitor = ErrorVisitor::default();
-                event.record(&mut visitor);
-
-                if visitor.is_error {
-                    let otel_data = span.extensions_mut().remove::<OtelData>();
-
-                    if let Some(mut otel_data) = otel_data {
-                        let builder = &mut otel_data.builder;
-                        let builder_attrs = builder.attributes.get_or_insert(vec![]);
-
-                        // Adding fields to existing trace events (logs)
-                        if let Some(ref mut events) = builder.events {
-                            for event in events.iter_mut() {
-                                event
-                                    .attributes
-                                    .push(KeyValue::new("error.message", visitor.message.clone()));
-                                event
-                                    .attributes
-                                    .push(KeyValue::new("error.type", visitor.kind.clone()));
-                                event
-                                    .attributes
-                                    .push(KeyValue::new("error.kind", visitor.kind.clone()));
-                                event
-                                    .attributes
-                                    .push(KeyValue::new("error.stack", visitor.stack.clone()));
-                            }
-                        }
-
-                        // Adding fields to existing trace tags
-                        builder_attrs.push(KeyValue::new("error.message", visitor.message));
-                        builder_attrs.push(KeyValue::new("error.type", visitor.kind.clone()));
-                        builder_attrs.push(KeyValue::new("error.kind", visitor.kind));
-                        builder_attrs.push(KeyValue::new("error.stack", visitor.stack));
-
-                        span.extensions_mut().replace(otel_data);
-                    }
-                }
-            }
+        // This is not an error
+        if !event.metadata().is_event() || event.metadata().level() != &Level::ERROR {
+            return;
         }
+
+        // No current span, nothing to do
+        if ctx.lookup_current().is_none() {
+            return;
+        }
+
+        let mut visitor = ErrorVisitor::default();
+        event.record(&mut visitor);
+
+        if !visitor.is_error {
+            return;
+        }
+
+        let span: Span = Span::current();
+
+        // Tag Datadog: error.* as span attributes
+        // See here for more info: https://docs.datadoghq.com/tracing/error_tracking/#use-span-attributes-to-track-error-spans
+        span.set_attribute("error.type", visitor.kind.clone());
+        span.set_attribute("error.message", visitor.message.clone());
+        span.set_attribute("error.stack", visitor.stack.clone());
+
+        // Optional but useful
+        span.set_attribute("error", true);
+
+        span.set_status(Status::error(visitor.message));
     }
 }
 

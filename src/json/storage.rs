@@ -50,8 +50,8 @@ where
     }
 }
 
-impl<'a> PrimaJsonVisitor<'a> {
-    pub fn fields(&self) -> &HashMap<&'a str, serde_json::Value> {
+impl PrimaJsonVisitor<'_> {
+    pub fn fields(&self) -> &HashMap<&str, serde_json::Value> {
         &self.fields
     }
 }

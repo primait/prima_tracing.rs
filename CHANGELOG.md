@@ -8,14 +8,39 @@ and this project adheres to
 
 ---
 
-## [0.17.1] - 2025-10-29
+## [0.18.1] - 2025-11-12
 
 ### Changed
 
-- MSRV is now 1.83
 - Uninstall guard is now annotated `must_use`.  
 This is technically a breaking change but if the drop guard previously wasn't used
 it indicates a bug in the program, so we're marking it a minor.
+
+## [0.18.0] - 2025-10-31
+
+### ⚠️ Breaking Changes
+
+- Application **logs no longer include `error.*` fields** (`error.message`,
+  `error.type`, `error.stack`): these values are now exported only as **span
+  attributes** for trace backends (e.g. Datadog, Jaeger). Any log-based error
+  parsing or alerting pipelines must be updated accordingly.
+- `version` is no longer added to span attributes, just `service.version`
+
+### Added
+
+- Dependency on `opentelemetry_semantic_conventions` to avoid hard-coded
+  attribute keys
+
+### Changed
+
+- Bumped `opentelemetry` to **0.31**
+- Minimum supported Rust version (**MSRV**) is now **1.83**
+- `ErrorLayer` simplified:
+  - Now sets span status with `Status::error`
+  - Adds Datadog-compatible span attributes `error.message`, `error.type`, and
+    `error.stack`
+  - No longer add attributes to underlying OpenTelemetry events
+
 ---
 
 ## [0.17.0] - 2025-06-24
@@ -332,8 +357,9 @@ jaeger:
 
 
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.17.1...HEAD
-[0.17.1]: https://github.com/primait/prima_tracing.rs/compare/0.17.0...0.17.1
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.18.1...HEAD
+[0.17.1]: https://github.com/primait/prima_tracing.rs/compare/0.18.0...0.18.1
+[0.18.0]: https://github.com/primait/prima_tracing.rs/compare/0.17.0...0.18.0
 [0.17.0]: https://github.com/primait/prima_tracing.rs/compare/0.16.0...0.17.0
 [0.16.0]: https://github.com/primait/prima_tracing.rs/compare/0.15.0...0.16.0
 [0.15.0]: https://github.com/primait/prima_tracing.rs/compare/0.14.2...0.15.0
