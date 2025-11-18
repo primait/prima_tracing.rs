@@ -21,7 +21,7 @@ command = "cargo"
 args = ["nextest", "run", "--all-features", "${@}"]
 install_crate_args = [
     "--version",
-    "=0.9.91",
+    "=0.9.5",
 ]
 
 [tasks.clippy]
