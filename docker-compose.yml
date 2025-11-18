@@ -15,8 +15,8 @@ services:
       - jaeger
     environment:
       BUILD_ENV: dev
-      CARGO_HOME: /home/app/.cargo
-      CARGO_TARGET_DIR: /home/app/target
+      CARGO_HOME: /code/.cargo
+      CARGO_TARGET_DIR: /code/target
       CARGO_MAKE_DISABLE_UPDATE_CHECK: 1
     networks:
       - default
