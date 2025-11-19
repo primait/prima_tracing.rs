@@ -18,8 +18,11 @@
 //! # }
 //! ```
 
-mod config;
+#[cfg(feature = "traces")]
+#[macro_use]
+mod macros;
 
+mod config;
 mod subscriber;
 
 #[cfg(feature = "json-logger")]
@@ -65,9 +68,7 @@ macro_rules! report_error {
     ($error:expr, $($args:tt)*) => {
         {
           let kind = ::std::any::type_name_of_val(&$error);
-          let stack = error_report::Report::new(&$error);
-          let backtrace = ::std::backtrace::Backtrace::force_capture();
-          $crate::tracing::error!(error.kind = kind, error.stack = ?stack, error.trace = %backtrace, error.message = &$error as &dyn ::std::error::Error, $($args)+)
+          $crate::tracing::error!(error.kind = kind, error = &$error as &dyn ::std::error::Error, $($args)+)
         }
     };
 }
