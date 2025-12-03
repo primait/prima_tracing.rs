@@ -1,7 +1,7 @@
 pub mod error_report;
 
-/// Emitt a tracing error event for an error with rich, structured context.
-/// It capturing the error using the experimental Rust [std::error::Report](https://doc.rust-lang.org/stable/std/error/struct.Report.html)
+/// Emit a tracing error event for an error with rich, structured context.
+/// It captures the error using the experimental Rust [std::error::Report](https://doc.rust-lang.org/stable/std/error/struct.Report.html)
 /// and adding the type name as error.kind, the backtrace as error.trace and the error stack as error.message
 ///
 /// # Examples
@@ -50,8 +50,8 @@ macro_rules! trace_error {
     };
 }
 
-/// Emitt a tracing error event for anyhow error with rich, structured context.
-/// It capturing the error using the experimental Rust [std::error::Report](https://doc.rust-lang.org/stable/std/error/struct.Report.html)
+/// Emit a tracing error event for anyhow error with rich, structured context.
+/// It captures the error using the experimental Rust [std::error::Report](https://doc.rust-lang.org/stable/std/error/struct.Report.html)
 /// and adding the type name as error.kind, the backtrace as error.trace and the error stack as error.message
 ///
 /// # Examples
