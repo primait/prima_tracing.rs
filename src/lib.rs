@@ -20,7 +20,7 @@
 
 #[cfg(feature = "traces")]
 #[macro_use]
-mod macros;
+pub mod macros;
 
 mod config;
 mod subscriber;
