@@ -1,3 +1,5 @@
+pub mod error_report;
+
 /// Emitt a tracing error event for an error with rich, structured context.
 /// It capturing the error using the experimental Rust [std::error::Report](https://doc.rust-lang.org/stable/std/error/struct.Report.html)
 /// and adding the type name as error.kind, the backtrace as error.trace and the error stack as error.message
@@ -24,7 +26,7 @@ macro_rules! trace_error {
         {
             let kind = std::any::type_name_of_val(&$error);
             let error_message = format!("{:#}", $error);
-            let stack = error_report::Report::new(&$error);
+            let stack = prima_tracing::macros::error_report::Report::new(&$error);
             let trace = std::backtrace::Backtrace::force_capture();
 
             $crate::tracing::error!(
@@ -77,7 +79,7 @@ macro_rules! trace_anyhow_error {
             let kind = std::any::type_name_of_val(&$error.root_cause());
             let error_message = format!("{:#}", $error);
             let std_err: &(dyn std::error::Error + 'static) = $error.as_ref();
-            let stack = error_report::Report::new(std_err);
+            let stack = prima_tracing::macros::error_report::Report::new(std_err);
 
             $crate::tracing::error!(
                 {
