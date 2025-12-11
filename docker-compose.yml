@@ -1,10 +1,9 @@
 services:
   app:
-    user: root
     build: .
     volumes:
       - .:/code
-      - "app:/home/app/"
+      - target:/code/target
       - "~/.ssh:/home/app/.ssh"
       - "~/.aws:/home/app/.aws"
       - "~/.gitconfig:/home/app/.gitconfig"
@@ -16,8 +15,8 @@ services:
       - jaeger
     environment:
       BUILD_ENV: dev
-      CARGO_HOME: /home/app/.cargo
-      CARGO_TARGET_DIR: /home/app/target
+      CARGO_HOME: /code/.cargo
+      CARGO_TARGET_DIR: /code/target
       CARGO_MAKE_DISABLE_UPDATE_CHECK: 1
     networks:
       - default
@@ -33,4 +32,4 @@ services:
       COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 
 volumes:
-  app:
+  target: {}
