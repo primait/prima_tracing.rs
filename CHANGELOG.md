@@ -8,6 +8,24 @@ and this project adheres to
 
 ---
 
+## [0.18.1] - 2025-11-11
+
+### Added
+
+- `trace_error!` macro to simplify structured error logging. It:
+  - Infers the error type via `std::any::type_name_of_val`.
+  - Logs the pretty-formatted error message.
+  - Captures a rich error report using `prima_tracing::macros::error_report::Report`.
+  - Forces a `std::backtrace::Backtrace` capture for easier debugging.
+  - Emits a `tracing::error!` event with structured fields:
+    - `error.message`
+    - `error.kind`
+    - `error.stack`
+    - `error.trace`
+    - plus any additional user-provided fields.
+- `trace_anyhow_error!` macro (behind the `anyhow` feature) to simplify structured logging
+of `anyhow::Error` values. It emits the same event with structured fields as `trace_error!`.
+
 ## [0.18.1] - 2025-11-12
 
 ### Changed
