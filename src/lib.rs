@@ -18,8 +18,11 @@
 //! # }
 //! ```
 
-mod config;
+#[cfg(feature = "traces")]
+#[macro_use]
+pub mod macros;
 
+mod config;
 mod subscriber;
 
 #[cfg(feature = "json-logger")]

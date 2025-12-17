@@ -8,13 +8,33 @@ and this project adheres to
 
 ---
 
+## [0.19.0] - 2025-12-17
+
+### Added
+
+- `trace_error!` macro to simplify structured error logging. It:
+  - Infers the error type via `std::any::type_name_of_val`.
+  - Logs the pretty-formatted error message.
+  - Captures a rich error report using
+    `prima_tracing::macros::error_report::Report`.
+  - Forces a `std::backtrace::Backtrace` capture for easier debugging.
+  - Emits a `tracing::error!` event with structured fields:
+    - `error.message`
+    - `error.kind`
+    - `error.stack`
+    - `error.trace`
+    - plus any additional user-provided fields.
+- `trace_anyhow_error!` macro (behind the `anyhow` feature) to simplify
+  structured logging of `anyhow::Error` values. It emits the same event with
+  structured fields as `trace_error!`.
+
 ## [0.18.1] - 2025-11-12
 
 ### Changed
 
-- Uninstall guard is now annotated `must_use`.  
-This is technically a breaking change but if the drop guard previously wasn't used
-it indicates a bug in the program, so we're marking it a minor.
+- Uninstall guard is now annotated `must_use`.\
+  This is technically a breaking change but if the drop guard previously wasn't
+  used it indicates a bug in the program, so we're marking it a minor.
 
 ## [0.18.0] - 2025-10-31
 
@@ -356,8 +376,8 @@ jaeger:
 ```
 
 
-
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.18.1...HEAD
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.19.0...HEAD
+[0.19.0]: https://github.com/primait/prima_tracing.rs/compare/0.18.0...0.19.0
 [0.17.1]: https://github.com/primait/prima_tracing.rs/compare/0.18.0...0.18.1
 [0.18.0]: https://github.com/primait/prima_tracing.rs/compare/0.17.0...0.18.0
 [0.17.0]: https://github.com/primait/prima_tracing.rs/compare/0.16.0...0.17.0
