@@ -6,6 +6,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+---
+
+## [0.19.0] - 2025-12-17
+
 ### Added
 
 - `trace_error!` macro to simplify structured error logging. It:
@@ -371,7 +375,9 @@ jaeger:
     COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.18.1...HEAD
+
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.19.0...HEAD
+[0.19.0]: https://github.com/primait/prima_tracing.rs/compare/0.18.0...0.19.0
 [0.17.1]: https://github.com/primait/prima_tracing.rs/compare/0.18.0...0.18.1
 [0.18.0]: https://github.com/primait/prima_tracing.rs/compare/0.17.0...0.18.0
 [0.17.0]: https://github.com/primait/prima_tracing.rs/compare/0.16.0...0.17.0
