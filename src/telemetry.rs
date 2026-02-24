@@ -4,7 +4,6 @@ use opentelemetry::{global, trace::TracerProvider, InstrumentationScope, KeyValu
 use opentelemetry_otlp::{SpanExporter, WithExportConfig};
 use opentelemetry_sdk::{trace as sdktrace, Resource};
 use opentelemetry_semantic_conventions::resource;
-use std::mem;
 use std::sync::Mutex;
 
 use crate::SubscriberConfig;
@@ -83,7 +82,7 @@ fn set_tracer_provider(new_provider: sdktrace::SdkTracerProvider) {
     let mut tracer_provider = TRACER_PROVIDER
         .lock()
         .expect("OpenTelemetry tracer provider mutex poisoned");
-    _ = mem::replace(&mut *tracer_provider, Some(new_provider));
+    tracer_provider.replace(new_provider);
 }
 
 pub(crate) fn shutdown_tracer_provider() {
@@ -109,13 +108,13 @@ mod test {
 
         assert_eq!(normalize_collector_url(base), expected);
 
-        let with_trailing_slash = format!("{}/", base);
+        let with_trailing_slash = format!("{base}/");
         assert_eq!(
             normalize_collector_url(with_trailing_slash.as_str()),
             expected
         );
 
-        let complete = format!("{}/v1/traces", base);
+        let complete = format!("{base}/v1/traces");
         assert_eq!(normalize_collector_url(complete.as_str()), expected);
     }
 }
