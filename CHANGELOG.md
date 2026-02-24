@@ -6,6 +6,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- Minimum supported Rust version (**MSRV**) is now **1.88**
+
 ---
 
 ## [0.19.0] - 2025-12-17
