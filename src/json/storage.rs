@@ -83,10 +83,8 @@ impl Visit for PrimaJsonVisitor<'_> {
             .insert(field.name(), serde_json::Value::from(value));
     }
     fn record_debug(&mut self, field: &tracing::field::Field, value: &dyn std::fmt::Debug) {
-        self.fields.insert(
-            field.name(),
-            serde_json::Value::from(format!("{:?}", value)),
-        );
+        self.fields
+            .insert(field.name(), serde_json::Value::from(format!("{value:?}")));
     }
 }
 

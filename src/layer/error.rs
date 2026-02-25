@@ -58,7 +58,7 @@ impl Visit for ErrorVisitor {
         let mut next_err = value.source();
 
         while let Some(err) = next_err {
-            source.push_str(&format!("\n{}", err));
+            source.push_str(&format!("\n{err}"));
             next_err = err.source();
         }
 
