@@ -11,43 +11,26 @@ pub mod error_report;
 /// # fn main() {
 ///
 /// let error = "not a number".parse::<usize>().unwrap_err();
+/// let extra_info = "extra info";
 /// trace_error!(error, "Parsing error!");
-/// trace_error!(error, "Parsing error: {}", uid="1234");
+/// trace_error!(error, uid="1234", "Parsing error: {extra_info}");
 /// # }
 /// ```
 #[macro_export]
 macro_rules! trace_error {
-    ($error:expr, $message:expr) => {
-        {
-            $crate::trace_error!($error, $message,)
-        }
-    };
-    ($error:expr, $message:expr, $($field:tt)*) => {
-        {
-            let kind = std::any::type_name_of_val(&$error);
-            let error_message = format!("{:#}", $error);
-            let stack = prima_tracing::macros::error_report::Report::new(&$error);
-            let trace = std::backtrace::Backtrace::force_capture();
-
-            $crate::tracing::error!(
-                {
-                    error.message = error_message,
-                    error.kind = kind,
-                    error.stack = ?stack,
-                    error.trace = %trace,
-                    $($field)*
-                },
-                "{} {}",
-                $message,
-                $error
-            );
-        }
-    };
-    ($error:expr, $message:expr) => {
-        {
-            $crate::trace_error!($error, $message, {})
-        }
-    };
+    ($error:ident, $($rest:tt)+) => {{
+        let kind = std::any::type_name_of_val(&$error);
+        let error_message = format!("{:#}", $error);
+        let stack = prima_tracing::macros::error_report::Report::new(&$error);
+        let trace = std::backtrace::Backtrace::force_capture();
+        $crate::tracing::error!(
+            error.message = error_message,
+            error.kind = kind,
+            error.stack = ?stack,
+            error.trace = %trace,
+            $($rest)+
+        );
+    }};
 }
 
 /// Emit a tracing error event for anyhow error with rich, structured context.
@@ -62,42 +45,26 @@ macro_rules! trace_error {
 /// # fn main() {
 ///
 /// let error = anyhow!("an error");
+/// let extra_info = "extra info";
 /// trace_anyhow_error!(error, "Throw error!");
-/// trace_anyhow_error!(error, "Throw error!", uid="1234");
+/// trace_anyhow_error!(error, uid="1234", "Parsing error: {extra_info}");
 /// # }
 /// ```
 #[cfg(feature = "anyhow")]
 #[macro_export]
 macro_rules! trace_anyhow_error {
-    ($error:expr, $message:expr) => {
-        {
-            $crate::trace_anyhow_error!($error, $message,)
-        }
-    };
-    ($error:expr, $message:expr, $($field:tt)*) => {
-        {
-            let kind = std::any::type_name_of_val(&$error.root_cause());
-            let error_message = format!("{:#}", $error);
-            let std_err: &(dyn std::error::Error + 'static) = $error.as_ref();
-            let stack = prima_tracing::macros::error_report::Report::new(std_err);
-
-            $crate::tracing::error!(
-                {
-                    error.message = error_message,
-                    error.kind = kind,
-                    error.stack = ?stack,
-                    error.trace = %$error.backtrace(),
-                    $($field)*
-                },
-                "{} {:?}",
-                $message,
-                $error
-            );
-        }
-    };
-    ($error:expr, $message:expr) => {
-        {
-            $crate::trace_anyhow_error!($error, $message,)
-        }
-    };
+    ($error:ident, $($rest:tt)+) => {{
+        let kind = std::any::type_name_of_val(&$error.root_cause());
+        let error_message = format!("{:#}", $error);
+        let std_err: &(dyn std::error::Error + 'static) = $error.as_ref();
+        let stack = prima_tracing::macros::error_report::Report::new(std_err);
+        let trace = $error.backtrace();
+        $crate::tracing::error!(
+            error.message = error_message,
+            error.kind = kind,
+            error.stack = ?stack,
+            error.trace = %trace,
+            $($rest)+
+        );
+    }};
 }
