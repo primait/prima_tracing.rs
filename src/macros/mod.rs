@@ -18,7 +18,7 @@ pub mod error_report;
 /// ```
 #[macro_export]
 macro_rules! trace_error {
-    ($error:ident, $($rest:tt)+) => {{
+    ($error:expr, $($rest:tt)+) => {{
         let kind = std::any::type_name_of_val(&$error);
         let error_message = format!("{:#}", $error);
         let stack = prima_tracing::macros::error_report::Report::new(&$error);
@@ -53,7 +53,7 @@ macro_rules! trace_error {
 #[cfg(feature = "anyhow")]
 #[macro_export]
 macro_rules! trace_anyhow_error {
-    ($error:ident, $($rest:tt)+) => {{
+    ($error:expr, $($rest:tt)+) => {{
         let kind = std::any::type_name_of_val(&$error.root_cause());
         let error_message = format!("{:#}", $error);
         let std_err: &(dyn std::error::Error + 'static) = $error.as_ref();
