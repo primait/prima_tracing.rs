@@ -14,7 +14,7 @@ mod tests {
 
         with_test_tracing(
             || {
-                trace_error!(error, "Parsing error!", something = "something");
+                trace_error!(error, something = "something", "Parsing error! {error}");
             },
             |events| {
                 let event = events.first().unwrap();
@@ -46,7 +46,7 @@ mod tests {
 
         with_test_tracing(
             || {
-                trace_anyhow_error!(error, "Throw error!");
+                trace_anyhow_error!(error, "Throw error! {error}");
             },
             |events| {
                 let event = events.first().unwrap();
@@ -60,7 +60,7 @@ mod tests {
                 );
                 assert_eq!(
                     event["message"].as_debug_str(),
-                    Some(format!("Throw error! {error:?}").as_str())
+                    Some(format!("Throw error! {error}").as_str())
                 );
             },
         )
@@ -71,7 +71,7 @@ mod tests {
         F: FnOnce(),
         T: FnOnce(Vec<CapturedEvent>),
     {
-        let subscriber = tracing_subscriber::fmt().pretty().finish();
+        let subscriber = tracing_subscriber::registry();
         let storage: SharedStorage = SharedStorage::default();
         let subscriber = subscriber.with(CaptureLayer::new(&storage));
 

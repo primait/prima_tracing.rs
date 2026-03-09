@@ -6,6 +6,31 @@ and this project adheres to
 
 ## [Unreleased]
 
+---
+
+## [0.20.0] - 2026-03-03
+
+### ⚠️ Breaking Changes
+
+- **Changed macro syntax for `trace_error!` and `trace_anyhow_error!`**: The
+  message format now follows the standard `tracing` syntax where fields come
+  **before** the message template, not after it.
+
+  **Migration guide:**
+
+  ```rust
+  // Old syntax (0.19.x and earlier)
+  trace_error!(error, "Parsing error!", uid="1234");
+  trace_anyhow_error!(error, "Throw error!", uid="1234");
+ 
+  // New syntax (0.20.0+)
+  trace_error!(error, uid="1234", "Parsing error! {error}");
+  trace_anyhow_error!(error, uid="1234", "Throw error! {error}");
+  ```
+
+  This change aligns the macros with standard `tracing` conventions and enables
+  better formatting and interpolation in log messages.
+
 ### Changed
 
 - Minimum supported Rust version (**MSRV**) is now **1.88**
@@ -379,10 +404,9 @@ jaeger:
     COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
 
-
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.19.0...HEAD
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.20.0...HEAD
+[0.20.0]: https://github.com/primait/prima_tracing.rs/compare/0.19.0...0.20.0
 [0.19.0]: https://github.com/primait/prima_tracing.rs/compare/0.18.0...0.19.0
-[0.17.1]: https://github.com/primait/prima_tracing.rs/compare/0.18.0...0.18.1
 [0.18.0]: https://github.com/primait/prima_tracing.rs/compare/0.17.0...0.18.0
 [0.17.0]: https://github.com/primait/prima_tracing.rs/compare/0.16.0...0.17.0
 [0.16.0]: https://github.com/primait/prima_tracing.rs/compare/0.15.0...0.16.0
