@@ -16,9 +16,21 @@ prima-logger-datadog = ["datadog"]
 prima-logger-json = ["json-logger"]
 prima-telemetry = ["traces"]
 
-datadog = ["json-logger", "opentelemetry", "tracing-opentelemetry", "opentelemetry-semantic-conventions"]
+datadog = [
+  "json-logger",
+  "opentelemetry",
+  "tracing-opentelemetry",
+  "opentelemetry-semantic-conventions",
+]
 json-logger = []
-traces = ["tracing-opentelemetry", "opentelemetry", "opentelemetry_sdk", "opentelemetry-otlp", "opentelemetry-semantic-conventions"]
+traces = [
+  "tracing-opentelemetry",
+  "opentelemetry",
+  "opentelemetry_sdk",
+  "opentelemetry-otlp",
+  "opentelemetry-semantic-conventions",
+]
+graphql = ["async-graphql", "async-trait"]
 
 # feature sets most likely used in given environment
 dev = ["traces"]
@@ -38,33 +50,47 @@ required-features = ["json-logger"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-anyhow = {version = "1.0.100", features = ["std"], optional = true}
-opentelemetry = {version = "0.31", optional = true}
-opentelemetry-semantic-conventions = {version = "0.31", optional = true}
-opentelemetry-otlp = {version = "0.31", features = ["http-proto", "reqwest-blocking-client"], default-features = false, optional = true}
-opentelemetry_sdk = {version = "0.31", features = ["rt-tokio"], optional = true}
-tracing = {version = "0.1"}
-tracing-log = {version = "0.2"}
-tracing-opentelemetry = {version = "0.32", optional = true}
-tracing-subscriber = {version = "0.3", features = ["env-filter"]}
+anyhow = { version = "1.0.100", features = ["std"], optional = true }
+opentelemetry = { version = "0.31", optional = true }
+opentelemetry-semantic-conventions = { version = "0.31", optional = true }
+opentelemetry-otlp = { version = "0.31", features = [
+  "http-proto",
+  "reqwest-blocking-client",
+], default-features = false, optional = true }
+opentelemetry_sdk = { version = "0.31", features = [
+  "rt-tokio",
+], optional = true }
+tracing = { version = "0.1" }
+tracing-log = { version = "0.2" }
+tracing-opentelemetry = { version = "0.32", optional = true }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+async-graphql = { version = "7.2.1", default-features = true, optional = true }
+async-trait = { version = "0.1", optional = true }
 
 # serialization/deserialization
-serde = {version = "^1.0", features = ["derive"]}
+serde = { version = "^1.0", features = ["derive"] }
 # json serialization
 serde_json = "^1.0"
 
 # dates
-chrono = {version = "^0.4", default-features = false, features = ["serde", "clock"]}
+chrono = { version = "^0.4", default-features = false, features = [
+  "serde",
+  "clock",
+] }
 url = "2.5.0"
 once_cell = "1.19.0"
 
 [dev-dependencies]
 actix-web = "4.0.1"
 assert2 = "0.4"
-opentelemetry-jaeger = {version = "0.22", features = ["integration_test"]}
+opentelemetry-jaeger = { version = "0.22", features = ["integration_test"] }
 prima_bridge = "0.25"
 thiserror = "2"
-tokio = {version = "1.17", features = ["rt", "macros", "rt-multi-thread"]}
-tracing-actix-web = {version = "0.7.11", features = ["opentelemetry_0_27"]}
+tokio = { version = "1.17", features = ["rt", "macros", "rt-multi-thread"] }
+tracing-actix-web = { version = "0.7.11", features = ["opentelemetry_0_27"] }
 tracing-capture = "0.1.0"
-uuid = {version = "1.10", features = ["v4"]}
+uuid = { version = "1.10", features = ["v4"] }
+test-log = { version = "0.2.19", default-features = false, features = [
+  "trace",
+] }
