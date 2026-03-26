@@ -12,7 +12,7 @@ use tracing::{info_span, Instrument};
 ///
 /// For each root-level GraphQL field it emits:
 /// - An `INFO` span named `graphql_root_field` containing the field name,
-///   the parent type, the return type, and the schema name
+///   the operation type, the parent type, and the return type
 /// - `TRACE` logs for start/completion
 /// - An `ERROR` log if the field resolution returned errors
 ///
@@ -21,31 +21,33 @@ use tracing::{info_span, Instrument};
 /// - An `ERROR` log per validation error when the query references fields or types that don't
 ///   exist in the schema (e.g. unknown fields, wrong argument types, missing required args)
 pub struct TracingRootFieldsExtension {
-    schema: &'static str,
+    schema: Arc<str>,
 }
 
 impl TracingRootFieldsExtension {
-    pub fn new(schema: &'static str) -> Self {
-        Self { schema }
+    pub fn new(schema: impl Into<Arc<str>>) -> Self {
+        Self {
+            schema: schema.into(),
+        }
     }
 }
 
 impl ExtensionFactory for TracingRootFieldsExtension {
     fn create(&self) -> Arc<dyn Extension> {
         Arc::new(TracingRootFieldsExtensionInstance {
-            schema: self.schema,
+            schema: self.schema.clone(),
         })
     }
 }
 
 struct TracingRootFieldsExtensionInstance {
-    schema: &'static str,
+    schema: Arc<str>,
 }
 
 #[async_trait::async_trait]
 impl Extension for TracingRootFieldsExtensionInstance {
     async fn request(&self, ctx: &ExtensionContext<'_>, next: NextRequest<'_>) -> Response {
-        let span = info_span!("graphql_request", schema = self.schema);
+        let span = info_span!("graphql_request", schema = self.schema.as_ref());
         next.run(ctx).instrument(span).await
     }
 

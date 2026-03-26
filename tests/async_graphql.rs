@@ -1,3 +1,5 @@
+#![cfg(feature = "async-graphql")]
+
 #[cfg(test)]
 mod tests {
     use async_graphql::{EmptyMutation, EmptySubscription, Object, Schema};
