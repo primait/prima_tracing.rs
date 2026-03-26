@@ -416,6 +416,16 @@ mod tests {
             span_has_fields(request_spans[0], &[("schema", "test_schema")]),
             "expected graphql_request span to have schema tag",
         );
+
+        let root_field_spans: Vec<_> = captured_spans
+            .iter()
+            .filter(|span| span.name == "graphql_root_field")
+            .collect();
+        assert_eq!(
+            root_field_spans.len(),
+            0,
+            "expected no graphql_root_field spans to be emitted when validation fails before execution"
+        );
         drop(captured_spans);
 
         let captured = events.lock().unwrap();
