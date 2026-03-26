@@ -155,17 +155,7 @@ mod tests {
 
     #[test_log::test(tokio::test(flavor = "current_thread"))]
     async fn field_name_appears_in_tracing_span() {
-        let spans: CapturedSpans = Arc::new(Mutex::new(vec![]));
-
-        let layer = CapturingLayer {
-            spans: Arc::clone(&spans),
-            events: Arc::new(Mutex::new(vec![])),
-        };
-        let subscriber = tracing_subscriber::registry().with(layer).with(
-            tracing_subscriber::filter::LevelFilter::from_level(Level::DEBUG),
-        );
-
-        // Use a scoped default subscriber so it is active for this test's async operations
+        let (spans, _events, subscriber) = setup_subscriber_with_captures();
         let _guard = tracing::subscriber::set_default(subscriber);
 
         let schema = Schema::build(QueryRoot, EmptyMutation, EmptySubscription)
@@ -225,16 +215,7 @@ mod tests {
 
     #[test_log::test(tokio::test(flavor = "current_thread"))]
     async fn mutation_operation_type_appears_in_tracing_span() {
-        let spans: CapturedSpans = Arc::new(Mutex::new(vec![]));
-
-        let layer = CapturingLayer {
-            spans: Arc::clone(&spans),
-            events: Arc::new(Mutex::new(vec![])),
-        };
-        let subscriber = tracing_subscriber::registry().with(layer).with(
-            tracing_subscriber::filter::LevelFilter::from_level(Level::DEBUG),
-        );
-
+        let (spans, _events, subscriber) = setup_subscriber_with_captures();
         let _guard = tracing::subscriber::set_default(subscriber);
 
         let schema = Schema::build(QueryRoot, MutRoot, EmptySubscription)
