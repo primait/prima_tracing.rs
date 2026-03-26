@@ -104,10 +104,9 @@ impl<'a> ContextInfo<'a> {
     }
 }
 
-#[cfg(not(feature = "json-logger"))]
+#[cfg_attr(feature = "json-logger", allow(dead_code))]
 pub struct NopEventFormatter;
 
-#[cfg(not(feature = "json-logger"))]
 impl EventFormatter for NopEventFormatter {
     fn format_event<S>(
         &self,
