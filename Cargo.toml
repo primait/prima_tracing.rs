@@ -30,7 +30,7 @@ traces = [
   "opentelemetry-otlp",
   "opentelemetry-semantic-conventions",
 ]
-graphql = ["async-graphql", "async-trait"]
+async-graphql = ["dep:async-graphql", "dep:async-trait"]
 
 # feature sets most likely used in given environment
 dev = ["traces"]
