@@ -12,11 +12,12 @@ and this project adheres to
 
 ### Added
 
-- `TracingRootFieldsExtension` for `async-graphql` (behind the `async-graphql` feature flag): a
-  GraphQL extension that instruments every root-level field with a `tracing` span
-  (`graphql_root_field`) carrying the field name, operation type, parent type, and return type.
-  It also emits `ERROR` events on query parse failures and schema validation errors, making
-  breaking schema changes easier to detect.
+- `TracingRootFieldsExtension` for `async-graphql` (behind the `async-graphql`
+  feature flag): a GraphQL extension that instruments every root-level field
+  with a `tracing` span (`graphql_root_field`) carrying the field name,
+  operation type, parent type, and return type. It also emits `ERROR` events on
+  query parse failures and schema validation errors, making breaking schema
+  changes easier to detect.
 
 ### Changed
 
@@ -38,7 +39,7 @@ and this project adheres to
   // Old syntax (0.19.x and earlier)
   trace_error!(error, "Parsing error!", uid="1234");
   trace_anyhow_error!(error, "Throw error!", uid="1234");
- 
+
   // New syntax (0.20.0+)
   trace_error!(error, uid="1234", "Parsing error! {error}");
   trace_anyhow_error!(error, uid="1234", "Throw error! {error}");
