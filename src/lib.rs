@@ -25,6 +25,8 @@ pub mod macros;
 mod config;
 mod subscriber;
 
+#[cfg(feature = "async-graphql")]
+pub mod async_graphql;
 #[cfg(feature = "json-logger")]
 pub mod json;
 #[cfg(feature = "traces")]

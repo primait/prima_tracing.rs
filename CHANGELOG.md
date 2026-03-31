@@ -8,6 +8,22 @@ and this project adheres to
 
 ---
 
+## [0.21.0] - 2026-03-31
+
+### Added
+
+- `TracingRootFieldsExtension` for `async-graphql` (behind the `async-graphql` feature flag): a
+  GraphQL extension that instruments every root-level field with a `tracing` span
+  (`graphql_root_field`) carrying the field name, operation type, parent type, and return type.
+  It also emits `ERROR` events on query parse failures and schema validation errors, making
+  breaking schema changes easier to detect.
+
+### Changed
+
+- Minimum supported Rust version (**MSRV**) is now **1.89**
+
+---
+
 ## [0.20.0] - 2026-03-03
 
 ### ⚠️ Breaking Changes
@@ -404,7 +420,8 @@ jaeger:
     COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.20.0...HEAD
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.21.0...HEAD
+[0.21.0]: https://github.com/primait/prima_tracing.rs/compare/0.20.0...0.21.0
 [0.20.0]: https://github.com/primait/prima_tracing.rs/compare/0.19.0...0.20.0
 [0.19.0]: https://github.com/primait/prima_tracing.rs/compare/0.18.0...0.19.0
 [0.18.0]: https://github.com/primait/prima_tracing.rs/compare/0.17.0...0.18.0

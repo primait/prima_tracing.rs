@@ -104,6 +104,7 @@ impl<'a> ContextInfo<'a> {
     }
 }
 
+#[cfg_attr(feature = "json-logger", allow(dead_code))]
 pub struct NopEventFormatter;
 
 impl EventFormatter for NopEventFormatter {
