@@ -17,9 +17,9 @@ and this project adheres to
   root-field resolver errors.
 - `TracingRootFieldsExtension` now supports configuring the log level for each
   event category independently via builder methods:
-  - `.with_parse_error_level(Level)` — log level for query parse failures
-  - `.with_validation_error_level(Level)` — log level for schema validation errors
-  - `.with_resolve_error_level(Level)` — log level for root-field resolver errors
+  - `.with_parse_level(Level)` — log level for query parse failures
+  - `.with_validation_level(Level)` — log level for schema validation errors
+  - `.with_resolve_level(Level)` — log level for root-field resolver errors
   - `.with_field_started_level(Level)` — log level when a root-field resolver begins
   - `.with_field_completed_level(Level)` — log level when a root-field resolver
     completes successfully
@@ -28,7 +28,7 @@ and this project adheres to
 
 - The default log level for parse errors, validation errors, and resolver errors
   in `TracingRootFieldsExtension` changed from `ERROR` to `TRACE`. Call
-  `.with_parse_error_level(Level::ERROR)` etc. on the builder to restore the
+  `.with_parse_level(Level::ERROR)` etc. on the builder to restore the
   previous behaviour.
 
 ---
