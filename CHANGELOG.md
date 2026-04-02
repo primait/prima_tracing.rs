@@ -28,8 +28,8 @@ and this project adheres to
 
 - The default log level for parse errors, validation errors, and resolver errors
   in `TracingRootFieldsExtension` changed from `ERROR` to `TRACE`. Call
-  `.parse_error_level(Level::ERROR)` etc. on the builder to restore the previous
-  behaviour.
+  `.with_parse_error_level(Level::ERROR)` etc. on the builder to restore the
+  previous behaviour.
 
 ---
 
