@@ -8,6 +8,31 @@ and this project adheres to
 
 ---
 
+## [0.22.0] - 2026-04-02
+
+### Changed
+
+- `TracingRootFieldsExtension`: all log events now default to `TRACE` level
+  instead of `ERROR`. This affects parse errors, validation errors, and
+  root-field resolver errors.
+- `TracingRootFieldsExtension` now supports configuring the log level for each
+  event category independently via builder methods:
+  - `.with_parse_error_level(Level)` — log level for query parse failures
+  - `.with_validation_error_level(Level)` — log level for schema validation errors
+  - `.with_resolve_error_level(Level)` — log level for root-field resolver errors
+  - `.with_field_started_level(Level)` — log level when a root-field resolver begins
+  - `.with_field_completed_level(Level)` — log level when a root-field resolver
+    completes successfully
+
+### ⚠️ Breaking Changes
+
+- The default log level for parse errors, validation errors, and resolver errors
+  in `TracingRootFieldsExtension` changed from `ERROR` to `TRACE`. Call
+  `.parse_error_level(Level::ERROR)` etc. on the builder to restore the previous
+  behaviour.
+
+---
+
 ## [0.21.0] - 2026-03-31
 
 ### Added
@@ -421,7 +446,8 @@ jaeger:
     COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.21.0...HEAD
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.22.0...HEAD
+[0.22.0]: https://github.com/primait/prima_tracing.rs/compare/0.21.0...0.22.0
 [0.21.0]: https://github.com/primait/prima_tracing.rs/compare/0.20.0...0.21.0
 [0.20.0]: https://github.com/primait/prima_tracing.rs/compare/0.19.0...0.20.0
 [0.19.0]: https://github.com/primait/prima_tracing.rs/compare/0.18.0...0.19.0
