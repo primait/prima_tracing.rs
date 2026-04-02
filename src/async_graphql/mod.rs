@@ -44,20 +44,20 @@ use tracing::{info_span, Instrument, Level};
 /// use tracing::Level;
 ///
 /// TracingRootFieldsExtension::new("my_schema")
-///     .with_parse_error_level(Level::ERROR)
-///     .with_validation_error_level(Level::ERROR)
-///     .with_resolve_error_level(Level::WARN)
+///     .with_parse_level(Level::ERROR)
+///     .with_validation_level(Level::ERROR)
+///     .with_resolve_level(Level::WARN)
 ///     .with_field_started_level(Level::DEBUG)
 ///     .with_field_completed_level(Level::DEBUG);
 /// ```
 pub struct TracingRootFieldsExtension {
     schema: Arc<str>,
     /// Log level emitted when a query document fails to parse.
-    parse_error_level: Level,
+    parse_level: Level,
     /// Log level emitted per validation error (unknown fields, wrong types, missing args, …).
-    validation_error_level: Level,
+    validation_level: Level,
     /// Log level emitted when a root-field resolver returns an error.
-    resolve_error_level: Level,
+    resolve_level: Level,
     /// Log level emitted when a root-field resolver begins execution.
     field_started_level: Level,
     /// Log level emitted when a root-field resolver completes successfully.
@@ -68,29 +68,29 @@ impl TracingRootFieldsExtension {
     pub fn new(schema: impl Into<Arc<str>>) -> Self {
         Self {
             schema: schema.into(),
-            parse_error_level: Level::TRACE,
-            validation_error_level: Level::TRACE,
-            resolve_error_level: Level::TRACE,
+            parse_level: Level::TRACE,
+            validation_level: Level::TRACE,
+            resolve_level: Level::TRACE,
             field_started_level: Level::TRACE,
             field_completed_level: Level::TRACE,
         }
     }
 
     /// Set the log level for query parse errors.
-    pub fn with_parse_error_level(mut self, level: Level) -> Self {
-        self.parse_error_level = level;
+    pub fn with_parse_level(mut self, level: Level) -> Self {
+        self.parse_level = level;
         self
     }
 
     /// Set the log level for schema validation errors.
-    pub fn with_validation_error_level(mut self, level: Level) -> Self {
-        self.validation_error_level = level;
+    pub fn with_validation_level(mut self, level: Level) -> Self {
+        self.validation_level = level;
         self
     }
 
     /// Set the log level for root-field resolver errors.
-    pub fn with_resolve_error_level(mut self, level: Level) -> Self {
-        self.resolve_error_level = level;
+    pub fn with_resolve_level(mut self, level: Level) -> Self {
+        self.resolve_level = level;
         self
     }
 
@@ -111,9 +111,9 @@ impl ExtensionFactory for TracingRootFieldsExtension {
     fn create(&self) -> Arc<dyn Extension> {
         Arc::new(TracingRootFieldsExtensionInstance {
             schema: self.schema.clone(),
-            parse_error_level: self.parse_error_level,
-            validation_error_level: self.validation_error_level,
-            resolve_error_level: self.resolve_error_level,
+            parse_level: self.parse_level,
+            validation_level: self.validation_level,
+            resolve_level: self.resolve_level,
             field_started_level: self.field_started_level,
             field_completed_level: self.field_completed_level,
         })
@@ -122,9 +122,9 @@ impl ExtensionFactory for TracingRootFieldsExtension {
 
 struct TracingRootFieldsExtensionInstance {
     schema: Arc<str>,
-    parse_error_level: Level,
-    validation_error_level: Level,
-    resolve_error_level: Level,
+    parse_level: Level,
+    validation_level: Level,
+    resolve_level: Level,
     field_started_level: Level,
     field_completed_level: Level,
 }
@@ -145,7 +145,7 @@ impl Extension for TracingRootFieldsExtensionInstance {
     ) -> ServerResult<ExecutableDocument> {
         next.run(ctx, query, variables).await.inspect_err(|err| {
             log_at_level!(
-                self.parse_error_level,
+                self.parse_level,
                 error = %err,
                 "graphql query parse error: request does not match expected schema syntax"
             );
@@ -160,7 +160,7 @@ impl Extension for TracingRootFieldsExtensionInstance {
         next.run(ctx).await.inspect_err(|errors| {
             for err in errors {
                 log_at_level!(
-                    self.validation_error_level,
+                    self.validation_level,
                     error = %err.message,
                     locations = ?err.locations,
                     "graphql validation error: request violates schema contract"
@@ -202,7 +202,7 @@ impl Extension for TracingRootFieldsExtensionInstance {
             next.run(ctx, info)
                 .await
                 .inspect(|_| log_at_level!(self.field_completed_level, "graphql field completed successfully"))
-                .inspect_err(|err| log_at_level!(self.resolve_error_level, error = %err, "graphql root resolver {} resolved with error", root_field_name))
+                .inspect_err(|err| log_at_level!(self.resolve_level, error = %err, "graphql root resolver {} resolved with error", root_field_name))
         }
         .instrument(span)
         .await
