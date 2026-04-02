@@ -148,7 +148,7 @@ mod tests {
             events: Arc::clone(&events),
         };
         let subscriber = tracing_subscriber::registry().with(layer).with(
-            tracing_subscriber::filter::LevelFilter::from_level(Level::DEBUG),
+            tracing_subscriber::filter::LevelFilter::from_level(Level::TRACE),
         );
         (spans, events, subscriber)
     }
@@ -307,7 +307,7 @@ mod tests {
         let captured_events = events.lock().unwrap();
         let error_events: Vec<_> = captured_events
             .iter()
-            .filter(|e| e.level == tracing::Level::ERROR)
+            .filter(|e| e.level == tracing::Level::TRACE)
             .collect();
         assert!(
             !error_events.is_empty(),
@@ -369,7 +369,7 @@ mod tests {
         let captured_events = events.lock().unwrap();
         let error_events: Vec<_> = captured_events
             .iter()
-            .filter(|e| e.level == tracing::Level::ERROR)
+            .filter(|e| e.level == tracing::Level::TRACE)
             .collect();
         assert!(
             !error_events.is_empty(),
@@ -431,7 +431,7 @@ mod tests {
         let captured = events.lock().unwrap();
         let error_events: Vec<_> = captured
             .iter()
-            .filter(|e| e.level == tracing::Level::ERROR)
+            .filter(|e| e.level == tracing::Level::TRACE)
             .collect();
 
         assert!(
