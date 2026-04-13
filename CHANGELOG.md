@@ -6,9 +6,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+---
+
+## [0.23.0] - 2026-04-13
+
 ### Changed
 
 - Minimum supported Rust version (**MSRV**) is now **1.91**
+- Support version `0.28` of `prima_bridge`
 
 ---
 
@@ -24,7 +29,8 @@ and this project adheres to
   - `.with_parse_level(Level)` — log level for query parse failures
   - `.with_validation_level(Level)` — log level for schema validation errors
   - `.with_resolve_level(Level)` — log level for root-field resolver errors
-  - `.with_field_started_level(Level)` — log level when a root-field resolver begins
+  - `.with_field_started_level(Level)` — log level when a root-field resolver
+    begins
   - `.with_field_completed_level(Level)` — log level when a root-field resolver
     completes successfully
 
@@ -32,8 +38,8 @@ and this project adheres to
 
 - The default log level for parse errors, validation errors, and resolver errors
   in `TracingRootFieldsExtension` changed from `ERROR` to `TRACE`. Call
-  `.with_parse_level(Level::ERROR)` etc. on the builder to restore the
-  previous behaviour.
+  `.with_parse_level(Level::ERROR)` etc. on the builder to restore the previous
+  behaviour.
 
 ---
 
@@ -450,7 +456,8 @@ jaeger:
     COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.22.0...HEAD
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.23.0...HEAD
+[0.23.0]: https://github.com/primait/prima_tracing.rs/compare/0.22.0...0.23.0
 [0.22.0]: https://github.com/primait/prima_tracing.rs/compare/0.21.0...0.22.0
 [0.21.0]: https://github.com/primait/prima_tracing.rs/compare/0.20.0...0.21.0
 [0.20.0]: https://github.com/primait/prima_tracing.rs/compare/0.19.0...0.20.0
