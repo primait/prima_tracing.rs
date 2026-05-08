@@ -8,6 +8,14 @@ and this project adheres to
 
 ---
 
+## [0.24.0] - 2026-05-08
+
+### Changed
+
+- Bump `prima_bridge` to `0.29`
+
+---
+
 ## [0.23.0] - 2026-04-13
 
 ### Changed
@@ -456,7 +464,8 @@ jaeger:
     COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.23.0...HEAD
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.24.0...HEAD
+[0.24.0]: https://github.com/primait/prima_tracing.rs/compare/0.23.0...0.24.0
 [0.23.0]: https://github.com/primait/prima_tracing.rs/compare/0.22.0...0.23.0
 [0.22.0]: https://github.com/primait/prima_tracing.rs/compare/0.21.0...0.22.0
 [0.21.0]: https://github.com/primait/prima_tracing.rs/compare/0.20.0...0.21.0
