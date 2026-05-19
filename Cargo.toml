@@ -56,18 +56,18 @@ required-features = ["async-graphql"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 anyhow = { version = "1.0.100", features = ["std"], optional = true }
-opentelemetry = { version = "0.31", optional = true }
-opentelemetry-semantic-conventions = { version = "0.31", optional = true }
-opentelemetry-otlp = { version = "0.31", features = [
+opentelemetry = { version = "0.32", optional = true }
+opentelemetry-semantic-conventions = { version = "0.32", optional = true }
+opentelemetry-otlp = { version = "0.32", features = [
   "http-proto",
   "reqwest-blocking-client",
 ], default-features = false, optional = true }
-opentelemetry_sdk = { version = "0.31", features = [
+opentelemetry_sdk = { version = "0.32", features = [
   "rt-tokio",
 ], optional = true }
 tracing = { version = "0.1" }
 tracing-log = { version = "0.2" }
-tracing-opentelemetry = { version = "0.32", optional = true }
+tracing-opentelemetry = { version = "0.33", optional = true }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 async-graphql = { version = "7.2.1", default-features = true, optional = true }
