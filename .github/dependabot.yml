@@ -15,3 +15,14 @@ updates:
         patterns:
           - "opentelemetry*"
           - "tracing-opentelemetry"
+  - package-ecosystem: docker
+    directories:
+      - "*"
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
