@@ -1,4 +1,4 @@
-FROM public.ecr.aws/primaassicurazioni/rust:1.91.0
+FROM public.ecr.aws/primaassicurazioni/rust:1.96.0
 
 USER root
 
