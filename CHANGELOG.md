@@ -8,6 +8,19 @@ and this project adheres to
 
 ---
 
+## [0.25.0] - 2026-07-01
+
+### Changed
+
+- (**Breaking Changes ⚠️**) OpenTelemetry stack upgraded 0.32/0.33
+
+### Changed
+
+- Datadog log correlation in the JSON formatter now uses only public
+  OpenTelemetry APIs to derive `dd.trace_id` and `dd.span_id`.
+
+---
+
 ## [0.24.0] - 2026-05-08
 
 ### Changed
@@ -464,7 +477,9 @@ jaeger:
     COLLECTOR_OTLP_HTTP_HOST_PORT: 55681
 ```
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.24.0...HEAD
+
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/0.25.0...HEAD
+[0.25.0]: https://github.com/primait/prima_tracing.rs/compare/0.24.0...0.25.0
 [0.24.0]: https://github.com/primait/prima_tracing.rs/compare/0.23.0...0.24.0
 [0.23.0]: https://github.com/primait/prima_tracing.rs/compare/0.22.0...0.23.0
 [0.22.0]: https://github.com/primait/prima_tracing.rs/compare/0.21.0...0.22.0
