@@ -19,6 +19,8 @@ allow = [
     "MIT",
     "Unicode-3.0",
     "MPL-2.0",
+    "ISC",
+    "CDLA-Permissive-2.0"
 ]
 
 [[licenses.clarify]]
