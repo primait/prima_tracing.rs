@@ -9,20 +9,45 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "chore(deps-cargo)"
     groups:
-      # Dependencies that need to be kept in sync
-      otel:
+      cargo-non-major:
         patterns:
-          - "opentelemetry*"
-          - "tracing-opentelemetry"
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
   - package-ecosystem: docker
     directories:
       - "*"
     schedule:
-      interval: weekly
+      interval: "weekly"
     cooldown:
       default-days: 7
-    ignore:
-      - dependency-name: "*"
+    commit-message:
+      prefix: "chore(deps-docker)"
+    groups:
+      docker-non-major:
+        patterns:
+          - "*"
         update-types:
-          - "version-update:semver-major"
+          - "minor"
+          - "patch"
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "chore(deps-github-actions)"
+    groups:
+      github-actions-non-major:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
