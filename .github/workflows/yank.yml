@@ -15,7 +15,7 @@ jobs:
     env:
       VERSION: ${{ inputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: echo "Attempting to yank version $VERSION"
       - name: Login
         run: cargo login "$CARGO_AUTH_KEY"
