@@ -170,7 +170,7 @@ fn main() -> std::io::Result<()> {
 
 On pushes to `master`, release-plz prepares a release PR with the next version
 and changelog. Review the version and notes, then merge that PR to publish to
-crates.io and create a GitHub release. Tags retain the existing `0.20.0` format.
+crates.io and create a GitHub release with a `v`-prefixed tag (for example, `v0.21.0`).
 Normal merges do not publish a release.
 
 The CD workflow uses the `CARGO_AUTH_KEY` repository secret for crates.io.
