@@ -166,6 +166,19 @@ fn main() -> std::io::Result<()> {
 }
 ```
 
+## Releases
+
+On pushes to `master`, release-plz prepares a release PR with the next version
+and changelog. Review the version and notes, then merge that PR to publish to
+crates.io and create a GitHub release. Tags retain the existing `0.20.0` format.
+Normal merges do not publish a release.
+
+The CD workflow uses the `CARGO_AUTH_KEY` repository secret for crates.io.
+GitHub Actions must be allowed to create pull requests in the repository
+settings. Release PRs created with the default `GITHUB_TOKEN` do not trigger
+the usual PR CI; reopen the PR to run those checks before merging, or configure
+a GitHub App token for the release-plz workflow.
+
 ## Running examples
 
 ### Simple
