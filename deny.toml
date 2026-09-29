@@ -9,6 +9,7 @@ ignore = [
     { crate = "instant@0.1.13", reason = "Instant is need for WASM, we don't care about WASM" },
     "RUSTSEC-2025-0123",
     { crate = "opentelemetry-jaeger@0.22.0", reason = "Opentelemetry-jaeger is need for Jaeger propagator" },
+    { id = "RUSTSEC-2026-0258", reason = "h2 0.3 is pulled in by dev-only Actix and Jaeger dependencies; the fix requires h2 0.4.16" },
 ]
 
 [licenses]
