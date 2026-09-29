@@ -58,7 +58,7 @@ required-features = ["async-graphql"]
 anyhow = { version = "1.0.100", features = ["std"], optional = true }
 opentelemetry = { version = "0.32", optional = true }
 opentelemetry-semantic-conventions = { version = "0.32", optional = true }
-opentelemetry-otlp = { version = "0.32", features = [
+opentelemetry-otlp = { version = "0.33", features = [
   "http-proto",
   "reqwest-blocking-client",
 ], default-features = false, optional = true }
