@@ -62,7 +62,7 @@ opentelemetry-otlp = { version = "0.32", features = [
   "http-proto",
   "reqwest-blocking-client",
 ], default-features = false, optional = true }
-opentelemetry_sdk = { version = "0.32", features = [
+opentelemetry_sdk = { version = "0.33", features = [
   "rt-tokio",
 ], optional = true }
 tracing = { version = "0.1" }
