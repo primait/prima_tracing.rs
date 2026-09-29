@@ -6,6 +6,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.25.1](https://github.com/primait/prima_tracing.rs/compare/v0.25.0...v0.25.1) - 2026-09-29
+
+### Other
+
+- DEVEX-3088 | Add release-plz ([#188](https://github.com/primait/prima_tracing.rs/pull/188))
+- *(deps)* update prima_bridge requirement from 0.30 to 0.31 ([#182](https://github.com/primait/prima_tracing.rs/pull/182))
+- *(deps)* bump primaassicurazioni/rust from 1.96.1 to 1.97.1 ([#183](https://github.com/primait/prima_tracing.rs/pull/183))
+- standardise dependabot.yml ([#184](https://github.com/primait/prima_tracing.rs/pull/184))
+
 ---
 
 ## [0.25.0] - 2026-07-01
