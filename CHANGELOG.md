@@ -6,7 +6,7 @@ and this project adheres to
 
 ## [Unreleased]
 
-## [0.25.1](https://github.com/primait/prima_tracing.rs/compare/v0.25.0...v0.25.1) - 2026-09-29
+## [1.0.0](https://github.com/primait/prima_tracing.rs/compare/v0.25.0...v1.0.0) - 2026-09-29
 
 ### Other
 
