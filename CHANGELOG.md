@@ -6,10 +6,6 @@ and this project adheres to
 
 ## [Unreleased]
 
----
-
-## [2.0.0] - 2026-10-06
-
 ### Changed
 
 - (**Breaking Changes ⚠️**) OpenTelemetry stack upgraded to 0.33
@@ -19,6 +15,8 @@ and this project adheres to
   `opentelemetry-otlp` 0.33, the exporter retries failed exports by default
   (3 retries with exponential backoff), and an invalid
   `OTEL_EXPORTER_OTLP_*ENDPOINT` environment variable fails the exporter build.
+
+---
 
 ## [1.0.0](https://github.com/primait/prima_tracing.rs/compare/v0.25.0...v1.0.0) - 2026-09-29
 
@@ -502,8 +500,7 @@ jaeger:
 
 
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/2.0.0...HEAD
-[2.0.0]: https://github.com/primait/prima_tracing.rs/compare/1.0.0...2.0.0
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/v1.0.0...HEAD
 [0.25.0]: https://github.com/primait/prima_tracing.rs/compare/0.24.0...0.25.0
 [0.24.0]: https://github.com/primait/prima_tracing.rs/compare/0.23.0...0.24.0
 [0.23.0]: https://github.com/primait/prima_tracing.rs/compare/0.22.0...0.23.0
