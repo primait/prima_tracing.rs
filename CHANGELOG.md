@@ -8,7 +8,7 @@ and this project adheres to
 
 ---
 
-## [1.1.0] - 2026-10-06
+## [2.0.0] - 2026-10-06
 
 ### Changed
 
@@ -502,8 +502,8 @@ jaeger:
 
 
 
-[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/1.1.0...HEAD
-[1.1.0]: https://github.com/primait/prima_tracing.rs/compare/1.0.0...1.1.0
+[Unreleased]: https://github.com/primait/prima_tracing.rs/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/primait/prima_tracing.rs/compare/1.0.0...2.0.0
 [0.25.0]: https://github.com/primait/prima_tracing.rs/compare/0.24.0...0.25.0
 [0.24.0]: https://github.com/primait/prima_tracing.rs/compare/0.23.0...0.24.0
 [0.23.0]: https://github.com/primait/prima_tracing.rs/compare/0.22.0...0.23.0
