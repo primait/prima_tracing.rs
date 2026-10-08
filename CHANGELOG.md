@@ -6,6 +6,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.0.0](https://github.com/primait/prima_tracing.rs/compare/v1.0.0...v2.0.0) - 2026-10-08
+
+### Other
+
+- revert version to 1.0.0 ([#197](https://github.com/primait/prima_tracing.rs/pull/197))
+- bump to 2.0.0 ([#196](https://github.com/primait/prima_tracing.rs/pull/196))
+- *(deps)* [**breaking**] upgrade OpenTelemetry stack to 0.33 ([#195](https://github.com/primait/prima_tracing.rs/pull/195))
+
 ### Changed
 
 - (**Breaking Changes ⚠️**) OpenTelemetry stack upgraded to 0.33
