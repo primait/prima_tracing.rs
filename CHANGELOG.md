@@ -6,6 +6,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.0.1](https://github.com/primait/prima_tracing.rs/compare/v2.0.0...v2.0.1) - 2026-10-19
+
+### Other
+
+- Update public ECR image references ([#201](https://github.com/primait/prima_tracing.rs/pull/201))
+
 ## [2.0.0](https://github.com/primait/prima_tracing.rs/compare/v1.0.0...v2.0.0) - 2026-10-08
 
 ### Other
